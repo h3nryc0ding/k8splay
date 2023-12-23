@@ -9,6 +9,9 @@ on:
       image-name:
         required: true
         type: string
+      image-version:
+        required: true
+        type: string
     secrets:
       token:
         required: true
@@ -37,6 +40,6 @@ jobs:
           context: ${{ inputs.directory }}
           platforms: linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ inputs.image-name }}
+          tags: ghcr.io/${{ github.repository }}/${{ inputs.image-name }}:${{ inputs.image-version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

@@ -13,5 +13,6 @@ jobs:
     with:
       directory: ./frontend
       image-name: frontend
+      image-version: latest
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
