@@ -16,7 +16,7 @@ spec:
             path: "/(.*)"
             backend:
               service:
-                name: service1
+                name: frontend
                 port:
                   number: 3000
     - host: "api.130.61.237.219.nip.io"
@@ -26,7 +26,7 @@ spec:
             path: "/(.*)"
             backend:
               service:
-                name: service2
+                name: backend
                 port:
                   number: 8080
 ---
