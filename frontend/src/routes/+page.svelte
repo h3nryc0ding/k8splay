@@ -2,6 +2,22 @@
 	import Counter from './Counter.svelte';
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcome_fallback from '$lib/images/svelte-welcome.png';
+
+	async function fetchData() {
+        const response = await fetch('http://api.130.61.237.219.nip.io/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            let data = await response.json();
+			alert(JSON.stringify(data, null, 2));
+        } else {
+            console.error('Error:', response.status);
+        }
+    }
 </script>
 
 <svelte:head>
@@ -26,6 +42,7 @@
 	</h2>
 
 	<Counter />
+	<button>Hit "api.130.61.237.219.nip.io"</button>
 </section>
 
 <style>
