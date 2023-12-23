@@ -19,7 +19,7 @@ RUN pnpm run build
 RUN pnpm prune --prod
 
 # Production stage
-FROM node:18-alpine
+FROM node:20-alpine
 WORKDIR /app
 
 # Copy built files and production dependencies from the build stage
