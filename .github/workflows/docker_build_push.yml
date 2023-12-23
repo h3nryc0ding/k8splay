@@ -38,3 +38,5 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: ghcr.io/${{ github.repository }}:${{ inputs.image-name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
