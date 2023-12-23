@@ -17,7 +17,7 @@ spec:
           image: ghcr.io/h3nryc0ding/microk8s_plaground:frontend
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 3000
       imagePullSecrets:
         - name: ghcr-secret
       nodeSelector:
@@ -32,7 +32,7 @@ spec:
     - name: http
       port: 80
       protocol: TCP
-      targetPort: 80
+      targetPort: 3000
   selector:
     app: service1
   type: ClusterIP

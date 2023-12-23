@@ -18,7 +18,7 @@ spec:
               service:
                 name: service1
                 port:
-                  number: 80
+                  number: 3000
     - host: "api.site.com"
       http:
         paths:
@@ -28,7 +28,7 @@ spec:
               service:
                 name: service2
                 port:
-                  number: 80
+                  number: 8080
 ---
 apiVersion: v1
 kind: Service
