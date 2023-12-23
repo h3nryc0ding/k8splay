@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: service1
+  name: frontend
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: service1
+      app: frontend
   template:
     metadata:
       labels:
-        app: service1
+        app: frontend
     spec:
       containers:
-        - name: service1
-          image: ghcr.io/h3nryc0ding/microk8s_plaground:frontend
+        - name: frontend
+          image: ghcr.io/h3nryc0ding/microk8s_plaground/frontend:latest
           ports:
             - name: http
               containerPort: 3000
@@ -26,7 +26,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: service1
+  name: frontend
 spec:
   ports:
     - name: http
@@ -34,5 +34,5 @@ spec:
       protocol: TCP
       targetPort: 3000
   selector:
-    app: service1
+    app: frontend
   type: ClusterIP

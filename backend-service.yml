@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: service2
+  name: backend
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: service2
+      app: backend
   template:
     metadata:
       labels:
-        app: service2
+        app: backend
     spec:
       containers:
-        - name: service2
-          image: ghcr.io/h3nryc0ding/microk8s_plaground:backend
+        - name: backend
+          image: ghcr.io/h3nryc0ding/microk8s_plaground/backend:latest
           ports:
             - name: http
               containerPort: 8080
@@ -26,7 +26,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: service2
+  name: backend
 spec:
   ports:
     - name: http
@@ -34,5 +34,5 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app: service2
+    app: backend
   type: ClusterIP
