@@ -1,0 +1,17 @@
+name: Frontend CI
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/docker_build_push.yml
+    with:
+      directory: ./frontend
+      image-name: frontend
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}

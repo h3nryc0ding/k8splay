@@ -1,0 +1,17 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/docker_build_push.yml
+    with:
+      directory: ./backend
+      image-name: backend
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
