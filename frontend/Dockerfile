@@ -1,23 +1,39 @@
-# Use an official Node.js runtime as the base image
-FROM node:20-alpine
-
-# Set the working directory in the container to /app
+# Build stage
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Copy package.json and pnpm-lock.yaml to the working directory
-COPY package*.json pnpm-lock.yaml ./
-
-# Install pnpm globally in the container
+# Install pnpm
 RUN npm install -g pnpm
 
-# Install any needed packages specified in package.json
+# Copy package files and install dependencies
+COPY package.json ./
 RUN pnpm install
 
-# Bundle the app source inside the Docker image
+# Copy source files
 COPY . .
 
-# Make port 3000 available to the world outside the container
+# Build the application
+RUN pnpm run build
+
+# Remove development dependencies
+RUN pnpm prune --prod
+
+# Production stage
+FROM node:18-alpine
+WORKDIR /app
+
+# Copy built files and production dependencies from the build stage
+COPY --from=builder /app/build ./build/
+COPY --from=builder /app/node_modules ./node_modules/
+
+# Copy package.json
+COPY package.json .
+
+# Expose the port the app runs in
 EXPOSE 3000
 
-# Define the command to run the app
-CMD [ "node", "index.js" ]
+# Set NODE_ENV environment variable to "production"
+ENV NODE_ENV=production
+
+# Serve the app
+CMD [ "node", "build" ]
