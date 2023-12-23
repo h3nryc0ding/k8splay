@@ -42,7 +42,7 @@
 	</h2>
 
 	<Counter />
-	<button>Hit "api.130.61.237.219.nip.io"</button>
+	<button on:click={fetchData}>Hit "api.130.61.237.219.nip.io"</button>
 </section>
 
 <style>
