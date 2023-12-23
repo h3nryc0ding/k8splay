@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
 spec:
   rules:
-    - host: "legierungleer.ainx.eu"
+    - host: "130.61.237.219.nip.io"
       http:
         paths:
           - pathType: Prefix
@@ -19,7 +19,7 @@ spec:
                 name: service1
                 port:
                   number: 3000
-    - host: "api.legierungleer.ainx.eu"
+    - host: "api.130.61.237.219.nip.io"
       http:
         paths:
           - pathType: Prefix
