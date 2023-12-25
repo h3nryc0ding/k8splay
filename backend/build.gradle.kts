@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.net.URI
 
 plugins {
     id("org.springframework.boot") version "3.2.1"
@@ -55,4 +54,12 @@ tasks.withType<com.netflix.graphql.dgs.codegen.gradle.GenerateJavaTask> {
     generateKotlinNullableClasses = true
     packageName = "com.example.demo.generated"
     language = "kotlin"
+}
+
+configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    version = "1.0.0"
+    filter {
+        include("**/src/**/*.kt", "**.kts")
+        exclude("**/build/**/*.kt", "**/generated/**/*.kt")
+    }
 }
