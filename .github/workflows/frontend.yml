@@ -110,6 +110,7 @@ jobs:
 
   Dockerize:
     needs: [ Lint, Build, Test ]
+    environment: production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
