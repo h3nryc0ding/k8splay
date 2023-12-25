@@ -76,6 +76,8 @@ jobs:
           path: |
             **/build/reports/ktlint/**/*.txt
   Dockerize:
+    needs: [ Build, Lint ]
+    environment: production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
