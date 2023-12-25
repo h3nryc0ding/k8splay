@@ -118,7 +118,7 @@ jobs:
       - name: Build and Push Image
         uses: ./.github/actions/docker_build_push
         with:
-          directory: ./backend
-          image-name: backend
+          directory: ./frontend
+          image-name: frontend
           image-version: latest
           token: ${{ secrets.GITHUB_TOKEN }}
