@@ -76,9 +76,14 @@ jobs:
           path: |
             **/build/reports/ktlint/**/*.txt
   Dockerize:
-    uses: ./.github/actions/docker_build_push.yml
-    with:
-      directory: ./backend
-      image-name: backend
-      image-version: latest
-      token: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build and Push Image
+        uses: ./.github/actions/docker_build_push
+        with:
+          directory: ./backend
+          image-name: backend
+          image-version: latest
+          token: ${{ secrets.GITHUB_TOKEN }}

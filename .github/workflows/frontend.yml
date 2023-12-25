@@ -8,10 +8,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    uses: ./.github/actions/docker_build_push.yml
-    with:
-      directory: ./frontend
-      image-name: frontend
-      image-version: latest
-      token: ${{ secrets.GITHUB_TOKEN }}
+  Dockerize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build and Push Image
+        uses: ./.github/actions/docker_build_push
+        with:
+          directory: ./backend
+          image-name: backend
+          image-version: latest
+          token: ${{ secrets.GITHUB_TOKEN }}
