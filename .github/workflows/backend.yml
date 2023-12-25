@@ -9,10 +9,9 @@ on:
 
 jobs:
   build:
-    uses: ./.github/workflows/docker_build_push.yml
+    uses: ./.github/actions/docker_build_push.yml
     with:
       directory: ./backend
       image-name: backend
       image-version: latest
-    secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
