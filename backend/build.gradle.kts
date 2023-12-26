@@ -29,9 +29,16 @@ dependencyManagement {
 }
 
 dependencies {
+    // Spring
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-docker-compose")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // Jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    // Misc
     implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
