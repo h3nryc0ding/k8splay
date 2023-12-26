@@ -40,7 +40,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     // Misc
     implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.withType<KotlinCompile> {
