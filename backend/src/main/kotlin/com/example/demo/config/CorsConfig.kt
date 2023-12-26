@@ -13,7 +13,7 @@ class CorsConfig {
     @Bean
     @Profile("dev")
     fun corsFilterDev(): FilterRegistrationBean<*> {
-        return corsFilter("http://localhost")
+        return corsFilter("http://localhost:5173")
     }
 
     @Bean

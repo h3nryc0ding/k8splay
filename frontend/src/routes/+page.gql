@@ -1,0 +1,8 @@
+query AllMessage {
+	messages {
+		id
+		text
+		creator
+		timestamp
+	}
+}
