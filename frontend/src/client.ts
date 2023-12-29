@@ -2,11 +2,11 @@ import { HoudiniClient, subscription } from '$houdini';
 import { createClient } from 'graphql-ws';
 
 export default new HoudiniClient({
-	url: 'http://localhost:8080/graphql',
+	url: 'http://api.130.61.237.219.nip.io/graphql',
 	plugins: [
 		subscription(() =>
 			createClient({
-				url: 'ws://localhost:8080/subscriptions'
+				url: 'ws://api.130.61.237.219.nip.io/subscriptions'
 			})
 		)
 	]
