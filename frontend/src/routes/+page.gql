@@ -1,5 +1,5 @@
 query AllMessage {
-	messages {
+	messages @list(name: "All_Message") {
 		id
 		text
 		creator
