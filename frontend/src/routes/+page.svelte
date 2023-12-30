@@ -26,10 +26,11 @@
 			}
 		}
 	`);
+
 	// Function to handle sending messages
 	async function handleSendMessage() {
 		if (newMessage.trim() !== '' && username.trim() !== '') {
-			sendMessage.mutate({ input: { creator: username, text: newMessage } });
+			await sendMessage.mutate({ input: { creator: username, text: newMessage } });
 			newMessage = '';
 		} else {
 			showDialog = true;
@@ -51,12 +52,13 @@
 				on:click={() => {
 					showDialog = false;
 					username = '';
-				}}>Dismiss</Button
-			>
+				}}
+				>Dismiss
+			</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
-<div class="flex h-screen flex-col bg-gray-200 p-3">
+<div class="flex h-dvh flex-col bg-gray-200 p-3">
 	<div class="flex flex-1 flex-col items-center justify-center overflow-y-auto">
 		<!-- Chat messages will go here -->
 		<div class="flex flex-col">
@@ -80,8 +82,8 @@
 				placeholder="Type your message..."
 			/>
 			<Button on:click={handleSendMessage} class="rounded-lg bg-blue-600 px-4 py-2 text-white"
-				>Send</Button
-			>
+				>Send
+			</Button>
 		</div>
 	</div>
 </div>
