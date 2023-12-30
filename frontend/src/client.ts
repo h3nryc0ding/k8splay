@@ -1,8 +1,9 @@
 import { HoudiniClient, subscription } from '$houdini';
 import { createClient } from 'graphql-ws';
+import { browser } from '$app/environment';
 
 export default new HoudiniClient({
-	url: 'http://api.130.61.237.219.nip.io/graphql',
+	url: `${browser ? 'http://api.130.61.237.219.nip.io/graphql' : 'http://backend:80/graphql'}`,
 	plugins: [
 		subscription(() =>
 			createClient({
