@@ -2,4 +2,4 @@ spring:
   data:
     redis:
       database: 0
-      host: localhost
+      host: redis
