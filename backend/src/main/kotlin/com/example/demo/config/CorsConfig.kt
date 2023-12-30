@@ -13,26 +13,28 @@ class CorsConfig {
     @Bean
     @Profile("dev")
     fun corsFilterDev(): FilterRegistrationBean<*> {
-        return corsFilter("http://localhost:5173")
+        return corsFilter(arrayOf("http://localhost:5173"))
     }
 
     @Bean
     @Profile("ci")
     fun corsFilterCI(): FilterRegistrationBean<*> {
-        return corsFilter("http://localhost")
+        return corsFilter(arrayOf("http://localhost"))
     }
 
     @Bean
     @Profile("prod")
     fun corsFilterProd(): FilterRegistrationBean<*> {
-        return corsFilter("http://130.61.237.219.nip.io")
+        return corsFilter(arrayOf("http://130.61.237.219.nip.io", "https://130.61.237.219.nip.io"))
     }
 
-    private fun corsFilter(url: String): FilterRegistrationBean<*> {
+    private fun corsFilter(urls: Array<String>): FilterRegistrationBean<*> {
         val source = UrlBasedCorsConfigurationSource()
         val config = CorsConfiguration()
         config.allowCredentials = true
-        config.addAllowedOrigin(url)
+        for (url in urls) {
+            config.addAllowedOrigin(url)
+        }
         config.addAllowedHeader("*")
         config.addAllowedMethod("*")
         source.registerCorsConfiguration("/**", config)
