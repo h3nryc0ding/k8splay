@@ -1,23 +1,24 @@
 import { HoudiniClient, subscription } from '$houdini';
 import { createClient } from 'graphql-ws';
-import { browser } from '$app/environment';
+import { browser, dev } from '$app/environment';
+
+const graphqlUrl = () => {
+	if (dev) return 'http://localhost:8080/graphql';
+	if (browser) return 'http://api.130.61.237.219.nip.io/graphql';
+	return 'http://backend:80/graphql';
+};
+const subscriptionUrl = () => {
+	if (dev) return 'ws://localhost:8080/subscriptions';
+	return 'ws://api.130.61.237.219.nip.io/subscriptions';
+};
 
 export default new HoudiniClient({
-	url: `${browser ? 'http://api.130.61.237.219.nip.io/graphql' : 'http://backend:80/graphql'}`,
+	url: graphqlUrl(),
 	plugins: [
 		subscription(() =>
 			createClient({
-				url: 'ws://api.130.61.237.219.nip.io/subscriptions'
+				url: subscriptionUrl()
 			})
 		)
 	]
-	// uncomment this to configure the network call (for things like authentication)
-	// for more information, please visit here: https://www.houdinigraphql.com/guides/authentication
-	// fetchParams({ session }) {
-	//     return {
-	//         headers: {
-	//             Authentication: `Bearer ${session.token}`,
-	//         }
-	//     }
-	// }
 });
