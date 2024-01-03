@@ -6,8 +6,14 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - "130.61.237.219.nip.io"
+        - "api.130.61.237.219.nip.io"
+      secretName: tls-secret
   rules:
     - host: "130.61.237.219.nip.io"
       http:
