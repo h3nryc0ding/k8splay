@@ -9,7 +9,7 @@ const graphqlUrl = () => {
 };
 const subscriptionUrl = () => {
 	if (dev) return 'ws://localhost:8080/subscriptions';
-	return 'ws://api.130.61.237.219.nip.io/subscriptions';
+	return 'wss://api.130.61.237.219.nip.io/subscriptions';
 };
 
 export default new HoudiniClient({
