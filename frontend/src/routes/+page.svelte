@@ -1,89 +1,53 @@
-<script lang="ts">
-	import type { PageData } from './$houdini';
-	import { graphql } from '$houdini';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-
-	export let data: PageData;
-	$: ({ AllMessage } = data);
-	let username = '';
-	let newMessage = '';
-	let showDialog = false;
-
-	const updates = graphql(`
-		subscription MessageSent {
-			messageSent {
-				...All_Message_insert
-			}
-		}
-	`);
-	$: updates.listen();
-	const sendMessage = graphql(`
-		mutation MessageSend($input: MessageInput!) {
-			messageSend(input: $input) {
-				...All_Message_insert
-			}
-		}
-	`);
-
-	// Function to handle sending messages
-	async function handleSendMessage() {
-		if (newMessage.trim() !== '' && username.trim() !== '') {
-			await sendMessage.mutate({ input: { creator: username, text: newMessage } });
-			newMessage = '';
-		} else {
-			showDialog = true;
-		}
-	}
-</script>
-
-<Dialog.Root bind:open={showDialog}>
-	<Dialog.Content>
-		<Dialog.Header>
-			<Dialog.Title>Please enter your username</Dialog.Title>
-		</Dialog.Header>
-		<div>
-			<Input type="text" bind:value={username} placeholder="Username..." />
-		</div>
-		<Dialog.Footer>
-			<Button on:click={() => (showDialog = false)}>Confirm</Button>
-			<Button
-				on:click={() => {
-					showDialog = false;
-					username = '';
-				}}
-				>Dismiss
-			</Button>
-		</Dialog.Footer>
-	</Dialog.Content>
-</Dialog.Root>
-<div class="flex h-dvh flex-col bg-gray-200 p-3">
-	<div class="flex flex-1 flex-col items-center justify-center overflow-y-auto">
-		<!-- Chat messages will go here -->
-		<div class="flex flex-col">
-			{#each $AllMessage.data?.messages || [] as message (message.id)}
-				<!-- Individual chat message -->
-				<div class="flex items-end justify-end">
-					<div class="mx-2 my-1 max-w-xs rounded-lg bg-blue-600 p-2 text-white">
-						<p>{message.text}</p>
-						<p class="text-sm">-{message.creator} at {message.timestamp}</p>
-					</div>
-				</div>
-			{/each}
-		</div>
-	</div>
-	<!-- Message input field -->
-	<div class="mt-4 flex-none">
-		<div class="flex">
-			<Input
-				bind:value={newMessage}
-				class="mr-3 w-full rounded-lg border-2 bg-white px-4 py-2"
-				placeholder="Type your message..."
-			/>
-			<Button on:click={handleSendMessage} class="rounded-lg bg-blue-600 px-4 py-2 text-white"
-				>Send
-			</Button>
-		</div>
-	</div>
-</div>
+<article class="container prose pt-4 dark:prose-invert">
+	<h1>Welcome</h1>
+	<h2>What is this website about?</h2>
+	<p>
+		This website is a place where I test out new concepts and technologies that interest me. While I
+		don&#39;t focus on the visual or responsive part of the website, I do aim to learn as much as
+		possible from each project.
+	</p>
+	<h2>What is the technology stack?</h2>
+	<p>Here are the base frameworks used for this:</p>
+	<ul>
+		<li>Backend: Spring Boot</li>
+		<li>API: GraphQL</li>
+		<li>Frontend: Sveltekit</li>
+	</ul>
+	<p>In the lower section, you will find the packages or dependencies used.</p>
+	<h2>What&#39;s working?</h2>
+	<p>
+		Currently, this machine is running in the Oracle Cloud on an always-free VM. I set up a microk8s
+		cluster which features:
+	</p>
+	<ul>
+		<li>TLS certificate fetching via Let&#39;s Encrypt ACME</li>
+		<li>SSR rendering with direct connection via service discovery</li>
+		<li>Redis for temporary data</li>
+	</ul>
+	<p>
+		As full-stack features, there is currently only the live chat. There is definitely more to come.
+	</p>
+	<h2>What&#39;s coming?</h2>
+	<p>There is a lot of stuff planned for this.</p>
+	<p>Currently, the focus is set to:</p>
+	<ul>
+		<li>OAuth 2 via Spring</li>
+		<li>Remote Kubernetes rollout without SSH</li>
+	</ul>
+	<h2>Dependencies</h2>
+	<ul>
+		<li>
+			Backend
+			<ul>
+				<li>Netflix DGS</li>
+			</ul>
+		</li>
+		<li>
+			Frontend
+			<ul>
+				<li>Houdini GraphQL</li>
+				<li>Shadcn Svelte</li>
+			</ul>
+		</li>
+	</ul>
+</article>
