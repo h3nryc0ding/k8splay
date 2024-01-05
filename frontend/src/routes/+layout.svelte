@@ -1,5 +1,8 @@
 <script>
 	import '../app.pcss';
+	import SiteHeader from '$lib/SiteHeader.svelte';
+	import SiteFooter from '$lib/SiteFooter.svelte';
+	import { ModeWatcher } from 'mode-watcher';
 </script>
 
 <svelte:head>
@@ -11,4 +14,11 @@
 	</script>
 </svelte:head>
 
-<slot />
+<ModeWatcher />
+<div class="relative flex min-h-screen flex-col" id="page">
+	<SiteHeader />
+	<div class="flex-1">
+		<slot />
+	</div>
+	<SiteFooter />
+</div>

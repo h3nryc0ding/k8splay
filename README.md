@@ -113,3 +113,47 @@ sudo iptables-restore < /etc/iptables/rules.v4
 ```
 
 [Credits](https://github.com/canonical/microk8s/issues/854#issuecomment-1716576495)
+
+# Welcome
+
+## What is this website about?
+
+This website is a place where I test out new concepts and technologies that interest me. While I don't focus on the
+visual or responsive part of the website, I do aim to learn as much as possible from each project.
+
+## What is the technology stack?
+
+Here are the base frameworks used for this:
+
+- Backend: Spring Boot
+- API: GraphQL
+- Frontend: Sveltekit
+
+In the lower section, you will find the packages or dependencies used.
+
+## What's working?
+
+Currently, this machine is running in the Oracle Cloud on an always-free VM. I set up a microk8s cluster which features:
+
+- TLS certificate fetching via Let's Encrypt ACME
+- SSR rendering with direct connection via service discovery
+- Redis for temporary data
+
+As full-stack features, there is currently only the live chat. There is definitely more to come.
+
+## What's coming?
+
+There is a lot of stuff planned for this.
+
+Currently, the focus is set to:
+
+- OAuth 2 via Spring
+- Remote Kubernetes rollout without SSH
+
+## Dependencies
+
+- Backend
+    - Netflix DGS
+- Frontend
+    - Houdini GraphQL
+    - Shadcn Svelte

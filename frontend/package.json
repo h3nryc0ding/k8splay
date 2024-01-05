@@ -18,6 +18,7 @@
 		"@sveltejs/adapter-node": "^2.0.2",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@tailwindcss/typography": "^0.5.10",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
 		"autoprefixer": "^10.4.16",
@@ -45,6 +46,7 @@
 		"clsx": "^2.0.0",
 		"graphql-ws": "^5.14.3",
 		"lucide-svelte": "^0.302.0",
+		"mode-watcher": "^0.1.2",
 		"tailwind-merge": "^2.2.0",
 		"tailwind-variants": "^0.1.19"
 	}
