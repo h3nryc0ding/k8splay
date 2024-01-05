@@ -1,3 +1,6 @@
+<svelte:head>
+	<title>h3nryc0ding PG</title>
+</svelte:head>
 <article class="container prose pt-4 dark:prose-invert">
 	<h1>Welcome</h1>
 	<h2>What is this website about?</h2>

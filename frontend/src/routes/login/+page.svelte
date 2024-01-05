@@ -4,6 +4,10 @@
 	import { Code2 } from 'lucide-svelte';
 </script>
 
+<svelte:head>
+	<title>Login</title>
+</svelte:head>
+
 <AlertDialog.Root open={true}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>

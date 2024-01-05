@@ -37,6 +37,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Chat</title>
+</svelte:head>
+
 <Dialog.Root bind:open={showDialog}>
 	<Dialog.Content>
 		<Dialog.Header>
@@ -58,7 +62,7 @@
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
-<div class="flex h-[calc(100vh-3.5rem)] flex-col p-4">
+<div class="flex h-[calc(100dvh-3.5rem-1px)] flex-col p-4">
 	<div class="flex flex-1 flex-col items-center justify-center overflow-y-auto">
 		<!-- Chat messages will go here -->
 		<div class="flex flex-col">
