@@ -122,3 +122,24 @@ jobs:
           image-name: frontend
           image-version: latest
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  Deploy:
+    needs: [ Dockerize]
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v1
+
+      - name: Setup kubectl
+        env:
+          K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+
+      - name: Restart Deployment
+        run: kubectl rollout restart deployment/frontend -n prod
