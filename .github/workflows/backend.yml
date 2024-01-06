@@ -97,6 +97,8 @@ jobs:
     needs: [ Build, Lint, Test ]
     environment: production
     runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.tag.outputs.new_tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -139,5 +141,5 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
 
-      - name: Restart Deployment
-        run: kubectl rollout restart deployment/backend -n prod
+      - name: Set version for new image.
+        run: kubectl set image deployment/backend backend=ghcr.io/h3nryc0ding/microk8s_plaground/backend:${{ needs.Dockerize.outputs.new_tag }} -n prod
