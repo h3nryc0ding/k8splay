@@ -1,8 +1,8 @@
 @file:Suppress("DgsDataSimplifyingInspector", "DgsFieldSimplifyingInspector")
 
-package com.example.demo.chat
+package opensource.h3nryc0ding.playground.chat
 
-import com.example.demo.generated.types.MessageInput
+import opensource.h3nryc0ding.playground.generated.types.MessageInput
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsData
 import com.netflix.graphql.dgs.InputArgument
@@ -19,19 +19,19 @@ import java.util.UUID
 
 @RedisHash("message")
 data class Message(
-    @Id
-    val id: UUID = UUID.randomUUID(),
-    val text: String,
-    val creator: String,
-    val timestamp: String,
+        @Id
+        val id: UUID = UUID.randomUUID(),
+        val text: String,
+        val creator: String,
+        val timestamp: String,
 ) {
     fun toDTO() =
-        com.example.demo.generated.types.Message(
-            id = { this.id.toString() },
-            text = { this.text },
-            creator = { this.creator },
-            timestamp = { this.timestamp },
-        )
+            opensource.h3nryc0ding.playground.generated.types.Message(
+                    id = { this.id.toString() },
+                    text = { this.text },
+                    creator = { this.creator },
+                    timestamp = { this.timestamp },
+            )
 }
 
 interface MessageRepository : CrudRepository<Message, Long>
@@ -47,8 +47,8 @@ class MessageSentPublisher(private val applicationEventPublisher: ApplicationEve
 
 @DgsComponent
 class MessageDataFetcher(
-    private val messageRepository: MessageRepository,
-    private val messageSentPublisher: MessageSentPublisher,
+        private val messageRepository: MessageRepository,
+        private val messageSentPublisher: MessageSentPublisher,
 ) {
     private val processor = DirectProcessor.create<Message>().serialize()
     private val flux = processor.sink()
@@ -59,20 +59,20 @@ class MessageDataFetcher(
     }
 
     @DgsData(parentType = "Query", field = "messages")
-    fun getMessages(): Collection<com.example.demo.generated.types.Message> {
+    fun getMessages(): Collection<opensource.h3nryc0ding.playground.generated.types.Message> {
         return messageRepository.findAll().map { it.toDTO() }
     }
 
     @DgsData(parentType = "Mutation", field = "messageSend")
     fun sendMessage(
-        @InputArgument input: MessageInput,
-    ): com.example.demo.generated.types.Message {
+            @InputArgument input: MessageInput,
+    ): opensource.h3nryc0ding.playground.generated.types.Message {
         val message =
-            Message(
-                text = input.text,
-                creator = input.creator,
-                timestamp = LocalDateTime.now().toString(),
-            )
+                Message(
+                        text = input.text,
+                        creator = input.creator,
+                        timestamp = LocalDateTime.now().toString(),
+                )
         return messageRepository.save(message).let {
             messageSentPublisher.publish(it)
             it.toDTO()
@@ -80,7 +80,7 @@ class MessageDataFetcher(
     }
 
     @DgsData(parentType = "Subscription", field = "messageSent")
-    fun messageSent(): Flux<com.example.demo.generated.types.Message> {
+    fun messageSent(): Flux<opensource.h3nryc0ding.playground.generated.types.Message> {
         return processor.map { it.toDTO() }
     }
 }

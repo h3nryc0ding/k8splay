@@ -1,4 +1,4 @@
-package com.example.demo.config
+package opensource.h3nryc0ding.playground.config
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
@@ -25,7 +25,7 @@ class CorsConfig {
     @Bean
     @Profile("prod")
     fun corsFilterProd(): FilterRegistrationBean<*> {
-        return corsFilter(arrayOf("http://130.61.237.219.nip.io", "https://130.61.237.219.nip.io"))
+        return corsFilter(arrayOf("https://130.61.237.219.nip.io"))
     }
 
     private fun corsFilter(urls: Array<String>): FilterRegistrationBean<*> {

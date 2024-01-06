@@ -1,4 +1,4 @@
-package com.example.demo
+package opensource.h3nryc0ding.playground
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
