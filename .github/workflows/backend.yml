@@ -98,6 +98,8 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.64.0
         id: tag
@@ -105,8 +107,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: false
           PRERELEASE: true
-      - name: Checkout code
-        uses: actions/checkout@v4
       - name: Build and Push Image
         uses: ./.github/actions/docker_build_push
         with:
