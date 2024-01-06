@@ -112,6 +112,7 @@ jobs:
         run: pnpm run test
 
   Dockerize:
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     needs: [ Lint, Build, Test ]
     environment: production
     runs-on: ubuntu-latest
@@ -127,7 +128,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   Deploy:
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     needs: [ Dockerize]
     environment: production
     runs-on: ubuntu-latest
