@@ -1,42 +1,10 @@
 # MicroK8s Playground
 
-This document provides a guide to set up a MicroK8s playground.
+## Experiment with Production-Ready Fullstack Applications
 
-## Steps
+This playground is designed for experimenting with various technologies that are geared towards production-ready fullstack applications. At present, it features a frontend and backend with Redis integration. However, this is just the beginning - there's definitely more to come!
 
-Follow these steps to set up your playground:
-
-1. **Apply Services**
-
-   Use the following command to apply services:
-
-    ```bash
-    microk8s kubectl apply -f <name>-service.yml
-    ```
-
-2. **Apply Deployments**
-
-   Use the following command to apply deployments:
-
-    ```bash
-    microk8s kubectl apply -f <name>-deployment.yml
-    ```
-
-3. **Apply Ingress**
-
-   Use the following command to apply ingress:
-
-    ```bash
-    microk8s kubectl apply -f ingress.yml
-    ```
-
-4. **Apply New Images**
-
-   Use the following command to apply new images:
-
-    ```bash
-    kubectl rollout restart deployment/<deployment>
-    ```
+Feel free to explore the site at: [https://130.61.237.219.nip.io](https://130.61.237.219.nip.io). Your feedback and suggestions are always welcome!
 
 ## Kubernetes Setup
 
@@ -44,116 +12,32 @@ Follow these steps to set up Kubernetes:
 
 1. **Install MicroK8s**
 
-   Follow the [Getting Started Guide](https://microk8s.io/docs/getting-started) to install MicroK8s.
+   Follow the [Getting Started Guide](https://microk8s.io/docs/getting-started) to install MicroK8s on your system.
 
-2. **Set Permissions**
+2. **Enable Addons**
 
-   Use the following commands to set permissions:
-
-    ```bash
-    sudo usermod -a -G microk8s $USER
-    sudo chown -f -R $USER ~/.kube
-    ```
-
-3. **Enable Addons**
-
-   Use the following commands to enable addons:
+   Execute the following commands to enable necessary addons:
 
     ```bash
+    microk8s enable dns
     microk8s enable ingress
+    microk8s enable cert-manager
     IP=$(curl -s ipinfo.io/ip)
     microk8s enable metallb:$IP-$IP
     ```
 
-## Oracle VM Config
+3. **Choose an Overlay Network**
 
-## VM Config
+   As of now, 'prod' is the most stable overlay network to use with the provided overlays.
 
-Complete the `/etc/iptables/rules.v4` file as needed.
+4. **Access Your Services**
 
-```text
-*filter
-:INPUT ACCEPT [0:0]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [1150:552984]
-:InstanceServices - [0:0]
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A INPUT -p icmp -j ACCEPT
--A INPUT -i lo -j ACCEPT
--A INPUT -p udp -m udp --sport 123 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
--A INPUT -i vxlan.calico -j ACCEPT
--A INPUT -i cali+ -j ACCEPT
--A INPUT -j REJECT --reject-with icmp-host-prohibited
-# -A FORWARD -j REJECT --reject-with icmp-host-prohibited
--A OUTPUT -d 169.254.0.0/16 -j InstanceServices
--A InstanceServices -d 169.254.0.2/32 -p tcp -m owner --uid-owner 0 -m tcp --dport 3260 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.2.0/24 -p tcp -m owner --uid-owner 0 -m tcp --dport 3260 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.4.0/24 -p tcp -m owner --uid-owner 0 -m tcp --dport 3260 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.5.0/24 -p tcp -m owner --uid-owner 0 -m tcp --dport 3260 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.0.2/32 -p tcp -m tcp --dport 80 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.169.254/32 -p udp -m udp --dport 53 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.169.254/32 -p tcp -m tcp --dport 53 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.0.3/32 -p tcp -m owner --uid-owner 0 -m tcp --dport 80 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.0.4/32 -p tcp -m tcp --dport 80 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.169.254/32 -p tcp -m tcp --dport 80 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.169.254/32 -p udp -m udp --dport 67 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.169.254/32 -p udp -m udp --dport 69 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.169.254/32 -p udp -m udp --dport 123 -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j ACCEPT
--A InstanceServices -d 169.254.0.0/16 -p tcp -m tcp -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j REJECT --reject-with tcp-reset
--A InstanceServices -d 169.254.0.0/16 -p udp -m udp -m comment --comment "See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule" -j REJECT --reject-with icmp-port-unreachable
-COMMIT
-```
+   You can access your services by entering the IP address in the browser. If you plan to host multiple services on a single IP, consider using a service like [nip.io](https://nip.io) to redirect your requests to the IP with the URL as the hostname.
 
-Apply the new config:
+## Oracle VM Configuration
 
-```bash
-sudo iptables-restore < /etc/iptables/rules.v4
-```
+The cluster is currently hosted on Oracle's generous free tier. To get started, simply spin up a VM there. If you encounter any issues or need assistance, feel free to open an issue.
 
-[Credits](https://github.com/canonical/microk8s/issues/854#issuecomment-1716576495)
+Please note that Oracle pre-configures certain settings, and getting MicroK8s to work out-of-the-box may require some additional steps. I've found the following guides useful in this regard. However, I must emphasize that I am not a security expert. Therefore, please be aware that this setup may not represent the most secure configuration.
 
-# Welcome
-
-## What is this website about?
-
-This website is a place where I test out new concepts and technologies that interest me. While I don't focus on the
-visual or responsive part of the website, I do aim to learn as much as possible from each project.
-
-## What is the technology stack?
-
-Here are the base frameworks used for this:
-
-- Backend: Spring Boot
-- API: GraphQL
-- Frontend: Sveltekit
-
-In the lower section, you will find the packages or dependencies used.
-
-## What's working?
-
-Currently, this machine is running in the Oracle Cloud on an always-free VM. I set up a microk8s cluster which features:
-
-- TLS certificate fetching via Let's Encrypt ACME
-- SSR rendering with direct connection via service discovery
-- Redis for temporary data
-
-As full-stack features, there is currently only the live chat. There is definitely more to come.
-
-## What's coming?
-
-There is a lot of stuff planned for this.
-
-Currently, the focus is set to:
-
-- OAuth 2 via Spring
-- Remote Kubernetes rollout without SSH
-
-## Dependencies
-
-- Backend
-    - Netflix DGS
-- Frontend
-    - Houdini GraphQL
-    - Shadcn Svelte
+For configuring iptables, you can refer to this [guide](https://github.com/canonical/microk8s/issues/854#issuecomment-1716576495).
