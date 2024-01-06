@@ -1,0 +1,30 @@
+name: 'Deploy to Kubernetes'
+description: 'Deploys an image to a Kubernetes cluster'
+inputs:
+  deployment:
+    description: 'The name of the Kubernetes deployment'
+    required: true
+  version:
+    description: 'The version of the image'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Kubectl tool installer
+      uses: Azure/setup-kubectl@v1
+
+    - name: Setup kubectl
+      env:
+        K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+      shell: bash
+
+    - name: Set version for new image
+      run: kubectl set image deployment/${{ inputs.deployment }} ${{ inputs.deployment }}=ghcr.io/h3nryc0ding/microk8s_plaground/${{ inputs.deployment }}:${{ inputs.version }} -n prod
+      shell: bash

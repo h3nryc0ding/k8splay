@@ -1,0 +1,92 @@
+name: Fullstack CD
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.repository }}-deployment
+
+jobs:
+  CreateVersion:
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.tag.outputs.new_tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Create version tag
+        uses: anothrNick/github-tag-action@1.64.0
+        id: tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          DRY_RUN: true
+  DockerizeFrontend:
+    needs: [ CreateVersion ]
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build and Push Image
+        uses: ./.github/actions/docker_build_push
+        with:
+          directory: ./frontend
+          image-name: frontend
+          image-version: ${{ needs.CreateVersion.outputs.new_tag }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+  DockerizeBackend:
+    needs: [ CreateVersion ]
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build and Push Image
+        uses: ./.github/actions/docker_build_push
+        with:
+          directory: ./backend
+          image-name: backend
+          image-version: ${{ needs.CreateVersion.outputs.new_tag }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+  DeployFrontend:
+    needs: [ DockerizeFrontend, DockerizeBackend ]
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Deploy to Kubernetes
+        uses: ./.github/actions/deploy-to-kubernetes
+        with:
+          deployment: frontend
+          version: ${{ needs.CreateVersion.outputs.new_tag }}
+  DeployBackend:
+    needs: [ DockerizeFrontend, DockerizeBackend ]
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Deploy to Kubernetes
+        uses: ./.github/actions/deploy-to-kubernetes
+        with:
+          deployment: backend
+          version: ${{ needs.CreateVersion.outputs.new_tag }}
+  SaveVersion:
+    needs: [ DockerizeFrontend, DockerizeBackend ]
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.tag.outputs.new_tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Create version tag
+        uses: anothrNick/github-tag-action@1.64.0
+        id: tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          DRY_RUN: false
