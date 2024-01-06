@@ -34,8 +34,8 @@
 	<p>There is a lot of stuff planned for this.</p>
 	<p>Currently, the focus is set to:</p>
 	<ul>
+		<li>Strong versioning of repo and packages</li>
 		<li>OAuth 2 via Spring</li>
-		<li>Remote Kubernetes rollout without SSH</li>
 	</ul>
 	<h2>Dependencies</h2>
 	<ul>
