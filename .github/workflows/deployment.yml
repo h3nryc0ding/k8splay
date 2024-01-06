@@ -23,7 +23,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: false
           DRY_RUN: true
-  DockerizeFrontend:
+  Dockerize:
+    strategy:
+      matrix:
+        app: [ frontend, backend ]
     needs: [ CreateVersion ]
     environment: production
     runs-on: ubuntu-latest
@@ -33,50 +36,12 @@ jobs:
       - name: Build and Push Image
         uses: ./.github/actions/docker_build_push
         with:
-          directory: ./frontend
-          image-name: frontend
+          directory: ./${{ matrix.app }}
+          image-name: ${{ matrix.app }}
           image-version: ${{ needs.CreateVersion.outputs.new_tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
-  DockerizeBackend:
-    needs: [ CreateVersion ]
-    environment: production
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Build and Push Image
-        uses: ./.github/actions/docker_build_push
-        with:
-          directory: ./backend
-          image-name: backend
-          image-version: ${{ needs.CreateVersion.outputs.new_tag }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-  DeployFrontend:
-    needs: [ DockerizeFrontend, DockerizeBackend ]
-    environment: production
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Deploy to Kubernetes
-        uses: ./.github/actions/deploy-to-kubernetes
-        with:
-          deployment: frontend
-          version: ${{ needs.CreateVersion.outputs.new_tag }}
-  DeployBackend:
-    needs: [ DockerizeFrontend, DockerizeBackend ]
-    environment: production
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Deploy to Kubernetes
-        uses: ./.github/actions/deploy-to-kubernetes
-        with:
-          deployment: backend
-          version: ${{ needs.CreateVersion.outputs.new_tag }}
   SaveVersion:
-    needs: [ DockerizeFrontend, DockerizeBackend ]
+    needs: [ Dockerize ]
     runs-on: ubuntu-latest
     outputs:
       new_tag: ${{ steps.tag.outputs.new_tag }}
@@ -90,3 +55,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: false
           DRY_RUN: false
+  Deploy:
+    strategy:
+      matrix:
+        app: [ frontend, backend ]
+    needs: [ SaveVersion ]
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Deploy to Kubernetes
+        uses: ./.github/actions/kubernetes-set-image
+        with:
+          deployment: ${{ matrix.app }}
+          version: ${{ needs.SaveVersion.outputs.new_tag }}
