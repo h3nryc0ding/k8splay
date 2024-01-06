@@ -100,20 +100,26 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Bump version and push tag
+      - name: Create new version
         uses: anothrNick/github-tag-action@1.64.0
         id: tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: false
-          PRERELEASE: true
+          DRY_RUN: true
       - name: Build and Push Image
         uses: ./.github/actions/docker_build_push
         with:
           directory: ./backend
           image-name: backend
-          image-version: ${{ steps.tagger.outputs.new_tag }}
+          image-version: ${{ steps.tag.outputs.new_tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Save new version
+        uses: anothrNick/github-tag-action@1.64.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          DRY_RUN: false
 
   Deploy:
     needs: [ Dockerize ]
