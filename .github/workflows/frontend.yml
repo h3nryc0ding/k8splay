@@ -5,6 +5,9 @@ on:
     paths:
       - 'frontend/**'
     branches: [ main ]
+  pull_request:
+    paths:
+      - 'frontend/**'
   workflow_dispatch:
 
 jobs:
@@ -124,6 +127,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   Deploy:
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     needs: [ Dockerize]
     environment: production
     runs-on: ubuntu-latest
