@@ -7,6 +7,9 @@ inputs:
   version:
     description: 'The version of the image'
     required: true
+  k8sconfig:
+    description: 'Kubernetes configuration'
+    required: true
 
 runs:
   using: 'composite'
@@ -15,11 +18,11 @@ runs:
       uses: actions/checkout@v4
 
     - name: Kubectl tool installer
-      uses: Azure/setup-kubectl@v1
+      uses: Azure/setup-kubectl@v3
 
     - name: Setup kubectl
       env:
-        K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
+        K8S_CONFIG: ${{ inputs.k8sconfig }}
       run: |
         mkdir -p $HOME/.kube
         echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config

@@ -68,5 +68,6 @@ jobs:
       - name: Deploy to Kubernetes
         uses: ./.github/actions/kubernetes-set-image
         with:
+          k8sconfig: ${{ secrets.K8S_CONFIG }}
           deployment: ${{ matrix.app }}
           version: ${{ needs.SaveVersion.outputs.new_tag }}
