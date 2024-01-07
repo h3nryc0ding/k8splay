@@ -28,7 +28,6 @@ jobs:
       matrix:
         app: [ frontend, backend ]
     needs: [ CreateVersion ]
-    environment: production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -45,6 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       new_tag: ${{ steps.tag.outputs.new_tag }}
+    environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -60,7 +60,6 @@ jobs:
       matrix:
         app: [ frontend, backend ]
     needs: [ SaveVersion ]
-    environment: production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
