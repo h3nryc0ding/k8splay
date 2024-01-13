@@ -10,18 +10,15 @@ permissions:
   pull-requests: write
 
 jobs:
-  CheckCI:
-    strategy:
-      matrix:
-        app: [ frontend, backend ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run Lint, Test, Build
-        uses: ${{ github.repository }}/.github/workflows/${{ matrix.app }}.yml@main
+  CheckFE:
+    uses: ./.github/workflows/frontend.yml
+
+  CheckBE:
+    uses: ./.github/workflows/backend.yml
 
   BuildImage:
     if: github.actor != 'dependabot[bot]'
-    needs: [ CheckCI ]
+    needs: [ CheckFE, CheckBE ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -46,9 +43,9 @@ jobs:
           context: ./${{ matrix.app }}
           platforms: linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:${{ github.event.pull_request.number }}
-          cache-from: type=gha,scope=buildkit-${{ matrix.app }}
-          cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:pr-${{ github.event.pull_request.number }}
+          cache-from: type=gha,scope=buildkit-${{ matrix.app }}-pr-${{ github.event.pull_request.number }}
+          cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}-pr-${{ github.event.pull_request.number }}
 
   DeployApp:
     needs: [ BuildImage ]
@@ -68,31 +65,32 @@ jobs:
           echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
         shell: bash
 
-      - name: Cleanup any previous Resources
+      - name: Cleanup previous Resources
         run: |
-          if kubectl get namespace pr-${{ github.event.pull_request.number }}; then
-          kubectl delete namespace pr-${{ github.event.pull_request.number }}
+          if helm list -n pr-${{ github.event.pull_request.number }} | grep pr-${{ github.event.pull_request.number }}; then
+            helm uninstall pr-${{ github.event.pull_request.number }} ./.k8s/overlays/staging -n pr-${{ github.event.pull_request.number }}
           fi
         shell: bash
 
-      - name: Create Namespace and Secret
+      - name: Create Namespace and Docker Secret
         run: |
+          if ! (kubectl get namespace pr-${{ github.event.pull_request.number }}); then
           kubectl create namespace pr-${{ github.event.pull_request.number }}
           kubectl create secret docker-registry ghcr-secret \
             --docker-server=ghcr.io \
             --docker-username=${{ github.repository_owner }} \
             --docker-password=${{ secrets.GITHUB_TOKEN }} \
             --namespace=pr-${{ github.event.pull_request.number }}
+          fi
         shell: bash
 
       - name: Install Helm Chart
-        run: helm install pr-${{ github.event.pull_request.number }} ./.k8s/overlays/staging --namespace pr-${{ github.event.pull_request.number }} --set image.tag=pr-${{ github.event.pull_request.number }}
+        timeout-minutes: 60
+        run: helm install pr-${{ github.event.pull_request.number }} ./.k8s/overlays/staging --namespace pr-${{ github.event.pull_request.number }} --set image.tag=pr-${{ github.event.pull_request.number }} --wait
         shell: bash
 
-      - name: Wait for Deployment to become ready
-        timeout-minutes: 15
-        run: |
-          kubectl -n pr-${{ github.event.pull_request.number }} wait --for=condition=available --timeout=600s deployment/pr-${{ github.event.pull_request.number }}-staging
+      - name: Delete Pull Secret
+        run: kubectl delete secret ghcr-secret -n pr-${{ github.event.pull_request.number }}
         shell: bash
 
       - name: Post Deployment Comment
@@ -103,5 +101,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: ':rocket: **Your deployment is ready!** :rocket:\n\nYou can access your application at the following link: [http://${{ github.sha }}.130.61.237.219.nip.io](http://${{ github.sha }}.130.61.237.219.nip.io)\n\nThis deployment was triggered by pull request #${{ github.event.pull_request.number }}. \n\nRemember, this is a temporary environment for testing purposes. Enjoy exploring your changes in a live setting! :sunglasses:'
+              body: ':rocket: **Your deployment is ready!** :rocket:\n\nYou can access your application at the following link: [http://pr-${{ github.event.pull_request.number }}.130.61.237.219.nip.io](http://pr-${{ github.event.pull_request.number }}.130.61.237.219.nip.io)\n\nThis deployment was triggered by pull request #${{ github.event.pull_request.number }}. \n\nRemember, this is a temporary environment for testing purposes. Enjoy exploring your changes in a live setting! :sunglasses:'
             })

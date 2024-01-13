@@ -27,8 +27,7 @@ jobs:
         shell: bash
 
       - name: Uninstall Helm Chart
+        continue-on-error: true
         run: |
-          if kubectl get namespace pr-${{ github.event.pull_request.number }}; then
-          helm uninstall pr-${{ github.event.pull_request.number }} ./.k8s/overlays/staging --namespace pr-${{ github.event.pull_request.number }}
-          fi
+          helm uninstall pr-${{ github.event.pull_request.number }} -n pr-${{ github.event.pull_request.number }}
         shell: bash
