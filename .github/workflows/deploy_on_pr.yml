@@ -1,0 +1,106 @@
+name: Deployment on PR
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+
+jobs:
+  CheckCI:
+    strategy:
+      matrix:
+        app: [ frontend, backend ]
+    runs-on: ubuntu-latest
+    steps:
+      name: Run Lint, Test, Build
+      uses: ${{ github.repository }}/.github/workflows/${{ matrix.app }}.yml@main
+
+  BuildImage:
+    needs: [CheckCI]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [ frontend, backend ]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.app }}
+          platforms: linux/arm64
+          push: true
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:${{ github.event.pull_request.number }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  DeployApp:
+    needs: [ BuildImage ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Kubectl
+        uses: Azure/setup-kubectl@v3
+
+      - name: Configure Kubectl
+        env:
+          K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+        shell: bash
+
+      - name: Cleanup any previous Resources
+        run: |
+          if kubectl get namespace pr-${{ github.event.pull_request.number }}; then
+          kubectl delete namespace pr-${{ github.event.pull_request.number }}
+          fi
+        shell: bash
+
+      - name: Create Namespace and Secret
+        run: |
+          kubectl create namespace pr-${{ github.event.pull_request.number }}
+          kubectl create secret docker-registry ghcr-secret \
+            --docker-server=ghcr.io \
+            --docker-username=${{ github.repository_owner }} \
+            --docker-password=${{ secrets.GITHUB_TOKEN }} \
+            --namespace=pr-${{ github.event.pull_request.number }}
+        shell: bash
+
+      - name: Install Helm Chart
+        run: helm install pr-${{ github.event.pull_request.number }} ./.k8s/overlays/staging --namespace pr-${{ github.event.pull_request.number }} --set image.tag=pr-${{ github.event.pull_request.number }}
+        shell: bash
+
+      - name: Wait for Deployment to become ready
+        timeout-minutes: 15
+        run: |
+          kubectl -n pr-${{ github.event.pull_request.number }} wait --for=condition=available --timeout=600s deployment/pr-${{ github.event.pull_request.number }}-staging
+        shell: bash
+
+      - name: Post Deployment Comment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: ':rocket: **Your deployment is ready!** :rocket:\n\nYou can access your application at the following link: [http://${{ github.sha }}.130.61.237.219.nip.io](http://${{ github.sha }}.130.61.237.219.nip.io)\n\nThis deployment was triggered by pull request #${{ github.event.pull_request.number }}. \n\nRemember, this is a temporary environment for testing purposes. Enjoy exploring your changes in a live setting! :sunglasses:'
+            })

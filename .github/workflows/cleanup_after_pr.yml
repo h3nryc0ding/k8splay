@@ -1,0 +1,34 @@
+name: Cleanup on PR close/merge
+
+on:
+  # use target because non-target wouldn't run on conflicts
+  pull_request_target:
+    types: [ closed ]
+
+permissions:
+  contents: read
+
+jobs:
+  UninstallApp:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retrieve Source Code
+        uses: actions/checkout@v4
+
+      - name: Install Kubectl
+        uses: Azure/setup-kubectl@v3
+
+      - name: Configure Kubectl
+        env:
+          K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+        shell: bash
+
+      - name: Uninstall Helm Chart
+        run: |
+          if kubectl get namespace pr-${{ github.event.pull_request.number }}; then
+          helm uninstall pr-${{ github.event.pull_request.number }} ./.k8s/overlays/staging --namespace pr-${{ github.event.pull_request.number }}
+          fi
+        shell: bash
