@@ -32,13 +32,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Build and Push Image
-        uses: ./.github/actions/docker_build_push
+
+      - name: Login Docker Registry
+        uses: docker/login-action@v3
         with:
-          directory: ./${{ matrix.app }}
-          image-name: ${{ matrix.app }}
-          image-version: ${{ needs.CreateVersion.outputs.new_tag }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.app }}
+          platforms: linux/arm64
+          push: true
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:${{ github.event.pull_request.number }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   SaveVersion:
     needs: [ Dockerize ]
     runs-on: ubuntu-latest
@@ -64,9 +75,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Deploy to Kubernetes
-        uses: ./.github/actions/kubernetes-set-image
-        with:
-          k8sconfig: ${{ secrets.K8S_CONFIG }}
-          deployment: ${{ matrix.app }}
-          version: ${{ needs.SaveVersion.outputs.new_tag }}
+
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v3
+
+      - name: Setup kubectl
+        env:
+          K8S_CONFIG: ${{ inputs.k8sconfig }}
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+        shell: bash
+
+      - name: Set version for new image
+        run: kubectl set image deployment/${{ matrix.app }} ${{ matrix.app }}=ghcr.io/h3nryc0ding/microk8s_plaground/${{ matrix.app }}:${{ needs.SaveVersion.outputs.new_tag }} -n prod
+        shell: bash
