@@ -83,9 +83,9 @@ jobs:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
 
-      - name: Setup kubectl
+      - name: Configure Kubectl
         env:
-          K8S_CONFIG: ${{ inputs.k8sconfig }}
+          K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
         run: |
           mkdir -p $HOME/.kube
           echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config

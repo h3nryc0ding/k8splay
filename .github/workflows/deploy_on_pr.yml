@@ -10,18 +10,27 @@ permissions:
   pull-requests: write
 
 jobs:
-  CheckCI:
-    strategy:
-      matrix:
-        app: [ frontend, backend ]
+  CheckFE:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Run Lint, Test, Build
-        uses: ${{ github.repository }}/.github/workflows/${{ matrix.app }}.yml@main
+        uses: ./.github/workflows/frontend.yml
+
+  CheckBE:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Lint, Test, Build
+        uses: ./.github/workflows/frontend.yml
 
   BuildImage:
     if: github.actor != 'dependabot[bot]'
-    needs: [ CheckCI ]
+    needs: [ CheckFE, CheckBE ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
