@@ -20,6 +20,7 @@ jobs:
         uses: ${{ github.repository }}/.github/workflows/${{ matrix.app }}.yml@main
 
   BuildImage:
+    if: github.actor != 'dependabot[bot]'
     needs: [ CheckCI ]
     runs-on: ubuntu-latest
     strategy:
