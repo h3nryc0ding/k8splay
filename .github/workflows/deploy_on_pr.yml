@@ -47,8 +47,8 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:${{ github.event.pull_request.number }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=buildkit-${{ matrix.app }}
+          cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}
 
   DeployApp:
     needs: [ BuildImage ]

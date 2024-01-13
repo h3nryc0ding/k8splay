@@ -51,8 +51,8 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:${{ needs.CreateVersion.outputs.new_tag }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=buildkit-${{ matrix.app }}
+          cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}
 
   SaveVersion:
     needs: [ Dockerize ]
