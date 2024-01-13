@@ -26,13 +26,6 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
       - name: Lint with Ktlint
         run: ./gradlew ktlintCheck
-      - name: Archive ktlint reports
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: Lint Reports
-          path: |
-            **/build/reports/ktlint/**/*.txt
 
   Build:
     runs-on: ubuntu-latest
@@ -78,10 +71,3 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
       - name: Build with Gradle
         run: ./gradlew test
-      - name: Archive test reports
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: Test Reports
-          path: |
-            **/build/reports/tests/test
