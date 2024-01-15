@@ -8,7 +8,7 @@ plugins {
 
     id("com.netflix.dgs.codegen") version "6.1.2"
 
-    id("org.jlleitschuh.gradle.ktlint") version "12.0.3"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 group = "com.example"
