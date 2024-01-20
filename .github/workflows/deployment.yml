@@ -71,9 +71,6 @@ jobs:
           WITH_V: false
           DRY_RUN: false
   Deploy:
-    strategy:
-      matrix:
-        app: [ frontend, backend ]
     needs: [ SaveVersion ]
     runs-on: ubuntu-latest
     steps:
@@ -91,6 +88,6 @@ jobs:
           echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
         shell: bash
 
-      - name: Set version for new image
-        run: kubectl set image deployment/${{ matrix.app }} ${{ matrix.app }}=ghcr.io/h3nryc0ding/microk8s_plaground/${{ matrix.app }}:${{ needs.SaveVersion.outputs.new_tag }} -n prod
+      - name: Install Helm
+        run: helm upgrade app ./.k8s/app --namespace prod --set image.tag=${{ needs.SaveVersion.outputs.new_tag }} --install --atomic --wait
         shell: bash

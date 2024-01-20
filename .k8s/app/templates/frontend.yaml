@@ -14,10 +14,13 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: "ghcr.io/h3nryc0ding/microk8s_plaground/frontend:{{ .Values.image.tag }}"
+          image: "ghcr.io/h3nryc0ding/microk8s_plaground/frontend:{{ .Values.app.image.tag }}"
           ports:
             - name: http
               containerPort: 3000
+          env:
+            - name: FRONTEND_HOST
+              value: "api.{{ .Values.ingress.domain }}"
       imagePullSecrets:
         - name: ghcr-secret
 ---

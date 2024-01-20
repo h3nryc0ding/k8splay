@@ -68,7 +68,7 @@ jobs:
       - name: Cleanup previous Resources
         run: |
           if helm list -n pr-${{ github.event.pull_request.number }} | grep pr-${{ github.event.pull_request.number }}; then
-            helm uninstall pr-${{ github.event.pull_request.number }} ./.k8s/overlays/staging -n pr-${{ github.event.pull_request.number }}
+            helm uninstall pr-${{ github.event.pull_request.number }} ./.k8s/app -n pr-${{ github.event.pull_request.number }}
           fi
         shell: bash
 
@@ -86,7 +86,7 @@ jobs:
 
       - name: Install Helm Chart
         timeout-minutes: 60
-        run: helm install pr-${{ github.event.pull_request.number }} ./.k8s/overlays/staging --namespace pr-${{ github.event.pull_request.number }} --set image.tag=pr-${{ github.event.pull_request.number }} --wait
+        run: helm install pr-${{ github.event.pull_request.number }} ./.k8s/app --namespace pr-${{ github.event.pull_request.number }} --set image.tag=pr-${{ github.event.pull_request.number }} --wait
         shell: bash
 
       - name: Delete Pull Secret

@@ -7,3 +7,4 @@ spring:
     compose:
       enabled: true
       file: docker-compose.yml
+FRONTEND_URL: http://localhost:5173

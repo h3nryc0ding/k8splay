@@ -1,21 +1,19 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-prod
-  namespace: prod
+  name: ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
-    cert-manager.io/cluster-issuer: "lets-encrypt"
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - "130.61.237.219.nip.io"
-        - "api.130.61.237.219.nip.io"
+        - "{{ .Values.ingress.domain }}"
+        - "api.{{ .Values.ingress.domain }}"
       secretName: tls-secret
   rules:
-    - host: "130.61.237.219.nip.io"
+    - host: "{{ .Values.ingress.domain }}"
       http:
         paths:
           - pathType: Prefix
@@ -25,7 +23,7 @@ spec:
                 name: frontend
                 port:
                   number: 3000
-    - host: "api.130.61.237.219.nip.io"
+    - host: "api.{{ .Values.ingress.domain }}"
       http:
         paths:
           - pathType: Prefix
