@@ -56,10 +56,12 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const { NAMESPACE } = process.env
+            
             await github.rest.repos.createOrUpdateEnvironment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              environment_name: env.NAMESPACE,
+              environment_name: `${NAMESPACE}`,
             })
 
       - name: Setup Kubectl
