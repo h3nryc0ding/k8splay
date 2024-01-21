@@ -128,6 +128,7 @@ jobs:
               auto_merge: false,
               transient_environment: true,
             })
+            console.log(`Deployment ID: ${id}`)
             await github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
