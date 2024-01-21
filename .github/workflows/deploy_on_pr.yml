@@ -120,7 +120,7 @@ jobs:
           github-token: ${{ secrets.GH_PAT }}
           script: |
             const { NAMESPACE } = process.env
-            const { id } = await github.rest.repos.createDeployment({
+            const deployment = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: context.ref,
@@ -128,10 +128,11 @@ jobs:
               auto_merge: false,
               transient_environment: true,
             })
+            console.log(...deployment)
             await github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              deployment_id: id,
+              deployment_id: deployment.data.id,
               state: 'success',
               environment: `test/${NAMESPACE}`,
               environment_url: `https://${NAMESPACE}.k8splay.xyz`,
