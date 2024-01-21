@@ -123,7 +123,7 @@ jobs:
             const deployment = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: context.ref,
+              ref: context.sha,
               environment: `test/${NAMESPACE}`,
               auto_merge: false,
               transient_environment: true,
