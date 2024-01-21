@@ -146,6 +146,7 @@ jobs:
               environment: `test/${NAMESPACE}`,
               auto_merge: false,
               transient_environment: true,
+              required_contexts: [],
             })
             await github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
