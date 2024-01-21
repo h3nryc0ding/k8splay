@@ -124,15 +124,15 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: context.ref,
-              environment_name: `test/${NAMESPACE}`,
+              environment: `test/${NAMESPACE}`,
               auto_merge: false,
               transient_environment: true,
             })
-            console.log(`Deployment ID: ${id}`)
             await github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
               deployment_id: id,
               state: 'success',
+              environment: `test/${NAMESPACE}`,
               environment_url: `https://${NAMESPACE}.k8splay.xyz`,
             })
