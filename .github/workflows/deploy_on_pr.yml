@@ -99,8 +99,7 @@ jobs:
           helm install $NAMESPACE ./.k8s/app \
           --namespace $NAMESPACE \
           --set ingress.host=${{ env.NAMESPACE }}.k8splay.xyz \
-          --set app.image.tag=${{ env.NAMESPACE }}
-          --install \
+          --set app.image.tag=${{ env.NAMESPACE }} \
           --wait \
           --atomic \
           --timeout 60s
