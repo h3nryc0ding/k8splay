@@ -11,6 +11,9 @@ permissions:
 jobs:
   UninstallApp:
     runs-on: ubuntu-latest
+    environment: test
+    env:
+      NAMESPACE: pr-${{ github.event.pull_request.number }}
     steps:
       - name: Retrieve Source Code
         uses: actions/checkout@v4
@@ -29,5 +32,5 @@ jobs:
       - name: Uninstall Helm Chart
         continue-on-error: true
         run: |
-          helm uninstall pr-${{ github.event.pull_request.number }} -n pr-${{ github.event.pull_request.number }}
+          helm uninstall $NAMESPACE -n $NAMESPACE
         shell: bash
