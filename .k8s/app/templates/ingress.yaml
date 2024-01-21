@@ -9,11 +9,11 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - "{{ .Values.ingress.domain }}"
-        - "api.{{ .Values.ingress.domain }}"
+        - "{{ .Values.ingress.host }}"
+        - "api.{{ .Values.ingress.host }}"
       secretName: tls-secret
   rules:
-    - host: "{{ .Values.ingress.domain }}"
+    - host: "{{ .Values.ingress.host }}"
       http:
         paths:
           - pathType: Prefix
@@ -23,7 +23,7 @@ spec:
                 name: frontend
                 port:
                   number: 3000
-    - host: "api.{{ .Values.ingress.domain }}"
+    - host: "api.{{ .Values.ingress.host }}"
       http:
         paths:
           - pathType: Prefix

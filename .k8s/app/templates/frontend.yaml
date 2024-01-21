@@ -7,6 +7,7 @@ spec:
   selector:
     matchLabels:
       app: frontend
+  revisionHistoryLimit: 2
   template:
     metadata:
       labels:
@@ -18,9 +19,10 @@ spec:
           ports:
             - name: http
               containerPort: 3000
+          imagePullPolicy: Always
           env:
-            - name: FRONTEND_HOST
-              value: "api.{{ .Values.ingress.domain }}"
+            - name: PUBLIC_BACKEND_HOST
+              value: {{ .Values.ingress.host }}
       imagePullSecrets:
         - name: ghcr-secret
 ---
