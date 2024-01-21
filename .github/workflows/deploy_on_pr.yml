@@ -119,7 +119,24 @@ jobs:
         with:
           github-token: ${{ secrets.GH_PAT }}
           script: |
-            const { NAMESPACE, REF } = process.env
+            const { NAMESPACE, GITHUB_RUN_ID } = process.env
+            // set all previous deployments to inactive
+            const deployments = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              environment: `test/${NAMESPACE}`,
+              per_page: 100,
+            })
+            for (const deployment of deployments.data) {
+              await github.rest.repos.createDeploymentStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                deployment_id: deployment.id,
+                state: 'inactive',
+                environment: `test/${NAMESPACE}`,
+              })
+            }
+            // create new deployment
             const deployment = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -135,5 +152,5 @@ jobs:
               state: 'success',
               environment: `test/${NAMESPACE}`,
               environment_url: `https://${NAMESPACE}.k8splay.xyz`,
-              log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.GITHUB_RUN_ID}`
+              log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${GITHUB_RUN_ID}`
             })
