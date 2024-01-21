@@ -22,7 +22,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: PUBLIC_BACKEND_DOMAIN
-              value: {{ .Values.ingress.domain }}
+              value: "api.{{ .Values.ingress.domain }}"
       imagePullSecrets:
         - name: ghcr-secret
 ---
