@@ -135,4 +135,5 @@ jobs:
               state: 'success',
               environment: `test/${NAMESPACE}`,
               environment_url: `https://${NAMESPACE}.k8splay.xyz`,
+              log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.GITHUB_RUN_ID}`
             })
