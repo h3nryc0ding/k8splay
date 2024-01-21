@@ -57,7 +57,9 @@ jobs:
   Deploy:
     needs: [ Dockerize ]
     runs-on: ubuntu-latest
-    environment: prod
+    environment:
+      name: prod
+      url: k8splay.xyz
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -86,7 +88,7 @@ jobs:
           helm upgrade prod ./.k8s/app \
           --namespace prod \
           --set ingress.host=k8splay.xyz \
-          --set app.image.tag=${{ tag.outputs.new_tag }} \
+          --set app.image.tag=${{ steps.tag.outputs.new_tag }} \
           --install \
           --wait \
           --atomic \

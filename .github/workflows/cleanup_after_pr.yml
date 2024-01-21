@@ -11,7 +11,6 @@ permissions:
 jobs:
   UninstallApp:
     runs-on: ubuntu-latest
-    environment: test
     env:
       NAMESPACE: pr-${{ github.event.pull_request.number }}
     steps:
@@ -29,8 +28,7 @@ jobs:
           echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
         shell: bash
 
-      - name: Uninstall Helm Chart
-        continue-on-error: true
+      - name: Delete Namespace
         run: |
-          helm uninstall $NAMESPACE -n $NAMESPACE
+          kubectl delete namespace $NAMESPACE --ignore-not-found
         shell: bash

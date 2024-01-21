@@ -50,9 +50,12 @@ jobs:
   DeployApp:
     needs: [ BuildImage ]
     runs-on: ubuntu-latest
-    environment: test
     env:
       NAMESPACE: pr-${{ github.event.pull_request.number }}
+    environment:
+      name: test
+      url: https://$NAMESPACE.k8splay.xyz
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -106,14 +109,3 @@ jobs:
       - name: Delete Pull Secret
         run: kubectl delete secret ghcr-secret -n $NAMESPACE
         shell: bash
-
-      - name: Post Deployment Comment
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: ':rocket: **Your deployment is ready!** :rocket:\n\nYou can access your application at the following link: [https://$NAMESPACE.k8splay.xyz](https://$NAMESPACE.k8splay.xyz)\n\nThis deployment was triggered by pull request #${{ github.event.pull_request.number }}. \n\nRemember, this is a temporary environment for testing purposes. Enjoy exploring your changes in a live setting! :sunglasses:'
-            })
