@@ -39,5 +39,5 @@ jobs:
             await github.rest.repos.deleteEnvironment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              environment_name: test/${{ env.$NAMESPACE }},
+              environment_name: test-${{ env.NAMESPACE }},
             })
