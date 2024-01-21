@@ -123,12 +123,11 @@ jobs:
             const deployment = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: context.sha,
+              ref: ${{ github.ref }},
               environment: `test/${NAMESPACE}`,
               auto_merge: false,
               transient_environment: true,
             })
-            console.log(deployment.data)
             await github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
