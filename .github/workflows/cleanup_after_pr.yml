@@ -5,14 +5,12 @@ on:
   pull_request_target:
     types: [ closed ]
 
-permissions:
-  contents: read
+env:
+  NAMESPACE: pr-${{ github.event.pull_request.number }}
 
 jobs:
-  UninstallApp:
+  Undeploy:
     runs-on: ubuntu-latest
-    env:
-      NAMESPACE: pr-${{ github.event.pull_request.number }}
     steps:
       - name: Retrieve Source Code
         uses: actions/checkout@v4
@@ -33,7 +31,8 @@ jobs:
           kubectl delete namespace $NAMESPACE --ignore-not-found
         shell: bash
 
-      - uses: actions/github-script@v7
+      - name: Set all deployments to inactive
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_PAT }}
           script: |
@@ -55,8 +54,9 @@ jobs:
               })
             }
             // delete environment
-            await github.rest.repos.deleteEnvironment({
+            /* currently not supported
+              await github.rest.repos.deleteEnvironment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               environment_name: `test/${NAMESPACE}`,
-            })
+            }) */

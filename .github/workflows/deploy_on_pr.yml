@@ -8,15 +8,15 @@ env:
   NAMESPACE: pr-${{ github.event.pull_request.number }}
 
 jobs:
-  CheckFE:
+  FrontendCI:
     uses: ./.github/workflows/frontend.yml
 
-  CheckBE:
+  BackendCI:
     uses: ./.github/workflows/backend.yml
 
-  BuildImage:
+  Containerize:
     if: github.actor != 'dependabot[bot]'
-    needs: [ CheckFE, CheckBE ]
+    needs: [ FrontendCI, BackendCI ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -45,8 +45,8 @@ jobs:
           cache-from: type=gha,scope=buildkit-${{ matrix.app }}-${{ env.NAMESPACE }}
           cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}-${{ env.NAMESPACE }}
 
-  DeployApp:
-    needs: [ BuildImage ]
+  Deploy:
+    needs: [ Containerize ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
