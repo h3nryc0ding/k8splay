@@ -54,28 +54,21 @@ jobs:
           cache-from: type=gha,scope=buildkit-${{ matrix.app }}
           cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}
 
-  SaveVersion:
+  Deploy:
     needs: [ Dockerize ]
     runs-on: ubuntu-latest
-    outputs:
-      new_tag: ${{ steps.tag.outputs.new_tag }}
-    environment: production
+    environment: prod
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Create version tag
+
+      - name: Save version tag
         uses: anothrNick/github-tag-action@1.67.0
         id: tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: false
           DRY_RUN: false
-  Deploy:
-    needs: [ SaveVersion ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
@@ -88,6 +81,14 @@ jobs:
           echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
         shell: bash
 
-      - name: Install Helm
-        run: helm upgrade -n prod -f ./.k8s/app/values-prod.yaml prod ./.k8s/app --set app.image.tag=${{ needs.SaveVersion.outputs.new_tag }}
+      - name: Install App with Helm
+        run: |
+          helm upgrade prod ./.k8s/app \
+          --namespace prod \
+          --set ingress.host=k8splay.xyz \
+          --set app.image.tag=${{ tag.outputs.new_tag }} \
+          --install \
+          --wait \
+          --atomic \
+          --timeout 60s
         shell: bash

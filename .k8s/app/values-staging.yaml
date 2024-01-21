@@ -1,5 +1,0 @@
-app:
-  image:
-    tag:
-ingress:
-  host:

@@ -43,13 +43,16 @@ jobs:
           context: ./${{ matrix.app }}
           platforms: linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:pr-${{ github.event.pull_request.number }}
-          cache-from: type=gha,scope=buildkit-${{ matrix.app }}-pr-${{ github.event.pull_request.number }}
-          cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}-pr-${{ github.event.pull_request.number }}
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:$NAMESPACE
+          cache-from: type=gha,scope=buildkit-${{ matrix.app }}-pr-$NAMESPACE
+          cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}-pr-$NAMESPACE
 
   DeployApp:
     needs: [ BuildImage ]
     runs-on: ubuntu-latest
+    environment: test
+    env:
+      NAMESPACE: pr-${{ github.event.pull_request.number }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -67,30 +70,41 @@ jobs:
 
       - name: Cleanup previous Resources
         run: |
-          if helm list -n pr-${{ github.event.pull_request.number }} | grep pr-${{ github.event.pull_request.number }}; then
-            helm uninstall pr-${{ github.event.pull_request.number }} ./.k8s/app -n pr-${{ github.event.pull_request.number }}
-          fi
+          kubectl delete namespace $NAMESPACE --ignore-not-found
         shell: bash
 
-      - name: Create Namespace and Docker Secret
+      - name: Create Namespace and Secrets
         run: |
-          if ! (kubectl get namespace pr-${{ github.event.pull_request.number }}); then
-          kubectl create namespace pr-${{ github.event.pull_request.number }}
+          kubectl create namespace $NAMESPACE
+          
           kubectl create secret docker-registry ghcr-secret \
             --docker-server=ghcr.io \
             --docker-username=${{ github.repository_owner }} \
             --docker-password=${{ secrets.GITHUB_TOKEN }} \
-            --namespace=pr-${{ github.event.pull_request.number }}
-          fi
+            --namespace=$NAMESPACE
+          
+          echo "${{ secrets.TLS_CERT }}" | base64 --decode > ./tls.crt
+          echo "${{ secrets.TLS_KEY }}" | base64 --decode > ./tls.key
+          kubectl create secret tls tls-secret \
+            --cert=./tls.crt \
+            --key=./tls.key \
+            --namespace=$NAMESPACE
         shell: bash
 
-      - name: Install Helm Chart
-        timeout-minutes: 60
-        run: helm install pr-${{ github.event.pull_request.number }} ./.k8s/app --namespace pr-${{ github.event.pull_request.number }} --set image.tag=pr-${{ github.event.pull_request.number }} --wait
+      - name: Install App with Helm
+        run: |
+          helm install $NAMESPACE ./.k8s/app \
+          --namespace $NAMESPACE \
+          --set ingress.host=$NAMESPACE.k8splay.xyz \
+          --set app.image.tag=$NAMESPACE
+          --install \
+          --wait \
+          --atomic \
+          --timeout 60s
         shell: bash
 
       - name: Delete Pull Secret
-        run: kubectl delete secret ghcr-secret -n pr-${{ github.event.pull_request.number }}
+        run: kubectl delete secret ghcr-secret -n $NAMESPACE
         shell: bash
 
       - name: Post Deployment Comment
@@ -101,5 +115,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: ':rocket: **Your deployment is ready!** :rocket:\n\nYou can access your application at the following link: [http://pr-${{ github.event.pull_request.number }}.130.61.237.219.nip.io](http://pr-${{ github.event.pull_request.number }}.130.61.237.219.nip.io)\n\nThis deployment was triggered by pull request #${{ github.event.pull_request.number }}. \n\nRemember, this is a temporary environment for testing purposes. Enjoy exploring your changes in a live setting! :sunglasses:'
+              body: ':rocket: **Your deployment is ready!** :rocket:\n\nYou can access your application at the following link: [https://$NAMESPACE.k8splay.xyz](https://$NAMESPACE.k8splay.xyz)\n\nThis deployment was triggered by pull request #${{ github.event.pull_request.number }}. \n\nRemember, this is a temporary environment for testing purposes. Enjoy exploring your changes in a live setting! :sunglasses:'
             })
