@@ -9,6 +9,9 @@ permissions:
   packages: write
   pull-requests: write
 
+env:
+  NAMESPACE: pr-${{ github.event.pull_request.number }}
+
 jobs:
   CheckFE:
     uses: ./.github/workflows/frontend.yml
@@ -44,18 +47,15 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:$NAMESPACE
-          cache-from: type=gha,scope=buildkit-${{ matrix.app }}-pr-$NAMESPACE
-          cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}-pr-$NAMESPACE
+          cache-from: type=gha,scope=buildkit-${{ matrix.app }}-$NAMESPACE
+          cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}-$NAMESPACE
 
   DeployApp:
     needs: [ BuildImage ]
     runs-on: ubuntu-latest
-    env:
-      NAMESPACE: pr-${{ github.event.pull_request.number }}
     environment:
       name: test
       url: https://$NAMESPACE.k8splay.xyz
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
