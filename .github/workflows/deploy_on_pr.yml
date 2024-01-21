@@ -9,6 +9,9 @@ permissions:
   packages: write
   pull-requests: write
 
+env:
+  NAMESPACE: pr-${{ github.event.pull_request.number }}
+
 jobs:
   CheckFE:
     uses: ./.github/workflows/frontend.yml
@@ -43,19 +46,16 @@ jobs:
           context: ./${{ matrix.app }}
           platforms: linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:$NAMESPACE
-          cache-from: type=gha,scope=buildkit-${{ matrix.app }}-pr-$NAMESPACE
-          cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}-pr-$NAMESPACE
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:${{ env.NAMESPACE }}
+          cache-from: type=gha,scope=buildkit-${{ matrix.app }}-${{ env.NAMESPACE }}
+          cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}-${{ env.NAMESPACE }}
 
   DeployApp:
     needs: [ BuildImage ]
     runs-on: ubuntu-latest
-    env:
-      NAMESPACE: pr-${{ github.event.pull_request.number }}
     environment:
       name: test
-      url: https://$NAMESPACE.k8splay.xyz
-
+      url: https://${{ env.NAMESPACE }}.k8splay.xyz
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -98,8 +98,8 @@ jobs:
         run: |
           helm install $NAMESPACE ./.k8s/app \
           --namespace $NAMESPACE \
-          --set ingress.host=$NAMESPACE.k8splay.xyz \
-          --set app.image.tag=$NAMESPACE
+          --set ingress.host=${{ env.NAMESPACE }}.k8splay.xyz \
+          --set app.image.tag=${{ env.NAMESPACE }}
           --install \
           --wait \
           --atomic \
