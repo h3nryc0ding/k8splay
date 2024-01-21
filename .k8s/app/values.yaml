@@ -1,5 +1,6 @@
 app:
   image:
+    base: "ghcr.io/h3nryc0ding/microk8s_plaground"
     tag:
 ingress:
-  host:
+  domain:

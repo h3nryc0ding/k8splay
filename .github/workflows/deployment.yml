@@ -87,7 +87,7 @@ jobs:
         run: |
           helm upgrade prod ./.k8s/app \
           --namespace prod \
-          --set ingress.host=k8splay.xyz \
+          --set ingress.domain=k8splay.xyz \
           --set app.image.tag=${{ steps.tag.outputs.new_tag }} \
           --install \
           --wait \

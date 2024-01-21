@@ -5,12 +5,12 @@ import { env } from '$env/dynamic/public';
 
 const graphqlUrl = () => {
 	if (dev) return 'http://localhost:8080/graphql';
-	if (browser) return `https://api.${env.PUBLIC_BACKEND_HOST}/graphql`;
+	if (browser) return `https://${env.PUBLIC_BACKEND_DOMAIN}/graphql`;
 	return 'http://backend:80/graphql';
 };
 const subscriptionUrl = () => {
 	if (dev) return 'ws://localhost:8080/subscriptions';
-	return `wss://api.${env.PUBLIC_BACKEND_HOST}/subscriptions`;
+	return `wss://${env.PUBLIC_BACKEND_DOMAIN}/subscriptions`;
 };
 
 export default new HoudiniClient({

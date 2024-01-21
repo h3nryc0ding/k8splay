@@ -10,7 +10,7 @@ import org.springframework.web.filter.CorsFilter
 
 @Configuration
 class CorsConfig {
-    @Value("\${FRONTEND_URL}")
+    @Value("\${PUBLIC_FRONTEND_DOMAIN}")
     lateinit var baseDomain: String
 
     @Bean

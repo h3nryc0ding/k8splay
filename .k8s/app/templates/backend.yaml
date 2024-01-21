@@ -15,14 +15,14 @@ spec:
     spec:
       containers:
         - name: backend
-          image: "ghcr.io/h3nryc0ding/microk8s_plaground/backend:{{ .Values.app.image.tag }}"
+          image: "{{ .Values.app.image.base }}/backend:{{ .Values.app.image.tag }}"
           ports:
             - name: http
               containerPort: 8080
           imagePullPolicy: Always
           env:
-            - name: FRONTEND_URL
-              value: {{ .Values.ingress.host }}
+            - name: PUBLIC_FRONTEND_DOMAIN
+              value: {{ .Values.ingress.domain }}
       imagePullSecrets:
         - name: ghcr-secret
 ---
