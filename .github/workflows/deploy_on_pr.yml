@@ -4,6 +4,8 @@ on:
   pull_request:
     types: [ opened, synchronize, reopened ]
 
+permissions: write-all
+
 env:
   NAMESPACE: pr-${{ github.event.pull_request.number }}
 
