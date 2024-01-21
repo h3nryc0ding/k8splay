@@ -2,4 +2,4 @@ app:
   image:
     tag:
 ingress:
-  domain: "k8splay.xyz"
+  host: "k8splay.xyz"

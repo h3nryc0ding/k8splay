@@ -19,7 +19,7 @@ class CorsConfig {
         val config = CorsConfiguration()
         config.allowCredentials = true
 
-        config.addAllowedOrigin(baseDomain)
+        config.addAllowedOrigin("https://$baseDomain")
 
         config.addAllowedHeader("*")
         config.addAllowedMethod("*")
