@@ -4,11 +4,6 @@ on:
   pull_request:
     types: [ opened, synchronize, reopened ]
 
-permissions:
-  contents: read
-  packages: write
-  pull-requests: write
-
 env:
   NAMESPACE: pr-${{ github.event.pull_request.number }}
 
@@ -60,11 +55,14 @@ jobs:
       - name: Create GitHub Environment
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GH_PAT }}
           script: |
+            const { NAMESPACE } = process.env
+            
             await github.rest.repos.createOrUpdateEnvironment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              environment_name: env.NAMESPACE,
+              environment_name: `test/${NAMESPACE}`,
             })
 
       - name: Setup Kubectl
@@ -118,20 +116,44 @@ jobs:
 
       - name: Create GitHub Deployment
         uses: actions/github-script@v7
+        env:
+          REF: ${{ github.head_ref }}
         with:
+          github-token: ${{ secrets.GH_PAT }}
           script: |
-            const {id} = await github.rest.repos.createDeployment({
+            const { NAMESPACE, REF, GITHUB_RUN_ID } = process.env
+            // set all previous deployments to inactive
+            const deployments = await github.rest.repos.listDeployments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: context.ref,
-              environment_name: {{ env.NAMESPACE }},
+              environment: `test/${NAMESPACE}`,
+              per_page: 100,
+            })
+            for (const deployment of deployments.data) {
+              await github.rest.repos.createDeploymentStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                deployment_id: deployment.id,
+                state: 'inactive',
+                environment: `test/${NAMESPACE}`,
+              })
+            }
+            // create new deployment
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: REF,
+              environment: `test/${NAMESPACE}`,
               auto_merge: false,
               transient_environment: true,
+              required_contexts: [],
             })
             await github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              deployment_id: id,
+              deployment_id: deployment.data.id,
               state: 'success',
-              environment_url: `https://${{ env.NAMESPACE }}.k8splay.xyz`,
+              environment: `test/${NAMESPACE}`,
+              environment_url: `https://${NAMESPACE}.k8splay.xyz`,
+              log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${GITHUB_RUN_ID}`
             })

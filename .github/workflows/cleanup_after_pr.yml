@@ -35,9 +35,28 @@ jobs:
 
       - uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GH_PAT }}
           script: |
+            const { NAMESPACE } = process.env
+            // set all deployments to inactive
+            const deployments = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              environment: `test/${NAMESPACE}`,
+              per_page: 100,
+            })
+            for (const deployment of deployments.data) {
+              await github.rest.repos.createDeploymentStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                deployment_id: deployment.id,
+                state: 'inactive',
+                environment: `test/${NAMESPACE}`,
+              })
+            }
+            // delete environment
             await github.rest.repos.deleteEnvironment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              environment_name: test-${{ env.NAMESPACE }},
+              environment_name: `test/${NAMESPACE}`,
             })
