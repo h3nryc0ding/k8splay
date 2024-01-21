@@ -2,4 +2,4 @@ app:
   image:
     tag:
 ingress:
-  domain:
+  host:

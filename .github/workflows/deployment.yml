@@ -89,5 +89,5 @@ jobs:
         shell: bash
 
       - name: Install Helm
-        run: helm upgrade app ./.k8s/app --namespace prod --set image.tag=${{ needs.SaveVersion.outputs.new_tag }} --install --atomic --wait
+        run: helm upgrade -n prod -f ./.k8s/app/values-prod.yaml prod app --set app.image.tag=${{ needs.SaveVersion.outputs.new_tag }}
         shell: bash
