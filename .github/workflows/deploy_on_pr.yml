@@ -54,7 +54,7 @@ jobs:
     needs: [ BuildImage ]
     runs-on: ubuntu-latest
     environment:
-      name: test
+      name: test/${{ env.NAMESPACE }}
       url: https://${{ env.NAMESPACE }}.k8splay.xyz
     steps:
       - name: Checkout Code
