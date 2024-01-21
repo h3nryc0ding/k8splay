@@ -117,7 +117,7 @@ jobs:
       - name: Create GitHub Deployment
         uses: actions/github-script@v7
         env:
-          REF: ${{ github.ref }}
+          REF: ${{ github.event.pull_request.merge_commit_sha }}
         with:
           github-token: ${{ secrets.GH_PAT }}
           script: |
