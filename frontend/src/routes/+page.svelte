@@ -23,7 +23,6 @@
 		cluster which features:
 	</p>
 	<ul>
-		<li>TLS certificate fetching via Let&#39;s Encrypt ACME</li>
 		<li>SSR rendering with direct connection via service discovery</li>
 		<li>Redis for temporary data</li>
 	</ul>
