@@ -39,7 +39,7 @@ dependencies {
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     // Misc
-    implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:8.2.1")
+    implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:8.2.2")
     runtimeOnly("com.netflix.graphql.dgs:graphql-dgs-subscriptions-websockets-autoconfigure:8.2.1")
 }
 
