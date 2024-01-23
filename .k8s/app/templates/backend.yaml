@@ -16,13 +16,32 @@ spec:
       containers:
         - name: backend
           image: "{{ .Values.app.image.base }}/backend:{{ .Values.app.image.tag }}"
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8080
-          imagePullPolicy: Always
           env:
             - name: PUBLIC_FRONTEND_DOMAIN
               value: {{ .Values.ingress.domain }}
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "4Gi"
+          livenessProbe:
+            httpGet:
+              path: "/actuator/health/liveness"
+              port: 8081
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: "/actuator/health/readiness"
+              port: 8081
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
       imagePullSecrets:
         - name: ghcr-secret
 ---

@@ -3,3 +3,11 @@ spring:
     redis:
       database: 0
       host: redis
+management:
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  server:
+    port: 8081
