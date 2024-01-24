@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.spring") version "1.9.22"
 
-    id("com.netflix.dgs.codegen") version "6.1.2"
+    id("com.netflix.dgs.codegen") version "6.1.3"
 
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
@@ -24,7 +24,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:8.2.1")
+        mavenBom("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:8.2.2")
     }
 }
 
@@ -40,8 +40,8 @@ dependencies {
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     // Misc
-    implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:8.2.1")
-    runtimeOnly("com.netflix.graphql.dgs:graphql-dgs-subscriptions-websockets-autoconfigure:8.2.1")
+    implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:8.2.2")
+    runtimeOnly("com.netflix.graphql.dgs:graphql-dgs-subscriptions-websockets-autoconfigure:8.2.2")
 }
 
 tasks.withType<KotlinCompile> {

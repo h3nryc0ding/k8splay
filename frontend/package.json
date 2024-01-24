@@ -14,13 +14,13 @@
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.28.1",
+		"@playwright/test": "^1.41.1",
 		"@sveltejs/adapter-node": "^2.0.2",
 		"@sveltejs/kit": "^2.3.2",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@tailwindcss/typography": "^0.5.10",
 		"@typescript-eslint/eslint-plugin": "^6.19.0",
-		"@typescript-eslint/parser": "^6.18.0",
+		"@typescript-eslint/parser": "^6.19.0",
 		"autoprefixer": "^10.4.16",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^9.1.0",
@@ -29,7 +29,7 @@
 		"houdini-svelte": "^1.2.34",
 		"postcss": "^8.4.32",
 		"postcss-load-config": "^5.0.2",
-		"prettier": "^3.1.1",
+		"prettier": "^3.2.4",
 		"prettier-plugin-svelte": "^3.1.2",
 		"prettier-plugin-tailwindcss": "^0.5.9",
 		"svelte": "^4.2.7",
@@ -42,10 +42,10 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"bits-ui": "^0.14.0",
+		"bits-ui": "^0.15.1",
 		"clsx": "^2.1.0",
 		"graphql-ws": "^5.14.3",
-		"lucide-svelte": "^0.309.0",
+		"lucide-svelte": "^0.314.0",
 		"mode-watcher": "^0.1.2",
 		"tailwind-merge": "^2.2.0",
 		"tailwind-variants": "^0.1.19"
