@@ -48,7 +48,7 @@ jobs:
   Deploy:
     needs: [ Containerize ]
     runs-on: ubuntu-latest
-    environment: test/${{ env.NAMESPACE }}
+    environment: 'test/${{ env.NAMESPACE }}'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
