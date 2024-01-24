@@ -48,22 +48,10 @@ jobs:
   Deploy:
     needs: [ Containerize ]
     runs-on: ubuntu-latest
+    environment: test/${{ env.NAMESPACE }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Create GitHub Environment
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GH_PAT }}
-          script: |
-            const { NAMESPACE } = process.env
-            
-            await github.rest.repos.createOrUpdateEnvironment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              environment_name: `test/${NAMESPACE}`,
-            })
 
       - name: Setup Kubectl
         uses: Azure/setup-kubectl@v3
@@ -91,12 +79,14 @@ jobs:
             --docker-password=${{ secrets.GITHUB_TOKEN }} \
             --namespace=$NAMESPACE
           
-          echo "${{ secrets.TLS_CERT }}" | base64 --decode > ./tls.crt
-          echo "${{ secrets.TLS_KEY }}" | base64 --decode > ./tls.key
-          kubectl create secret tls tls-secret \
+          if [ -n "${{ secrets.TLS_CERT }}" ] && [ -n "${{ secrets.TLS_KEY }}" ]; then
+            echo "${{ secrets.TLS_CERT }}" | base64 --decode > ./tls.crt
+            echo "${{ secrets.TLS_KEY }}" | base64 --decode > ./tls.key
+            kubectl create secret tls tls-secret \
             --cert=./tls.crt \
             --key=./tls.key \
             --namespace=$NAMESPACE
+          fi
         shell: bash
 
       - name: Install App with Helm
@@ -113,6 +103,43 @@ jobs:
       - name: Delete Pull Secret
         run: kubectl delete secret ghcr-secret -n $NAMESPACE
         shell: bash
+
+      - name: Wait for TLS certificate
+        run: |
+          kubectl wait --for=condition=Ready certificate tls-secret -n $NAMESPACE
+        shell: bash
+
+      - name: Store TLS certificate/key
+        id: tls
+        run: |
+          echo "TLS_CERT=$(kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.crt']}")"
+          echo "TLS_KEY=$(kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.key']}")"
+        shell: bash
+
+      - name: Create/Update environment secret
+        uses: actions/github-script@v7
+        env:
+          TLS_CERT: ${{ steps.tls.outputs.TLS_CERT }}
+          TLS_KEY: ${{ steps.tls.outputs.TLS_KEY }}
+        with:
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+            const { NAMESPACE, TLS_KEY, TLS_CERT } = process.env
+            
+            await github.rest.repos.createOrUpdateEnvironmentSecret({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              environment_name: `test/${NAMESPACE}`,
+              secret_name: 'TLS_CERT',
+              encrypted_value: TLS_CERT,
+            })
+            await github.rest.repos.createOrUpdateEnvironmentSecret({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              environment_name: `test/${NAMESPACE}`,
+              secret_name: 'TLS_KEY',
+              encrypted_value: TLS_KEY,
+            })
 
       - name: Create GitHub Deployment
         uses: actions/github-script@v7
