@@ -81,8 +81,8 @@ jobs:
         run: |
           if kubectl get secret tls-secret -n $NAMESPACE > /dev/null 2>&1; then
             mkdir -p ./.k8s/tls
-            kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.crt']}" > ./.k8s/tls/tls.crt
-            kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.key']}" > ./.k8s/tls/tls.key
+            kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.crt']}" | base64 --decode > ./.k8s/tls/tls.crt
+            kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.key']}" | base64 --decode > ./.k8s/tls/tls.key
             echo "SECRET_EXISTS=true" >> $GITHUB_ENV
           else
             echo "Secret tls-secret does not exist in namespace $NAMESPACE"
