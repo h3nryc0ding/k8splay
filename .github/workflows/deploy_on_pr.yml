@@ -76,10 +76,12 @@ jobs:
           echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
         shell: bash
 
-      - name: Clear Namespace
+      - name: Clear any previous Release
         run: |
-          kubectl delete namespace $NAMESPACE --ignore-not-found
-          kubectl create namespace $NAMESPACE
+          kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+          helm uninstall $NAMESPACE \
+          --namespace $NAMESPACE \
+          --ignore-not-found
         shell: bash
 
       - name: Create Docker Secret
