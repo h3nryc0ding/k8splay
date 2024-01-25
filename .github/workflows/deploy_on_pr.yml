@@ -104,7 +104,7 @@ jobs:
         run: |
           helm install $NAMESPACE ./.k8s/app \
           --namespace $NAMESPACE \
-          --set ingress.domain=${{ env.NAMESPACE }}.k8splay.xyz \
+          --set ingress.domain=${{ env.NAMESPACE }}.test.k8splay.xyz \
           --set app.image.tag=${{ env.NAMESPACE }} \
           --wait \
           --atomic \
@@ -117,7 +117,7 @@ jobs:
 
       - name: Wait for TLS certificate
         run: |
-          kubectl wait --for=condition=Ready certificate tls-secret -n $NAMESPACE
+          kubectl wait --for=condition=Ready certificate tls-secret -n $NAMESPACE --timeout=3600s
         shell: bash
 
       - name: Create GitHub Deployment
@@ -160,6 +160,6 @@ jobs:
               deployment_id: deployment.data.id,
               state: 'success',
               environment: `test/${NAMESPACE}`,
-              environment_url: `https://${NAMESPACE}.k8splay.xyz`,
+              environment_url: `https://${NAMESPACE}.test.k8splay.xyz`,
               log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${GITHUB_RUN_ID}`
             })
