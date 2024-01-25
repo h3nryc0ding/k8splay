@@ -8,15 +8,15 @@ env:
   NAMESPACE: pr-${{ github.event.pull_request.number }}
 
 jobs:
-  FrontendCI:
-    uses: ./.github/workflows/frontend.yml
-
-  BackendCI:
-    uses: ./.github/workflows/backend.yml
+  CI:
+    strategy:
+      matrix:
+        app: [ frontend, backend ]
+    uses: ./.github/workflows/${{ matrix.app }}.yml
 
   Containerize:
     if: github.actor != 'dependabot[bot]'
-    needs: [ FrontendCI, BackendCI ]
+    needs: [ CI ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -76,24 +76,12 @@ jobs:
           echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
         shell: bash
 
-      - name: Store tls.crt and tls.key
-        id: tls
-        run: |
-          if kubectl get secret tls-secret -n $NAMESPACE > /dev/null 2>&1; then
-            mkdir -p ./.k8s/tls
-            kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.crt']}" | base64 --decode > ./.k8s/tls/tls.crt
-            kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.key']}" | base64 --decode > ./.k8s/tls/tls.key
-            echo "SECRET_EXISTS=true" >> $GITHUB_ENV
-          else
-            echo "Secret tls-secret does not exist in namespace $NAMESPACE"
-            echo "SECRET_EXISTS=false" >> $GITHUB_ENV
-          fi
-        shell: bash
-
       - name: Cleanup previous Resources
         run: |
-          kubectl delete namespace $NAMESPACE --ignore-not-found
-          kubectl create namespace $NAMESPACE
+          kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+          helm uninstall $NAMESPACE ./.k8s/app \
+          --namespace $NAMESPACE \
+          --ignore-not-found
         shell: bash
 
       - name: Create Docker Secret
@@ -102,15 +90,6 @@ jobs:
             --docker-server=ghcr.io \
             --docker-username=${{ github.repository_owner }} \
             --docker-password=${{ secrets.GITHUB_TOKEN }} \
-            --namespace=$NAMESPACE
-        shell: bash
-
-      - name: Create TLS Secret
-        if: env.SECRET_EXISTS == 'true'
-        run: |
-          kubectl create secret tls tls-secret \
-            --cert=./.k8s/tls/tls.crt \
-            --key=./.k8s/tls/tls.key \
             --namespace=$NAMESPACE
         shell: bash
 
@@ -127,11 +106,6 @@ jobs:
 
       - name: Delete Pull Secret
         run: kubectl delete secret ghcr-secret -n $NAMESPACE
-        shell: bash
-
-      - name: Wait for TLS certificate
-        run: |
-          kubectl wait --for=condition=Ready certificate tls-secret -n $NAMESPACE --timeout=3600s
         shell: bash
 
       - name: Create GitHub Deployment
