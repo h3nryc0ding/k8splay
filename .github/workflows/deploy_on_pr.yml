@@ -76,7 +76,7 @@ jobs:
           echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
         shell: bash
 
-      - name: Cleanup previous Resources
+      - name: Clear Namespace
         run: |
           kubectl delete namespace $NAMESPACE --ignore-not-found
           kubectl create namespace $NAMESPACE
@@ -91,7 +91,7 @@ jobs:
             --namespace=$NAMESPACE
         shell: bash
 
-      - name: Install App with Helm
+      - name: Install Chart
         run: |
           helm install $NAMESPACE ./.k8s/app \
           --namespace $NAMESPACE \
@@ -102,7 +102,7 @@ jobs:
           --timeout 60s
         shell: bash
 
-      - name: Delete Pull Secret
+      - name: Delete Docker Secret
         run: kubectl delete secret ghcr-secret -n $NAMESPACE
         shell: bash
 
