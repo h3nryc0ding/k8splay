@@ -8,15 +8,15 @@ env:
   NAMESPACE: pr-${{ github.event.pull_request.number }}
 
 jobs:
-  CI:
-    strategy:
-      matrix:
-        app: [ frontend, backend ]
-    uses: ./.github/workflows/${{ matrix.app }}.yml
+  FrontendCI:
+    uses: ./.github/workflows/frontend.yml
+
+  BackendCI:
+    uses: ./.github/workflows/backend.yml
 
   Containerize:
     if: github.actor != 'dependabot[bot]'
-    needs: [ CI ]
+    needs: [ FrontendCI, BackendCI ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
