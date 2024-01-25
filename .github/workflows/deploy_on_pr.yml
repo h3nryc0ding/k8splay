@@ -48,7 +48,6 @@ jobs:
   Deploy:
     needs: [ Containerize ]
     runs-on: ubuntu-latest
-    environment: 'test/${{ env.NAMESPACE }}'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -64,29 +63,41 @@ jobs:
           echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
         shell: bash
 
+      - name: Store tls.crt and tls.key
+        id: tls
+        run: |
+          if kubectl get secret tls-secret -n $NAMESPACE > /dev/null 2>&1; then
+            kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.crt']}" > ./.k8s/tls/tls.crt
+            kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.key']}" > ./.k8s/tls/tls.key
+            echo "SECRET_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "Secret tls-secret does not exist in namespace $NAMESPACE"
+            echo "SECRET_EXISTS=false" >> $GITHUB_ENV
+          fi
+        shell: bash
+
       - name: Cleanup previous Resources
         run: |
           kubectl delete namespace $NAMESPACE --ignore-not-found
+          kubectl create namespace $NAMESPACE
         shell: bash
 
-      - name: Create Namespace and Secrets
+      - name: Create Docker Secret
         run: |
-          kubectl create namespace $NAMESPACE
-          
           kubectl create secret docker-registry ghcr-secret \
             --docker-server=ghcr.io \
             --docker-username=${{ github.repository_owner }} \
             --docker-password=${{ secrets.GITHUB_TOKEN }} \
             --namespace=$NAMESPACE
-          
-          if [ -n "${{ secrets.TLS_CERT }}" ] && [ -n "${{ secrets.TLS_KEY }}" ]; then
-            echo "${{ secrets.TLS_CERT }}" | base64 --decode > ./tls.crt
-            echo "${{ secrets.TLS_KEY }}" | base64 --decode > ./tls.key
-            kubectl create secret tls tls-secret \
-            --cert=./tls.crt \
-            --key=./tls.key \
+        shell: bash
+
+      - name: Create TLS Secret
+        if: ${{ steps.tls.outputs.SECRET_EXISTS }}
+        run: |
+          kubectl create secret tls tls-secret \
+            --cert=./.k8s/tls/tls.crt \
+            --key=./.k8s/tls/tls.key \
             --namespace=$NAMESPACE
-          fi
         shell: bash
 
       - name: Install App with Helm
@@ -108,38 +119,6 @@ jobs:
         run: |
           kubectl wait --for=condition=Ready certificate tls-secret -n $NAMESPACE
         shell: bash
-
-      - name: Store TLS certificate/key
-        id: tls
-        run: |
-          echo "TLS_CERT=$(kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.crt']}")"
-          echo "TLS_KEY=$(kubectl get secret tls-secret -n $NAMESPACE -o jsonpath="{.data['tls\.key']}")"
-        shell: bash
-
-      - name: Create/Update environment secret
-        uses: actions/github-script@v7
-        env:
-          TLS_CERT: ${{ steps.tls.outputs.TLS_CERT }}
-          TLS_KEY: ${{ steps.tls.outputs.TLS_KEY }}
-        with:
-          github-token: ${{ secrets.GH_PAT }}
-          script: |
-            const { NAMESPACE, TLS_KEY, TLS_CERT } = process.env
-            
-            await github.rest.repos.createOrUpdateEnvironmentSecret({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              environment_name: `test/${NAMESPACE}`,
-              secret_name: 'TLS_CERT',
-              encrypted_value: TLS_CERT,
-            })
-            await github.rest.repos.createOrUpdateEnvironmentSecret({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              environment_name: `test/${NAMESPACE}`,
-              secret_name: 'TLS_KEY',
-              encrypted_value: TLS_KEY,
-            })
 
       - name: Create GitHub Deployment
         uses: actions/github-script@v7
