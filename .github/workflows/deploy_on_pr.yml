@@ -79,7 +79,7 @@ jobs:
       - name: Cleanup previous Resources
         run: |
           kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
-          helm uninstall $NAMESPACE ./.k8s/app \
+          helm uninstall $NAMESPACE \
           --namespace $NAMESPACE \
           --ignore-not-found
         shell: bash
