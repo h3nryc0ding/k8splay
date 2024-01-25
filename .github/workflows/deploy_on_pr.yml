@@ -106,7 +106,7 @@ jobs:
         shell: bash
 
       - name: Create TLS Secret
-        if: ${{ steps.tls.outputs.SECRET_EXISTS }}
+        if: env.SECRET_EXISTS == 'true'
         run: |
           kubectl create secret tls tls-secret \
             --cert=./.k8s/tls/tls.crt \
