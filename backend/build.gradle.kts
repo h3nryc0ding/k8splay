@@ -32,7 +32,6 @@ dependencies {
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-docker-compose")
-    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.reactive.CorsConfigurationSource
+import org.springframework.web.cors.reactive.CorsWebFilter
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 
 @Configuration
@@ -13,28 +13,30 @@ class CorsConfig {
     @Value("\${PUBLIC_FRONTEND_DOMAIN}")
     lateinit var baseDomain: String
 
-    private fun createCorsFilter(origin: String): CorsConfigurationSource {
+    private fun createCorsFilter(origin: String): CorsWebFilter {
         val config =
             CorsConfiguration().apply {
-                allowCredentials = true
+                allowCredentials = false
                 addAllowedOrigin(origin)
                 addAllowedHeader("*")
                 addAllowedMethod("*")
             }
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", config)
-        return source
+        val source =
+            UrlBasedCorsConfigurationSource().apply {
+                registerCorsConfiguration("/**", config)
+            }
+        return CorsWebFilter(source)
     }
 
     @Bean
     @Profile("prod")
-    fun corsFilterProd(): CorsConfigurationSource {
+    fun corsFilterProd(): CorsWebFilter {
         return createCorsFilter("https://$baseDomain")
     }
 
     @Bean
     @Profile("!prod")
-    fun corsFilter(): CorsConfigurationSource {
+    fun corsFilter(): CorsWebFilter {
         @Suppress("HttpUrlsUsage")
         return createCorsFilter("http://$baseDomain")
     }

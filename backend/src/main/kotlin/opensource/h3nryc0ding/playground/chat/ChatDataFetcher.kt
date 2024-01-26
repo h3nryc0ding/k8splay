@@ -8,31 +8,21 @@ import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.DgsSubscription
 import com.netflix.graphql.dgs.InputArgument
 import opensource.h3nryc0ding.playground.generated.types.MessageInput
-import org.springframework.data.annotation.Id
-import org.springframework.data.redis.core.ReactiveRedisTemplate
-import org.springframework.data.redis.core.ReactiveValueOperations
-import org.springframework.data.redis.core.RedisHash
-import org.springframework.data.redis.core.ScanOptions
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Sinks
 import java.time.LocalDateTime
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import opensource.h3nryc0ding.playground.generated.types.Message as MessageDTO
 
-@RedisHash("message")
 data class Message(
-    @Id
     val id: UUID = UUID.randomUUID(),
     val text: String,
     val creator: String,
     val timestamp: String,
 ) {
-    companion object {
-        const val REDIS_PREFIX = "message"
-    }
-
     fun toDTO() =
         MessageDTO(
             id = { this.id.toString() },
@@ -44,26 +34,26 @@ data class Message(
 
 @Suppress("unused")
 @Repository
-class MessageRepository(
-    private val template: ReactiveRedisTemplate<String, Message>,
-) {
-    private val ops: ReactiveValueOperations<String, Message> = template.opsForValue()
+class MessageRepository {
+    private val store = ConcurrentHashMap<UUID, Message>()
 
     fun save(message: Message): Mono<Message> {
-        return ops.set("${Message.REDIS_PREFIX}:${message.id}", message).map { message }
+        return Mono.fromSupplier {
+            store[message.id] = message
+            message
+        }
     }
 
-    fun findById(id: String): Mono<Message> {
-        return ops.get("${Message.REDIS_PREFIX}:$id")
+    fun findById(id: UUID): Mono<Message> {
+        return Mono.justOrEmpty(store[id])
     }
 
     fun findAll(): Flux<Message> {
-        return template.scan(ScanOptions.scanOptions().match("${Message.REDIS_PREFIX}:*").count(100).build())
-            .flatMap { id -> template.opsForValue().get(id) }
+        return Flux.fromIterable(store.values)
     }
 
-    fun deleteById(id: String): Mono<Boolean> {
-        return ops.delete("${Message.REDIS_PREFIX}:$id")
+    fun deleteById(id: UUID): Mono<Boolean> {
+        return Mono.fromSupplier { store.remove(id) != null }
     }
 }
 
