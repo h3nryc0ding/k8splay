@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://admin:root@mongo-service:27017/backend_prod
+      uri: mongodb://admin:root@mongodb:27017/backend_prod
 management:
   health:
     livenessstate:
