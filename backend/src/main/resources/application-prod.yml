@@ -1,9 +1,7 @@
 spring:
   data:
     mongodb:
-      database: backend_prod
-      username: admin
-      password: root
+      uri: mongodb://admin:root@mongo-service:27017/backend_prod
 management:
   health:
     livenessstate:
