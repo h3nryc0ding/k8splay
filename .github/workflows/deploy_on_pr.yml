@@ -101,7 +101,7 @@ jobs:
           --set app.image.tag=${{ env.NAMESPACE }} \
           --wait \
           --atomic \
-          --timeout 60s
+          --timeout 600s
         shell: bash
 
       - name: Delete Docker Secret

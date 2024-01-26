@@ -1,8 +1,7 @@
 spring:
   data:
-    redis:
-      database: 0
-      host: redis
+    mongodb:
+      uri: mongodb://admin:root@mongodb:27017/backend_prod?authSource=admin
 management:
   health:
     livenessstate:

@@ -1,8 +1,9 @@
 spring:
   data:
-    redis:
-      database: 0
-      host: localhost
+    mongodb:
+      database: dev-database
+      username: admin
+      password: root
   docker:
     compose:
       enabled: true
