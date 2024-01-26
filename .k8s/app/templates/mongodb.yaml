@@ -8,6 +8,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: apps/v1
 kind: Deployment
