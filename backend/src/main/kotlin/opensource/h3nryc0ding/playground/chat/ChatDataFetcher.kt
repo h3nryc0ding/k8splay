@@ -8,16 +8,20 @@ import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.DgsSubscription
 import com.netflix.graphql.dgs.InputArgument
 import opensource.h3nryc0ding.playground.generated.types.MessageInput
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Sinks
 import java.time.LocalDateTime
 import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 import opensource.h3nryc0ding.playground.generated.types.Message as MessageDTO
 
+@Document
 data class Message(
+    @Id
     val id: UUID = UUID.randomUUID(),
     val text: String,
     val creator: String,
@@ -34,28 +38,7 @@ data class Message(
 
 @Suppress("unused")
 @Repository
-class MessageRepository {
-    private val store = ConcurrentHashMap<UUID, Message>()
-
-    fun save(message: Message): Mono<Message> {
-        return Mono.fromSupplier {
-            store[message.id] = message
-            message
-        }
-    }
-
-    fun findById(id: UUID): Mono<Message> {
-        return Mono.justOrEmpty(store[id])
-    }
-
-    fun findAll(): Flux<Message> {
-        return Flux.fromIterable(store.values)
-    }
-
-    fun deleteById(id: UUID): Mono<Boolean> {
-        return Mono.fromSupplier { store.remove(id) != null }
-    }
-}
+interface MessageRepository : ReactiveMongoRepository<Message, UUID>
 
 @DgsComponent
 class MessageDataFetcher(

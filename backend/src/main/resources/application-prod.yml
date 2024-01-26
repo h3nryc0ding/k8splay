@@ -1,8 +1,9 @@
 spring:
   data:
-    redis:
-      database: 0
-      host: redis
+    mongodb:
+      database: backend_prod
+      username: admin
+      password: root
 management:
   health:
     livenessstate:
