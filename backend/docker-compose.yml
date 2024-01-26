@@ -8,8 +8,11 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./data:/data/db
+      - mongo_data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: root
       MONGO_INITDB_DATABASE: dev-database
+
+volumes:
+  mongo_data:
