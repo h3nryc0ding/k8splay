@@ -2,15 +2,22 @@ name: Fullstack CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
   workflow_dispatch:
-    branches: [ "main" ]
 
 concurrency:
   group: ${{ github.repository }}-deployment
 
 jobs:
+  FrontendCI:
+    uses: ./.github/workflows/frontend.yml
+
+  BackendCI:
+    uses: ./.github/workflows/backend.yml
+
   CreateVersion:
+    needs: [ BackendCI, FrontendCI ]
     runs-on: ubuntu-latest
     outputs:
       new_tag: ${{ steps.tag.outputs.new_tag }}
@@ -33,6 +40,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -63,6 +72,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Save version tag
         uses: anothrNick/github-tag-action@1.67.0
