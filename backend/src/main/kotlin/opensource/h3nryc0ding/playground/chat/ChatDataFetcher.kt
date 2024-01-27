@@ -1,5 +1,3 @@
-@file:Suppress("DgsDataSimplifyingInspector", "DgsFieldSimplifyingInspector")
-
 package opensource.h3nryc0ding.playground.chat
 
 import com.netflix.graphql.dgs.DgsComponent
@@ -21,22 +19,22 @@ import opensource.h3nryc0ding.playground.generated.types.Message as MessageDTO
 
 @Document
 data class Message(
-    @Id
-    val id: UUID = UUID.randomUUID(),
     val text: String,
     val creator: String,
-    val timestamp: String,
 ) {
+    @Id
+    val id: UUID = UUID.randomUUID()
+    private val timestamp: LocalDateTime = LocalDateTime.now()
+
     fun toDTO() =
         MessageDTO(
             id = { this.id.toString() },
             text = { this.text },
             creator = { this.creator },
-            timestamp = { this.timestamp },
+            timestamp = { this.timestamp.toString() },
         )
 }
 
-@Suppress("unused")
 @Repository
 interface MessageRepository : ReactiveMongoRepository<Message, UUID>
 
@@ -46,27 +44,26 @@ class MessageDataFetcher(
 ) {
     private val sink = Sinks.many().multicast().directBestEffort<MessageDTO>()
 
-    @DgsQuery(field = "messages")
-    fun getMessages(): Flux<MessageDTO> {
+    @DgsQuery
+    fun messages(): Flux<MessageDTO> {
         return messageRepository.findAll().map { it.toDTO() }
     }
 
-    @DgsMutation(field = "messageSend")
-    fun sendMessage(
+    @DgsMutation
+    fun messageSend(
         @InputArgument input: MessageInput,
     ): Mono<MessageDTO> {
         val message =
             Message(
                 text = input.text,
                 creator = input.creator,
-                timestamp = LocalDateTime.now().toString(),
             )
         return messageRepository.save(message).map { it.toDTO() }.doOnNext {
             sink.tryEmitNext(it)
         }
     }
 
-    @DgsSubscription(field = "messageSent")
+    @DgsSubscription
     fun messageSent(): Flux<MessageDTO> {
         return sink.asFlux()
     }
