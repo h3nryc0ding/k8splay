@@ -1,26 +1,31 @@
 name: Frontend CI
 
 on:
-  workflow_dispatch:
   workflow_call:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: frontend
+
+env:
+  NODE_VERSION: 18
+  PNPM_VERSION: 8
 
 jobs:
   Lint:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: ${{ env.NODE_VERSION }}
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
-          version: 8
+          version: ${{ env.PNPM_VERSION }}
           run_install: false
       - name: Get pnpm store directory
         shell: bash
@@ -39,20 +44,17 @@ jobs:
           pnpm run lint
   Build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: ${{ env.NODE_VERSION }}
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
-          version: 8
+          version: ${{ env.PNPM_VERSION }}
           run_install: false
       - name: Get pnpm store directory
         shell: bash
@@ -72,20 +74,17 @@ jobs:
   Test:
     needs: [ Build ]
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: ${{ env.NODE_VERSION }}
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
-          version: 8
+          version: ${{ env.PNPM_VERSION }}
           run_install: false
       - name: Get pnpm store directory
         shell: bash
