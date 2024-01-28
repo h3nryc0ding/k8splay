@@ -21,11 +21,10 @@ import opensource.h3nryc0ding.playground.generated.types.Message as MessageDTO
 data class Message(
     val text: String,
     val creator: String,
-) {
     @Id
-    val id: UUID = UUID.randomUUID()
-    private val timestamp: LocalDateTime = LocalDateTime.now()
-
+    val id: UUID = UUID.randomUUID(),
+    val timestamp: LocalDateTime = LocalDateTime.now(),
+) {
     fun toDTO() =
         MessageDTO(
             id = { this.id.toString() },

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.any
+import org.mockito.Mockito.argThat
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
@@ -58,7 +59,11 @@ class MessageDataFetcherTests {
 
         messageDataFetcher.messageSend(messageInput).subscribe()
 
-        verify(messageRepository, times(1)).save(message)
+        verify(messageRepository, times(1)).save(
+            argThat {
+                it.text == messageInput.text && it.creator == messageInput.creator
+            },
+        )
     }
 
     @Test
