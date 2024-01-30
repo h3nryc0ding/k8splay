@@ -1,7 +1,7 @@
 package opensource.h3nryc0ding.playground.user
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import opensource.h3nryc0ding.playground.security.JWTReactiveAuthenticationManager
+import opensource.h3nryc0ding.playground.security.ReactiveAuthenticationManager
 import opensource.h3nryc0ding.playground.security.TokenProvider
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authentication.BadCredentialsException
@@ -19,9 +19,9 @@ import java.security.Principal
 @RestController
 @RequestMapping("/api")
 class UserController(
-    private val tokenProvider: TokenProvider,
-    private val authenticationManager: JWTReactiveAuthenticationManager,
-    private val objectMapper: ObjectMapper,
+        private val tokenProvider: TokenProvider,
+        private val authenticationManager: ReactiveAuthenticationManager,
+        private val objectMapper: ObjectMapper,
 ) {
     @PostMapping("/authenticate")
     fun authorize(

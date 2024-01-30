@@ -6,16 +6,32 @@ schema {
 
 type Query {
     messages: [Message!]!
+    currentUser: User
 }
 
 type Mutation {
     messageSend(input: MessageInput!): Message!
+    authenticate(input: AuthenticationInput!): String!
 }
 
 type Subscription {
     messageSent: Message!
 }
 
+# BEGIN: User
+type User {
+    id: ID!
+    username: String!
+    authorities: [String!]!
+}
+
+input AuthenticationInput {
+    username: String!
+    password: String!
+}
+# END: User
+
+# BEGIN: Message
 type Message {
     id: ID!
     text: String!
@@ -27,3 +43,4 @@ input MessageInput {
     text: String!
     creator: String!
 }
+# END: Message

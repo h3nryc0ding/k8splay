@@ -11,10 +11,11 @@ import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.switchIfEmpty
 
 @Component
-class JWTReactiveAuthenticationManager(
+class ReactiveAuthenticationManager(
         private val userDetailsService: ReactiveUserDetailsService,
         private val passwordEncoder: PasswordEncoder,
 ) : ReactiveAuthenticationManager {
+    @Throws(BadCredentialsException::class)
     override fun authenticate(authentication: Authentication): Mono<Authentication> {
         if (authentication.isAuthenticated) {
             return Mono.just(authentication)
@@ -28,8 +29,7 @@ class JWTReactiveAuthenticationManager(
                 // TODO: should we publishOn(Schedulers.parallel())?
                 .filter { userDetails -> passwordEncoder.matches(authToken.credentials as String, userDetails.password) }
                 .switchIfEmpty { Mono.error(BadCredentialsException("Invalid Credentials")) }
-                .map {
-                    userDetails ->
+                .map { userDetails ->
                     UsernamePasswordAuthenticationToken(userDetails.username, userDetails.password, userDetails.authorities)
                 }
     }

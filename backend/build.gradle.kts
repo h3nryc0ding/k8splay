@@ -25,6 +25,7 @@ repositories {
 dependencyManagement {
     imports {
         mavenBom("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:8.2.5")
+        mavenBom("org.testcontainers:testcontainers-bom:1.19.4")
     }
 }
 
@@ -43,6 +44,7 @@ dependencies {
     // Testing
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.testcontainers:mongodb")
 
     // Misc
     implementation("com.netflix.graphql.dgs:graphql-dgs-webflux-starter")

@@ -1,8 +1,8 @@
 package opensource.h3nryc0ding.playground.config
 
 import opensource.h3nryc0ding.playground.security.JWTHeadersExchangeMatcher
-import opensource.h3nryc0ding.playground.security.JWTReactiveAuthenticationManager
-import opensource.h3nryc0ding.playground.security.TokenAuthenticationConverter
+import opensource.h3nryc0ding.playground.security.ReactiveAuthenticationManager
+import opensource.h3nryc0ding.playground.security.JWTTokenAuthenticationConverter
 import opensource.h3nryc0ding.playground.security.UnauthorizedAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -48,6 +48,8 @@ class SecurityConfiguration {
             }
             authorizeExchange {
                 // TODO
+                authorize("/graphql/**", permitAll)
+                authorize("/graphiql/**", permitAll)
                 authorize("/api/authenticate", permitAll)
                 authorize(anyExchange, authenticated)
             }
@@ -60,13 +62,13 @@ class SecurityConfiguration {
 
     @Bean
     fun webFilter(
-        reactiveAuthenticationManager: JWTReactiveAuthenticationManager,
-        exchangeMatcher: JWTHeadersExchangeMatcher,
-        authConverter: TokenAuthenticationConverter,
+            reactiveAuthenticationManager: ReactiveAuthenticationManager,
+            exchangeMatcher: JWTHeadersExchangeMatcher,
+            authConverter: JWTTokenAuthenticationConverter,
     ): AuthenticationWebFilter {
         return AuthenticationWebFilter(reactiveAuthenticationManager).apply {
-            setServerAuthenticationConverter(authConverter)
             setRequiresAuthenticationMatcher(exchangeMatcher)
+            setServerAuthenticationConverter(authConverter)
             setSecurityContextRepository(NoOpServerSecurityContextRepository.getInstance())
         }
     }

@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 @ExtendWith(MockitoExtension::class)
-class MessageDataFetcherTests {
+class MessageDataFetcherTest {
     @Mock
     private lateinit var messageRepository: MessageRepository
 

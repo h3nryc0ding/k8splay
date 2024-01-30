@@ -15,9 +15,6 @@ class ReactiveUserDetailsService(
     override fun findByUsername(login: String): Mono<UserDetails> {
         return userRepository.findByLogin(login)
             .log()
-            .switchIfEmpty {
-                Mono.error(BadCredentialsException("User $login not found"))
-            }
             .map { it.toUserDetails() }
     }
 }
