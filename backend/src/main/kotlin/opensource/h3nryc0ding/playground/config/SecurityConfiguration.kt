@@ -2,9 +2,7 @@ package opensource.h3nryc0ding.playground.config
 
 import opensource.h3nryc0ding.playground.security.JWTHeadersExchangeMatcher
 import opensource.h3nryc0ding.playground.security.JWTReactiveAuthenticationManager
-import opensource.h3nryc0ding.playground.security.ReactiveUserDetailsService
 import opensource.h3nryc0ding.playground.security.TokenAuthenticationConverter
-import opensource.h3nryc0ding.playground.security.TokenProvider
 import opensource.h3nryc0ding.playground.security.UnauthorizedAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,10 +20,7 @@ import org.springframework.security.web.server.context.NoOpServerSecurityContext
 @Configuration
 @EnableReactiveMethodSecurity
 @EnableWebFluxSecurity
-class SecurityConfiguration(
-    private val reactiveUserDetailsService: ReactiveUserDetailsService,
-    private val tokenProvider: TokenProvider,
-) {
+class SecurityConfiguration {
     companion object {
         private val AUTH_WHITELIST =
             arrayOf(
@@ -69,7 +64,7 @@ class SecurityConfiguration(
         authConverter: TokenAuthenticationConverter,
     ): AuthenticationWebFilter {
         return AuthenticationWebFilter(reactiveAuthenticationManager).apply {
-            setAuthenticationConverter(authConverter)
+            setServerAuthenticationConverter(authConverter)
             setRequiresAuthenticationMatcher(exchangeMatcher)
             setSecurityContextRepository(NoOpServerSecurityContextRepository.getInstance())
         }

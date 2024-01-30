@@ -10,13 +10,12 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 @SpringBootApplication
 class BackendApplication(
-        private val userRepository: UserRepository,
-        private val passwordEncoder: PasswordEncoder
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder,
 ) : ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
         userRepository.save(CustomUser("user", "user", passwordEncoder.encode("password"))).subscribe()
     }
-
 }
 
 fun main(args: Array<String>) {

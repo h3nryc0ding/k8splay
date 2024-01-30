@@ -1,3 +1,5 @@
+@file:Suppress("LoggingPlaceholderCountMatchesArgumentCount")
+
 package opensource.h3nryc0ding.playground.security
 
 import io.jsonwebtoken.ExpiredJwtException
@@ -32,6 +34,8 @@ object TokenProvider {
         val now = Date().time
         val validity = Date(now + TOKEN_VALIDITY)
 
+        log.info("Creating token for user ${authentication.name}")
+
         return Jwts.builder()
             .issuer(ISSUER)
             .subject(authentication.name)
@@ -62,6 +66,8 @@ object TokenProvider {
 
         val principal = User(claims.subject, "", authorities)
 
+        log.info("Creating authentication for user ${principal.username}")
+
         return UsernamePasswordAuthenticationToken(principal, token, authorities)
     }
 
@@ -90,6 +96,7 @@ object TokenProvider {
             log.info("JWT token compact of handler are invalid.")
             log.trace("JWT token compact of handler are invalid trace: {}", e)
         }
+        log.info("Invalid token")
         return false
     }
 }

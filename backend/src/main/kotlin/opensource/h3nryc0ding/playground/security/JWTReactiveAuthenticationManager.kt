@@ -26,6 +26,7 @@ class JWTReactiveAuthenticationManager(
             return Mono.just(authentication)
         }
         return Mono.just(authentication)
+            .log()
             .switchIfEmpty { raiseBadCredentials() }
             .cast(UsernamePasswordAuthenticationToken::class.java)
             .flatMap { authenticateToken(it) }
