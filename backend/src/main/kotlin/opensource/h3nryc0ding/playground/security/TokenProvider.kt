@@ -1,5 +1,3 @@
-@file:Suppress("LoggingPlaceholderCountMatchesArgumentCount")
-
 package opensource.h3nryc0ding.playground.security
 
 import io.jsonwebtoken.ExpiredJwtException
@@ -29,8 +27,8 @@ object TokenProvider {
 
     fun createToken(authentication: Authentication): String {
         val authorities =
-                authentication.authorities
-                        .joinToString(",") { it.authority }
+            authentication.authorities
+                .joinToString(",") { it.authority }
 
         val now = Date().time
         val validity = Date(now + TOKEN_VALIDITY)
@@ -38,12 +36,12 @@ object TokenProvider {
         log.info("Creating token for user ${authentication.name}")
 
         return Jwts.builder()
-                .issuer(ISSUER)
-                .subject(authentication.name)
-                .claim(AUTHORITIES_KEY, authorities)
-                .expiration(validity)
-                .signWith(KEY)
-                .compact()
+            .issuer(ISSUER)
+            .subject(authentication.name)
+            .claim(AUTHORITIES_KEY, authorities)
+            .expiration(validity)
+            .signWith(KEY)
+            .compact()
     }
 
     fun getAuthentication(token: String): Authentication {
@@ -51,33 +49,32 @@ object TokenProvider {
             throw BadCredentialsException("Invalid token")
         }
         val claims =
-                Jwts.parser()
-                        .requireIssuer(ISSUER)
-                        .verifyWith(KEY)
-                        .build()
-                        .parseSignedClaims(token)
-                        .payload
+            Jwts.parser()
+                .requireIssuer(ISSUER)
+                .verifyWith(KEY)
+                .build()
+                .parseSignedClaims(token)
+                .payload
 
         val authorities =
-                claims[AUTHORITIES_KEY]
-                        .toString()
-                        .split(",")
-                        .filter { it.isNotEmpty() }
-                        .map { SimpleGrantedAuthority(it) }
+            claims[AUTHORITIES_KEY]
+                .toString()
+                .split(",")
+                .filter { it.isNotEmpty() }
+                .map { SimpleGrantedAuthority(it) }
 
         val principal = User(claims.subject, "", authorities)
         log.info("Creating authentication for user ${principal.username}")
         return UsernamePasswordAuthenticationToken(principal, token, authorities)
-
     }
 
     private fun validateToken(authToken: String): Boolean {
         try {
             Jwts.parser()
-                    .requireIssuer(ISSUER)
-                    .verifyWith(KEY)
-                    .build()
-                    .parseSignedClaims(authToken)
+                .requireIssuer(ISSUER)
+                .verifyWith(KEY)
+                .build()
+                .parseSignedClaims(authToken)
 
             return true
         } catch (e: SignatureException) {

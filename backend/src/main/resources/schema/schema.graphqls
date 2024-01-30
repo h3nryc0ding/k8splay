@@ -20,7 +20,6 @@ type Subscription {
 
 # BEGIN: User
 type User {
-    id: ID!
     username: String!
     authorities: [String!]!
 }

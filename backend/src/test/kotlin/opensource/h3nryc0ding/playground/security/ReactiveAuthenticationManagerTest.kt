@@ -38,8 +38,8 @@ class ReactiveAuthenticationManagerTest {
         val result = reactiveAuthenticationManager.authenticate(authentication)
 
         StepVerifier.create(result)
-                .expectNextMatches { it.isAuthenticated }
-                .verifyComplete()
+            .expectNextMatches { it.isAuthenticated }
+            .verifyComplete()
     }
 
     @Test
@@ -55,7 +55,7 @@ class ReactiveAuthenticationManagerTest {
         val result = reactiveAuthenticationManager.authenticate(authentication)
 
         StepVerifier.create(result)
-                .expectError(BadCredentialsException::class.java)
-                .verify()
+            .expectError(BadCredentialsException::class.java)
+            .verify()
     }
 }

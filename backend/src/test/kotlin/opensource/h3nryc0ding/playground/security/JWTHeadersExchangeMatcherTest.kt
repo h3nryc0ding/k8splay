@@ -1,6 +1,5 @@
 package opensource.h3nryc0ding.playground.security
 
-import opensource.h3nryc0ding.playground.security.JWTHeadersExchangeMatcher
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks

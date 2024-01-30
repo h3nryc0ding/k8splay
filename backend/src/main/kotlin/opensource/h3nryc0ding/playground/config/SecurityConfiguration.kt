@@ -1,8 +1,8 @@
 package opensource.h3nryc0ding.playground.config
 
 import opensource.h3nryc0ding.playground.security.JWTHeadersExchangeMatcher
-import opensource.h3nryc0ding.playground.security.ReactiveAuthenticationManager
 import opensource.h3nryc0ding.playground.security.JWTTokenAuthenticationConverter
+import opensource.h3nryc0ding.playground.security.ReactiveAuthenticationManager
 import opensource.h3nryc0ding.playground.security.UnauthorizedAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,19 +16,14 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers
 
 @Configuration
 @EnableReactiveMethodSecurity
 @EnableWebFluxSecurity
 class SecurityConfiguration {
     companion object {
-        private val AUTH_WHITELIST =
-            arrayOf(
-                "/resources/**",
-                "/webjars/**",
-                "/authorize/**",
-                "/favicon.ico",
-            )
+        val GRAPHQL_WHITELIST = arrayOf("/graphql/**", "/graphiql/**")
     }
 
     @Bean
@@ -46,13 +41,12 @@ class SecurityConfiguration {
             exceptionHandling {
                 authenticationEntryPoint = entryPoint
             }
+
             authorizeExchange {
-                // TODO
-                authorize("/graphql/**", permitAll)
-                authorize("/graphiql/**", permitAll)
-                authorize("/api/authenticate", permitAll)
+                authorize(pathMatchers(*GRAPHQL_WHITELIST), permitAll)
                 authorize(anyExchange, authenticated)
             }
+
             addFilterAt(
                 authFilter,
                 SecurityWebFiltersOrder.AUTHORIZATION,
@@ -62,9 +56,9 @@ class SecurityConfiguration {
 
     @Bean
     fun webFilter(
-            reactiveAuthenticationManager: ReactiveAuthenticationManager,
-            exchangeMatcher: JWTHeadersExchangeMatcher,
-            authConverter: JWTTokenAuthenticationConverter,
+        reactiveAuthenticationManager: ReactiveAuthenticationManager,
+        exchangeMatcher: JWTHeadersExchangeMatcher,
+        authConverter: JWTTokenAuthenticationConverter,
     ): AuthenticationWebFilter {
         return AuthenticationWebFilter(reactiveAuthenticationManager).apply {
             setRequiresAuthenticationMatcher(exchangeMatcher)

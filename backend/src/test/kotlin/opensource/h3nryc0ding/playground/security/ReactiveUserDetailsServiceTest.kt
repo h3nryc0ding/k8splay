@@ -1,6 +1,5 @@
 package opensource.h3nryc0ding.playground.security
 
-
 import opensource.h3nryc0ding.playground.user.CustomUser
 import opensource.h3nryc0ding.playground.user.UserRepository
 import org.junit.jupiter.api.Test
@@ -14,7 +13,6 @@ import reactor.test.StepVerifier
 
 @ExtendWith(MockitoExtension::class)
 class ReactiveUserDetailsServiceTest {
-
     @Mock
     private lateinit var userRepository: UserRepository
 
@@ -31,8 +29,8 @@ class ReactiveUserDetailsServiceTest {
         val result = userDetailsService.findByUsername(login)
 
         StepVerifier.create(result)
-                .expectNext(userDetails.toUserDetails())
-                .verifyComplete()
+            .expectNext(userDetails.toUserDetails())
+            .verifyComplete()
     }
 
     @Test
@@ -44,6 +42,6 @@ class ReactiveUserDetailsServiceTest {
         val result = userDetailsService.findByUsername(login)
 
         StepVerifier.create(result)
-                .verifyComplete()
+            .verifyComplete()
     }
 }

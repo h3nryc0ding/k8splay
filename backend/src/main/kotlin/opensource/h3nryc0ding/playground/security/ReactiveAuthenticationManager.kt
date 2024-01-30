@@ -12,8 +12,8 @@ import reactor.kotlin.core.publisher.switchIfEmpty
 
 @Component
 class ReactiveAuthenticationManager(
-        private val userDetailsService: ReactiveUserDetailsService,
-        private val passwordEncoder: PasswordEncoder,
+    private val userDetailsService: ReactiveUserDetailsService,
+    private val passwordEncoder: PasswordEncoder,
 ) : ReactiveAuthenticationManager {
     @Throws(BadCredentialsException::class)
     override fun authenticate(authentication: Authentication): Mono<Authentication> {
@@ -22,15 +22,15 @@ class ReactiveAuthenticationManager(
         }
 
         val authToken =
-                authentication as? UsernamePasswordAuthenticationToken
-                        ?: return Mono.error(BadCredentialsException("Invalid Credentials"))
+            authentication as? UsernamePasswordAuthenticationToken
+                ?: return Mono.error(BadCredentialsException("Invalid Credentials"))
 
         return userDetailsService.findByUsername(authToken.name)
-                // TODO: should we publishOn(Schedulers.parallel())?
-                .filter { userDetails -> passwordEncoder.matches(authToken.credentials as String, userDetails.password) }
-                .switchIfEmpty { Mono.error(BadCredentialsException("Invalid Credentials")) }
-                .map { userDetails ->
-                    UsernamePasswordAuthenticationToken(userDetails.username, userDetails.password, userDetails.authorities)
-                }
+            // TODO: should we publishOn(Schedulers.parallel())?
+            .filter { userDetails -> passwordEncoder.matches(authToken.credentials as String, userDetails.password) }
+            .switchIfEmpty { Mono.error(BadCredentialsException("Invalid Credentials")) }
+            .map { userDetails ->
+                UsernamePasswordAuthenticationToken(userDetails.username, userDetails.password, userDetails.authorities)
+            }
     }
 }

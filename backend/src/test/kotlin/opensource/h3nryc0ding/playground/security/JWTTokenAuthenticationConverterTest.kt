@@ -19,7 +19,7 @@ class JWTTokenAuthenticationConverterTest {
     private lateinit var tokenProvider: TokenProvider
 
     @InjectMocks
-    private lateinit var JWTTokenAuthenticationConverter: JWTTokenAuthenticationConverter
+    private lateinit var jwtTokenAuthenticationConverter: JWTTokenAuthenticationConverter
 
     @Test
     fun `convert returns Authentication when Authorization header contains valid token`() {
@@ -28,69 +28,69 @@ class JWTTokenAuthenticationConverterTest {
         val auth = Mockito.mock(Authentication::class.java)
         `when`(tokenProvider.getAuthentication(authToken)).thenReturn(auth)
         val request =
-                MockServerHttpRequest.get("/")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer $authToken")
-                        .build()
+            MockServerHttpRequest.get("/")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $authToken")
+                .build()
         val exchange = MockServerWebExchange.from(request)
 
         // Act
-        val result = JWTTokenAuthenticationConverter.convert(exchange)
+        val result = jwtTokenAuthenticationConverter.convert(exchange)
 
         // Assert
         StepVerifier.create(result)
-                .assertNext { resultAuth ->
-                    assert(resultAuth == auth)
-                }
-                .verifyComplete()
+            .assertNext { resultAuth ->
+                assert(resultAuth == auth)
+            }
+            .verifyComplete()
     }
 
     @Test
     fun `convert returns empty Mono when Authorization header is absent or invalid`() {
         // Arrange
         val request =
-                MockServerHttpRequest.get("/")
-                        .build()
+            MockServerHttpRequest.get("/")
+                .build()
         val exchange = MockServerWebExchange.from(request)
 
         // Act
-        val result = JWTTokenAuthenticationConverter.convert(exchange)
+        val result = jwtTokenAuthenticationConverter.convert(exchange)
 
         // Assert
         StepVerifier.create(result)
-                .verifyComplete()
+            .verifyComplete()
     }
 
     @Test
     fun `convert returns empty Mono when Authorization header is not a Bearer token`() {
         // Arrange
         val request =
-                MockServerHttpRequest.get("/")
-                        .header(HttpHeaders.AUTHORIZATION, "Basic dGVzdDp0ZXN0")
-                        .build()
+            MockServerHttpRequest.get("/")
+                .header(HttpHeaders.AUTHORIZATION, "Basic dGVzdDp0ZXN0")
+                .build()
         val exchange = MockServerWebExchange.from(request)
 
         // Act
-        val result = JWTTokenAuthenticationConverter.convert(exchange)
+        val result = jwtTokenAuthenticationConverter.convert(exchange)
 
         // Assert
         StepVerifier.create(result)
-                .verifyComplete()
+            .verifyComplete()
     }
 
     @Test
     fun `convert returns empty Mono when Authorization header is a Bearer token but invalid`() {
         // Arrange
         val request =
-                MockServerHttpRequest.get("/")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer invalid")
-                        .build()
+            MockServerHttpRequest.get("/")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer invalid")
+                .build()
         val exchange = MockServerWebExchange.from(request)
 
         // Act
-        val result = JWTTokenAuthenticationConverter.convert(exchange)
+        val result = jwtTokenAuthenticationConverter.convert(exchange)
 
         // Assert
         StepVerifier.create(result)
-                .verifyComplete()
+            .verifyComplete()
     }
 }
