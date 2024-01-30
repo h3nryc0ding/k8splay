@@ -33,6 +33,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-docker-compose")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -45,6 +46,9 @@ dependencies {
 
     // Misc
     implementation("com.netflix.graphql.dgs:graphql-dgs-webflux-starter")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.4")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.4")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.4")
 }
 
 tasks.withType<KotlinCompile> {
