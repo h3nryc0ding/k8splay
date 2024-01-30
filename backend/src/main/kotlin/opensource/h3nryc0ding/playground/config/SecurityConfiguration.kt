@@ -39,6 +39,7 @@ class SecurityConfiguration {
     ): SecurityWebFilterChain {
         return http {
             httpBasic { disable() }
+            formLogin { disable() }
             csrf { disable() }
             logout { disable() }
 
