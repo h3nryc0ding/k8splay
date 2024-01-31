@@ -1,19 +1,18 @@
 package opensource.h3nryc0ding.playground.user
 
 import com.netflix.graphql.dgs.DgsComponent
-import com.netflix.graphql.dgs.DgsMutation
-import com.netflix.graphql.dgs.InputArgument
-import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.DgsDataFetchingEnvironment
+import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.DgsQuery
+import com.netflix.graphql.dgs.InputArgument
 import opensource.h3nryc0ding.playground.generated.types.AuthenticationInput
 import opensource.h3nryc0ding.playground.security.ReactiveAuthenticationManager
 import opensource.h3nryc0ding.playground.security.TokenProvider
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
-import reactor.core.publisher.Mono
 import org.springframework.security.core.userdetails.User
-
+import reactor.core.publisher.Mono
 
 @DgsComponent
 class UserDataFetcher(

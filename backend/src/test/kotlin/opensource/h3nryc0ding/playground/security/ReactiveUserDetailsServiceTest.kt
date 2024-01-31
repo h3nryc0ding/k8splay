@@ -34,7 +34,7 @@ class ReactiveUserDetailsServiceTest {
     }
 
     @Test
-    fun `findByUsername throws BadCredentialsException when user is not found`() {
+    fun `findByUsername returns empty when user not found`() {
         val login = "testUser"
 
         `when`(userRepository.findByLogin(login)).thenReturn(Mono.empty())
