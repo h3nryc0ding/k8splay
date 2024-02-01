@@ -1,30 +1,31 @@
-package opensource.h3nryc0ding.playground.security
+package opensource.h3nryc0ding.playground.security.cookie
 
+import opensource.h3nryc0ding.playground.security.TokenProvider
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpCookie
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest
 import org.springframework.mock.web.server.MockServerWebExchange
 import reactor.test.StepVerifier
 
 @ExtendWith(MockitoExtension::class)
-class JWTHeadersExchangeMatcherTest {
+class AuthenticationCookieMatcherTest {
     @InjectMocks
-    private lateinit var jwtHeadersExchangeMatcher: JWTHeadersExchangeMatcher
+    private lateinit var authenticationCookieMatcher: AuthenticationCookieMatcher
 
     @Test
-    fun `matches returns match when Authorization header is present`() {
+    fun `should match when cookie name is equal to authentication cookie name`() {
         // Arrange
         val request =
             MockServerHttpRequest.get("/")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer token")
+                .cookie(HttpCookie(TokenProvider.COOKIE, "<cookie>"))
                 .build()
         val exchange = MockServerWebExchange.from(request)
 
         // Act
-        val result = jwtHeadersExchangeMatcher.matches(exchange)
+        val result = authenticationCookieMatcher.matches(exchange)
 
         // Assert
         StepVerifier.create(result)
@@ -35,16 +36,16 @@ class JWTHeadersExchangeMatcherTest {
     }
 
     @Test
-    fun `matches returns notMatch when Authorization header is not a Bearer token`() {
+    fun `should return notMatch when cookie name is not equal to authentication cookie name`() {
         // Arrange
         val request =
             MockServerHttpRequest.get("/")
-                .header(HttpHeaders.AUTHORIZATION, "Basic token")
+                .cookie(HttpCookie("cookie", "<cookie>"))
                 .build()
         val exchange = MockServerWebExchange.from(request)
 
         // Act
-        val result = jwtHeadersExchangeMatcher.matches(exchange)
+        val result = authenticationCookieMatcher.matches(exchange)
 
         // Assert
         StepVerifier.create(result)
@@ -55,7 +56,7 @@ class JWTHeadersExchangeMatcherTest {
     }
 
     @Test
-    fun `matches returns notMatch when Authorization header is absent`() {
+    fun `should return notMatch when cookie is not present`() {
         // Arrange
         val request =
             MockServerHttpRequest.get("/")
@@ -63,7 +64,7 @@ class JWTHeadersExchangeMatcherTest {
         val exchange = MockServerWebExchange.from(request)
 
         // Act
-        val result = jwtHeadersExchangeMatcher.matches(exchange)
+        val result = authenticationCookieMatcher.matches(exchange)
 
         // Assert
         StepVerifier.create(result)
@@ -74,16 +75,16 @@ class JWTHeadersExchangeMatcherTest {
     }
 
     @Test
-    fun `matches returns notMatch when Authorization header is empty`() {
+    fun `should return notMatch when cookie value is empty`() {
         // Arrange
         val request =
             MockServerHttpRequest.get("/")
-                .header(HttpHeaders.AUTHORIZATION, "")
+                .cookie(HttpCookie(TokenProvider.COOKIE, ""))
                 .build()
         val exchange = MockServerWebExchange.from(request)
 
         // Act
-        val result = jwtHeadersExchangeMatcher.matches(exchange)
+        val result = authenticationCookieMatcher.matches(exchange)
 
         // Assert
         StepVerifier.create(result)
@@ -94,16 +95,16 @@ class JWTHeadersExchangeMatcherTest {
     }
 
     @Test
-    fun `matches returns notMatch when Authorization header is blank`() {
+    fun `should return notMatch when cookie value is blank`() {
         // Arrange
         val request =
             MockServerHttpRequest.get("/")
-                .header(HttpHeaders.AUTHORIZATION, " ")
+                .cookie(HttpCookie(TokenProvider.COOKIE, " "))
                 .build()
         val exchange = MockServerWebExchange.from(request)
 
         // Act
-        val result = jwtHeadersExchangeMatcher.matches(exchange)
+        val result = authenticationCookieMatcher.matches(exchange)
 
         // Assert
         StepVerifier.create(result)
@@ -111,25 +112,5 @@ class JWTHeadersExchangeMatcherTest {
                 assert(!matchResult.isMatch)
             }
             .verifyComplete()
-    }
-
-    @Test
-    fun `matches throws error if multiple Authorization headers are set`() {
-        // Arrange
-        val request =
-            MockServerHttpRequest.get("/")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer token1", "Bearer token2")
-                .build()
-        val exchange = MockServerWebExchange.from(request)
-
-        // Act
-        val result = jwtHeadersExchangeMatcher.matches(exchange)
-
-        // Assert
-        StepVerifier.create(result)
-            .expectErrorMatches { throwable ->
-                throwable is IllegalArgumentException && throwable.message == "Multiple Authorization headers are not allowed"
-            }
-            .verify()
     }
 }

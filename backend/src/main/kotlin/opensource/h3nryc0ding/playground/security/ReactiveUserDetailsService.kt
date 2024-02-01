@@ -12,7 +12,6 @@ class ReactiveUserDetailsService(
 ) : ReactiveUserDetailsService {
     override fun findByUsername(login: String): Mono<UserDetails> {
         return userRepository.findByLogin(login)
-            .log()
             .map { it.toUserDetails() }
     }
 }

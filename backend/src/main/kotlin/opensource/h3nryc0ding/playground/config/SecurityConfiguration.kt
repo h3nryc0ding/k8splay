@@ -1,9 +1,9 @@
 package opensource.h3nryc0ding.playground.config
 
-import opensource.h3nryc0ding.playground.security.JWTHeadersExchangeMatcher
-import opensource.h3nryc0ding.playground.security.JWTTokenAuthenticationConverter
 import opensource.h3nryc0ding.playground.security.ReactiveAuthenticationManager
 import opensource.h3nryc0ding.playground.security.UnauthorizedAuthenticationEntryPoint
+import opensource.h3nryc0ding.playground.security.header.AuthenticationHeaderConverter
+import opensource.h3nryc0ding.playground.security.header.AuthenticationHeaderMatcher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
@@ -57,8 +57,8 @@ class SecurityConfiguration {
     @Bean
     fun webFilter(
         reactiveAuthenticationManager: ReactiveAuthenticationManager,
-        exchangeMatcher: JWTHeadersExchangeMatcher,
-        authConverter: JWTTokenAuthenticationConverter,
+        exchangeMatcher: AuthenticationHeaderMatcher,
+        authConverter: AuthenticationHeaderConverter,
     ): AuthenticationWebFilter {
         return AuthenticationWebFilter(reactiveAuthenticationManager).apply {
             setRequiresAuthenticationMatcher(exchangeMatcher)
