@@ -14,7 +14,9 @@ class AuthenticationCookieConverter(
 ) : ServerAuthenticationConverter {
     override fun convert(exchange: ServerWebExchange?): Mono<Authentication> {
         return Mono.justOrEmpty(exchange?.request?.cookies?.get(COOKIE)?.firstOrNull()?.value)
+            .checkpoint(".request.cookies.get(COOKIE).firstOrNull()?.value")
             .filter { it.isNotEmpty() }
+            .checkpoint(".filter { it.isNotEmpty() }")
             .flatMap { authToken ->
                 try {
                     Mono.just(tokenProvider.getAuthentication(authToken))

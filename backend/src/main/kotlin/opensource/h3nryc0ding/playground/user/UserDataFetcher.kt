@@ -12,7 +12,6 @@ import opensource.h3nryc0ding.playground.security.TokenProvider
 import org.springframework.http.ResponseCookie
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.core.userdetails.User
 import reactor.core.publisher.Mono
@@ -31,7 +30,7 @@ class UserDataFetcher(
             UsernamePasswordAuthenticationToken(input.username, input.password)
 
         return authenticationManager.authenticate(authenticationToken)
-            .contextWrite { ReactiveSecurityContextHolder.withAuthentication(it as Authentication) }
+            .doOnNext { ReactiveSecurityContextHolder.withAuthentication(it) }
             .map { tokenProvider.createToken(it) }
             .doOnNext { addAuthenticationCookie(dfe, it) }
     }

@@ -2,6 +2,8 @@ package opensource.h3nryc0ding.playground.config
 
 import opensource.h3nryc0ding.playground.security.ReactiveAuthenticationManager
 import opensource.h3nryc0ding.playground.security.UnauthorizedAuthenticationEntryPoint
+import opensource.h3nryc0ding.playground.security.cookie.AuthenticationCookieConverter
+import opensource.h3nryc0ding.playground.security.cookie.AuthenticationCookieMatcher
 import opensource.h3nryc0ding.playground.security.header.AuthenticationHeaderConverter
 import opensource.h3nryc0ding.playground.security.header.AuthenticationHeaderMatcher
 import org.springframework.context.annotation.Bean
@@ -30,7 +32,8 @@ class SecurityConfiguration {
     fun springSecurityFilterChain(
         http: ServerHttpSecurity,
         entryPoint: UnauthorizedAuthenticationEntryPoint,
-        authFilter: AuthenticationWebFilter,
+        authHeaderFilter: AuthenticationWebFilter,
+        authCookieFilter: AuthenticationWebFilter,
     ): SecurityWebFilterChain {
         return http {
             httpBasic { disable() }
@@ -48,17 +51,34 @@ class SecurityConfiguration {
             }
 
             addFilterAt(
-                authFilter,
+                authHeaderFilter,
+                SecurityWebFiltersOrder.AUTHORIZATION,
+            )
+            addFilterAt(
+                authCookieFilter,
                 SecurityWebFiltersOrder.AUTHORIZATION,
             )
         }
     }
 
     @Bean
-    fun webFilter(
+    fun authHeaderFilter(
         reactiveAuthenticationManager: ReactiveAuthenticationManager,
         exchangeMatcher: AuthenticationHeaderMatcher,
         authConverter: AuthenticationHeaderConverter,
+    ): AuthenticationWebFilter {
+        return AuthenticationWebFilter(reactiveAuthenticationManager).apply {
+            setRequiresAuthenticationMatcher(exchangeMatcher)
+            setServerAuthenticationConverter(authConverter)
+            setSecurityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+        }
+    }
+
+    @Bean
+    fun authCookieFilter(
+        reactiveAuthenticationManager: ReactiveAuthenticationManager,
+        exchangeMatcher: AuthenticationCookieMatcher,
+        authConverter: AuthenticationCookieConverter,
     ): AuthenticationWebFilter {
         return AuthenticationWebFilter(reactiveAuthenticationManager).apply {
             setRequiresAuthenticationMatcher(exchangeMatcher)
