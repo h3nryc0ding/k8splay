@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import { setError, superValidate } from 'sveltekit-superforms/server';
+import { superValidate, setError } from 'sveltekit-superforms/server';
 import { formSchema } from './schema';
 import { graphql } from '$houdini';
 
@@ -24,7 +24,14 @@ export const actions: Actions = {
 			}
 		`);
 		const { username, password } = form.data;
-		await authenticate.mutate({ input: { username, password } }, { event });
+		const res = await authenticate.mutate({ input: { username, password } }, { event });
+		if (res.errors) {
+			setError(form, 'error', 'Invalid username or password');
+			return fail(400, {
+				form,
+				errors: res.errors
+			});
+		}
 		throw redirect(303, 'account');
 	}
 };

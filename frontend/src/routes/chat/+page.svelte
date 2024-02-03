@@ -62,7 +62,7 @@
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
-<div class="flex h-[calc(100dvh-3.5rem-1px)] flex-col p-4">
+<div class="flex h-[calc(100vh-var(--navbar-height))] flex-col p-4">
 	<div class="flex flex-1 flex-col items-center justify-center overflow-y-auto">
 		<!-- Chat messages will go here -->
 		<div class="flex flex-col">
