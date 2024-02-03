@@ -18,7 +18,7 @@
 			}
 		}
 	`);
-	$: updates.listen();
+	updates.listen();
 	const sendMessage = graphql(`
 		mutation MessageSend($input: MessageInput!) {
 			messageSend(input: $input) {

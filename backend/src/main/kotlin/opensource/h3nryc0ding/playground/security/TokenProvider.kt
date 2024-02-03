@@ -53,7 +53,7 @@ object TokenProvider {
             claims[AUTHORITIES_KEY]
                 .toString()
                 .split(",")
-                .filter { it.isNotEmpty() }
+                .filter { it.isNotBlank() }
                 .map { SimpleGrantedAuthority(it) }
 
         val principal = User(claims.subject, "", authorities)

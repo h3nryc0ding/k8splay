@@ -13,6 +13,11 @@ directive @provides(fields: _FieldSet!) on FIELD_DEFINITION
 
 directive @requires(fields: _FieldSet!) on FIELD_DEFINITION
 
+input AuthenticationInput {
+	password: String!
+	username: String!
+}
+
 enum ErrorDetail {
 	"""
 	The deadline expired before the operation could complete.
@@ -152,6 +157,9 @@ enum ErrorDetail {
 	UNKNOWN
 }
 
+"""
+END: Message
+"""
 enum ErrorType {
 	"""
 	Bad Request.
@@ -270,6 +278,10 @@ enum ErrorType {
 	UNKNOWN
 }
 
+"""
+END: User
+BEGIN: Message
+"""
 type Message {
 	creator: String!
 	id: ID!
@@ -283,16 +295,26 @@ input MessageInput {
 }
 
 type Mutation {
+	authenticate(input: AuthenticationInput!): String!
 	messageSend(input: MessageInput!): Message!
 }
 
 type Query {
 	_service: _Service!
+	currentUser: User
 	messages: [Message!]!
 }
 
 type Subscription {
 	messageSent: Message!
+}
+
+"""
+BEGIN: User
+"""
+type User {
+	authorities: [String!]!
+	username: String!
 }
 
 """

@@ -42,12 +42,17 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"bits-ui": "^0.17.0",
+        "@types/cookie": "^0.6.0",
+        "bits-ui": "^0.17.0",
 		"clsx": "^2.1.0",
+		"cookie": "^0.6.0",
+		"formsnap": "^0.4.3",
 		"graphql-ws": "^5.14.3",
 		"lucide-svelte": "^0.323.0",
 		"mode-watcher": "^0.2.0",
-		"tailwind-merge": "^2.2.0",
-		"tailwind-variants": "^0.1.19"
+        "sveltekit-superforms": "^1.13.4",
+        "tailwind-merge": "^2.2.0",
+		"tailwind-variants": "^0.1.19",
+		"zod": "^3.22.4"
 	}
 }
