@@ -8,4 +8,10 @@ spring:
     compose:
       enabled: true
       file: docker-compose.yml
+logging:
+  level:
+    root: info
+    org.springframework.web: info
+    org.springframework.security: info
+    opensource.h3nryc0ding.playground: debug
 PUBLIC_FRONTEND_DOMAIN: localhost:5173

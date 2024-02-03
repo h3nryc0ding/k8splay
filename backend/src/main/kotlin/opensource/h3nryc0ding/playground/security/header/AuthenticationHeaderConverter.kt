@@ -2,6 +2,7 @@ package opensource.h3nryc0ding.playground.security.header
 
 import opensource.h3nryc0ding.playground.security.TokenProvider
 import opensource.h3nryc0ding.playground.security.TokenProvider.BEARER
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
@@ -13,11 +14,16 @@ import reactor.core.publisher.Mono
 class AuthenticationHeaderConverter(
     private val tokenProvider: TokenProvider,
 ) : ServerAuthenticationConverter {
+    companion object {
+        private val log = LoggerFactory.getLogger(this::class.java)
+    }
+
     override fun convert(serverWebExchange: ServerWebExchange?): Mono<Authentication> {
         return Mono.justOrEmpty(serverWebExchange?.request?.headers?.get(HttpHeaders.AUTHORIZATION)?.firstOrNull())
             .filter { it.length > BEARER.length }
             .map { it.substring(BEARER.length) }
             .filter { it.isNotBlank() }
+            .doOnNext { log.info("Checking Authentication Header `$it`.") }
             .flatMap { authToken ->
                 try {
                     Mono.just(tokenProvider.getAuthentication(authToken))

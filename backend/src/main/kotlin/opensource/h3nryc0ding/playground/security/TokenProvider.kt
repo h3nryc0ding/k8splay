@@ -29,7 +29,7 @@ object TokenProvider {
         val now = Date().time
         val validity = Date(now + TOKEN_VALIDITY)
 
-        log.info("Creating token for user ${authentication.name}")
+        log.info("Creating token for user `${authentication.name}`.")
 
         return Jwts.builder()
             .issuer(ISSUER)
@@ -57,7 +57,7 @@ object TokenProvider {
                 .map { SimpleGrantedAuthority(it) }
 
         val principal = User(claims.subject, "", authorities)
-        log.info("Creating authentication for user ${principal.username}")
+        log.info("Creating authentication for user `${principal.username}`.")
         return UsernamePasswordAuthenticationToken(principal, token, authorities)
     }
 }
