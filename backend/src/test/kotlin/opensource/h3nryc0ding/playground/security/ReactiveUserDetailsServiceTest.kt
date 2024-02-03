@@ -21,13 +21,15 @@ class ReactiveUserDetailsServiceTest {
 
     @Test
     fun `findByUsername returns user when user is found`() {
+        // Arrange
         val login = "testUser"
         val userDetails = CustomUser("testUser", "testUser", "password")
-
         `when`(userRepository.findByLogin(login)).thenReturn(Mono.just(userDetails))
 
+        // Act
         val result = userDetailsService.findByUsername(login)
 
+        // Assert
         StepVerifier.create(result)
             .expectNext(userDetails.toUserDetails())
             .verifyComplete()
@@ -35,12 +37,14 @@ class ReactiveUserDetailsServiceTest {
 
     @Test
     fun `findByUsername returns empty when user not found`() {
+        // Arrange
         val login = "testUser"
-
         `when`(userRepository.findByLogin(login)).thenReturn(Mono.empty())
 
+        // Act
         val result = userDetailsService.findByUsername(login)
 
+        // Assert
         StepVerifier.create(result)
             .verifyComplete()
     }

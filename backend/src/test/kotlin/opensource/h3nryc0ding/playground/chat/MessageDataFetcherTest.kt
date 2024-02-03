@@ -25,11 +25,14 @@ class MessageDataFetcherTest {
 
     @Test
     fun `getMessages returns all persisted messages`() {
+        // Arrange
         val (_, message) = mockMessage()
         `when`(messageRepository.findAll()).thenReturn(Flux.just(message))
 
+        // Act
         val result = messageDataFetcher.messages()
 
+        // Assert
         StepVerifier.create(result)
             .expectNextMatches { it.text == message.text && it.creator == message.creator }
             .verifyComplete()
@@ -39,12 +42,14 @@ class MessageDataFetcherTest {
 
     @Test
     fun `messageSent emits messages sent with messageSend`() {
+        // Arrange
         val (messageInput, message) = mockMessage()
-
         `when`(messageRepository.save(any(Message::class.java))).thenReturn(Mono.just(message))
 
+        // Act
         val result = messageDataFetcher.messageSent()
 
+        // Assert
         StepVerifier.create(result)
             .then { messageDataFetcher.messageSend(messageInput).subscribe() }
             .expectNextMatches { it.text == messageInput.text && it.creator == messageInput.creator }
@@ -54,11 +59,14 @@ class MessageDataFetcherTest {
 
     @Test
     fun `sendMessage calls save on messageRepository`() {
+        // Arrange
         val (messageInput, message) = mockMessage()
         `when`(messageRepository.save(any(Message::class.java))).thenReturn(Mono.just(message))
 
+        // Act
         messageDataFetcher.messageSend(messageInput).subscribe()
 
+        // Assert
         verify(messageRepository, times(1)).save(
             argThat {
                 it.text == messageInput.text && it.creator == messageInput.creator
@@ -68,11 +76,14 @@ class MessageDataFetcherTest {
 
     @Test
     fun `sendMessage returns the saved message`() {
+        // Arrange
         val (messageInput, message) = mockMessage()
         `when`(messageRepository.save(any(Message::class.java))).thenReturn(Mono.just(message))
 
+        // Act
         val result = messageDataFetcher.messageSend(messageInput)
 
+        // Assert
         StepVerifier.create(result)
             .expectNextMatches { it.text == message.text && it.creator == message.creator }
             .verifyComplete()

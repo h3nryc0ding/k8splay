@@ -27,16 +27,18 @@ class ReactiveAuthenticationManagerTest {
 
     @Test
     fun `authenticate with valid credentials should return Authentication`() {
+        // Arrange
         val username = "testUser"
         val password = "testPassword"
         val userDetails = User.withUsername(username).password(password).roles("USER").build()
         val authentication = UsernamePasswordAuthenticationToken(username, password)
-
         `when`(userDetailsService.findByUsername(username)).thenReturn(Mono.just(userDetails))
         `when`(passwordEncoder.matches(password, userDetails.password)).thenReturn(true)
 
+        // Act
         val result = reactiveAuthenticationManager.authenticate(authentication)
 
+        // Assert
         StepVerifier.create(result)
             .expectNextMatches { it.isAuthenticated }
             .verifyComplete()
@@ -44,16 +46,18 @@ class ReactiveAuthenticationManagerTest {
 
     @Test
     fun `authenticate with invalid credentials should return error`() {
+        // Arrange
         val username = "testUser"
         val password = "testPassword"
         val userDetails = User.withUsername(username).password(password).roles("USER").build()
         val authentication = UsernamePasswordAuthenticationToken(username, "wrongPassword")
-
         `when`(userDetailsService.findByUsername(username)).thenReturn(Mono.just(userDetails))
         `when`(passwordEncoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(false)
 
+        // Act
         val result = reactiveAuthenticationManager.authenticate(authentication)
 
+        // Assert
         StepVerifier.create(result)
             .expectError(BadCredentialsException::class.java)
             .verify()
