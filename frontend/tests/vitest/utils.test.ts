@@ -1,5 +1,5 @@
 import { test, expect, describe } from 'vitest';
-import { parseCookies } from './utils';
+import { parseCookies } from '$lib/utils';
 
 describe('parseCookies function', () => {
 	describe('should extract properties correctly', () => {
