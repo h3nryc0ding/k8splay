@@ -1,6 +1,6 @@
 app:
   image:
-    base: "ghcr.io/h3nryc0ding/microk8s_plaground"
+    base: "ghcr.io/h3nryc0ding/k8splay"
     tag:
 ingress:
   domain:
