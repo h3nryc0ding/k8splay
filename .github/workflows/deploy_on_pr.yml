@@ -15,7 +15,6 @@ jobs:
     uses: ./.github/workflows/backend.yml
 
   Containerize:
-    if: github.actor != 'dependabot[bot]'
     needs: [ FrontendCI, BackendCI ]
     runs-on: ubuntu-latest
     strategy:
@@ -40,12 +39,13 @@ jobs:
         with:
           context: ./${{ matrix.app }}
           platforms: linux/arm64
-          push: true
+          push: ${{ github.actor != 'dependabot[bot]' }}
           tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:${{ env.NAMESPACE }}
           cache-from: type=gha,scope=buildkit-${{ matrix.app }}-${{ env.NAMESPACE }}
           cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}-${{ env.NAMESPACE }}
 
   Deploy:
+    if: github.actor != 'dependabot[bot]'
     needs: [ Containerize ]
     runs-on: ubuntu-latest
     steps:
