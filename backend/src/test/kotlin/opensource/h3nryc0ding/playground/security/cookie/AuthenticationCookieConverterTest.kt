@@ -1,6 +1,7 @@
 package opensource.h3nryc0ding.playground.security.cookie
 
 import opensource.h3nryc0ding.playground.security.TokenProvider
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -8,11 +9,14 @@ import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.springframework.http.HttpCookie
+import org.springframework.http.ResponseCookie
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest
 import org.springframework.mock.web.server.MockServerWebExchange
 import org.springframework.security.core.Authentication
 import reactor.test.StepVerifier
+import java.time.Duration
 
 @ExtendWith(MockitoExtension::class)
 class AuthenticationCookieConverterTest {
@@ -46,7 +50,7 @@ class AuthenticationCookieConverterTest {
     }
 
     @Test
-    fun `should return empty Mono when cookie does not contain token`() {
+    fun `should return empty Mono when cookie is not present`() {
         // Arrange
         val request =
             MockServerHttpRequest.get("/")
@@ -62,12 +66,43 @@ class AuthenticationCookieConverterTest {
     }
 
     @Test
+    fun `should delete invalid cookie`() {
+        // Arrange
+        val request =
+            MockServerHttpRequest.get("/")
+                .cookie(HttpCookie(TokenProvider.COOKIE, "invalid"))
+                .build()
+        val expectedCookie =
+            ResponseCookie.from(TokenProvider.COOKIE, "")
+                .maxAge(Duration.ZERO)
+                .build()
+        `when`(
+            tokenProvider.createCookie("", Duration.ZERO),
+        ).thenReturn(expectedCookie)
+        val exchange = MockServerWebExchange.from(request)
+
+        // Act
+        authenticationHeaderConverter.convert(exchange).block()
+
+        // Assert
+        val responseCookies = exchange.response.cookies
+        assertThat(responseCookies).containsKey(TokenProvider.COOKIE)
+        val newCookie = responseCookies[TokenProvider.COOKIE]?.firstOrNull()
+        assertThat(newCookie).isNotNull
+        assertThat(newCookie?.value).isEmpty()
+        assertThat(newCookie?.maxAge).isEqualTo(Duration.ZERO)
+    }
+
+    @Test
     fun `should return empty Mono when cookie is invalid`() {
         // Arrange
         val request =
             MockServerHttpRequest.get("/")
                 .cookie(HttpCookie(TokenProvider.COOKIE, "invalid"))
                 .build()
+        `when`(
+            tokenProvider.createCookie(any(), any()),
+        ).thenReturn(mock(ResponseCookie::class.java))
         val exchange = MockServerWebExchange.from(request)
 
         // Act

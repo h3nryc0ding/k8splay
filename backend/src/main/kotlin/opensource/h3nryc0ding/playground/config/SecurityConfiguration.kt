@@ -1,7 +1,6 @@
 package opensource.h3nryc0ding.playground.config
 
 import opensource.h3nryc0ding.playground.security.ReactiveAuthenticationManager
-import opensource.h3nryc0ding.playground.security.UnauthorizedAuthenticationEntryPoint
 import opensource.h3nryc0ding.playground.security.cookie.AuthenticationCookieConverter
 import opensource.h3nryc0ding.playground.security.cookie.AuthenticationCookieMatcher
 import opensource.h3nryc0ding.playground.security.header.AuthenticationHeaderConverter
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
-import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.config.web.server.invoke
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -29,35 +27,17 @@ class SecurityConfiguration {
     }
 
     @Bean
-    fun springSecurityFilterChain(
-        http: ServerHttpSecurity,
-        entryPoint: UnauthorizedAuthenticationEntryPoint,
-        authHeaderFilter: AuthenticationWebFilter,
-        authCookieFilter: AuthenticationWebFilter,
-    ): SecurityWebFilterChain {
+    fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http {
             httpBasic { disable() }
             formLogin { disable() }
             csrf { disable() }
             logout { disable() }
 
-            exceptionHandling {
-                authenticationEntryPoint = entryPoint
-            }
-
             authorizeExchange {
                 authorize(pathMatchers(*GRAPHQL_WHITELIST), permitAll)
                 authorize(anyExchange, authenticated)
             }
-
-            addFilterAt(
-                authHeaderFilter,
-                SecurityWebFiltersOrder.AUTHORIZATION,
-            )
-            addFilterAt(
-                authCookieFilter,
-                SecurityWebFiltersOrder.AUTHORIZATION,
-            )
         }
     }
 

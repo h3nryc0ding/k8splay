@@ -9,12 +9,12 @@ import com.netflix.graphql.dgs.reactive.internal.DgsReactiveRequestData
 import opensource.h3nryc0ding.playground.generated.types.AuthenticationInput
 import opensource.h3nryc0ding.playground.security.ReactiveAuthenticationManager
 import opensource.h3nryc0ding.playground.security.TokenProvider
-import org.springframework.http.ResponseCookie
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.core.userdetails.User
 import reactor.core.publisher.Mono
+import java.time.Duration
 
 @DgsComponent
 class UserDataFetcher(
@@ -32,7 +32,13 @@ class UserDataFetcher(
         return authenticationManager.authenticate(authenticationToken)
             .doOnNext { ReactiveSecurityContextHolder.withAuthentication(it) }
             .map { tokenProvider.createToken(it) }
-            .doOnNext { addAuthenticationCookie(dfe, it) }
+            .doOnNext {
+                (dfe.getDgsContext().requestData as DgsReactiveRequestData)
+                    .serverRequest!!
+                    .exchange()
+                    .response
+                    .addCookie(tokenProvider.createCookie(it, Duration.ofDays(3)))
+            }
     }
 
     @DgsQuery
@@ -40,21 +46,5 @@ class UserDataFetcher(
     fun currentUser(dfe: DgsDataFetchingEnvironment): Mono<User> {
         return ReactiveSecurityContextHolder.getContext()
             .map { it.authentication.principal as User }
-    }
-
-    private fun addAuthenticationCookie(
-        dfe: DgsDataFetchingEnvironment,
-        token: String,
-    ) {
-        val requestData = dfe.getDgsContext().requestData as DgsReactiveRequestData
-        val serverRequest = requestData.serverRequest
-        val cookie =
-            ResponseCookie.from(tokenProvider.COOKIE, token)
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .build()
-        serverRequest!!.exchange().response
-            .addCookie(cookie)
     }
 }

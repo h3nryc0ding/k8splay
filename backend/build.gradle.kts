@@ -47,6 +47,7 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.testcontainers:mongodb")
     testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 
     // Misc
     implementation("com.netflix.graphql.dgs:graphql-dgs-webflux-starter")

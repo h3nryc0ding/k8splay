@@ -2,11 +2,13 @@ package opensource.h3nryc0ding.playground.security
 
 import io.jsonwebtoken.Jwts
 import org.slf4j.LoggerFactory
+import org.springframework.http.ResponseCookie
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
+import java.time.Duration
 import java.util.Date
 
 @Component
@@ -38,6 +40,18 @@ object TokenProvider {
             .expiration(validity)
             .signWith(KEY)
             .compact()
+    }
+
+    fun createCookie(
+        token: String,
+        maxAge: Duration,
+    ): ResponseCookie {
+        return ResponseCookie.from(COOKIE, token)
+            .maxAge(maxAge)
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .build()
     }
 
     fun getAuthentication(token: String): Authentication {

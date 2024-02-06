@@ -8,6 +8,7 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
+import java.time.Duration
 
 @Component
 class AuthenticationCookieConverter(
@@ -25,6 +26,8 @@ class AuthenticationCookieConverter(
                 try {
                     Mono.just(tokenProvider.getAuthentication(authToken))
                 } catch (_: Exception) {
+                    log.warn("Invalid Authentication Cookie `$authToken`.")
+                    exchange?.response?.addCookie(tokenProvider.createCookie("", Duration.ZERO))
                     Mono.empty()
                 }
             }
