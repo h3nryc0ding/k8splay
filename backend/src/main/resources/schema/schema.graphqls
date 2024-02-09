@@ -11,7 +11,10 @@ type Query {
 
 type Mutation {
     messageSend(input: MessageInput!): Message!
-    authenticate(input: AuthenticationInput!): String!
+
+    userAuthenticate(input: AuthenticationInput!): User!
+    userRegister(input: AuthenticationInput!): User!
+    userLogout: Boolean!
 }
 
 type Subscription {
@@ -20,6 +23,7 @@ type Subscription {
 
 # BEGIN: User
 type User {
+    token: String!
     username: String!
     authorities: [String!]!
 }

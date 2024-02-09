@@ -23,7 +23,7 @@ class ReactiveUserDetailsServiceTest {
     fun `findByUsername returns user when user is found`() {
         // Arrange
         val login = "testUser"
-        val userDetails = CustomUser("testUser", "testUser", "password")
+        val userDetails = CustomUser("testUser", "password")
         `when`(userRepository.findByLogin(login)).thenReturn(Mono.just(userDetails))
 
         // Act

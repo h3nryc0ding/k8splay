@@ -15,9 +15,9 @@ import java.util.Date
 object TokenProvider {
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    private const val TOKEN_VALIDITY = 5 * 60 * 60 * 1000L
     private const val AUTHORITIES_KEY = "auth"
     private const val ISSUER = "h3nryc0ding"
+    private val TOKEN_VALIDITY = Duration.ofDays(5)
     const val BEARER = "Bearer "
     const val COOKIE = "X-AUTH-TOKEN"
 
@@ -28,23 +28,20 @@ object TokenProvider {
             authentication.authorities
                 .joinToString(",") { it.authority }
 
-        val now = Date().time
-        val validity = Date(now + TOKEN_VALIDITY)
-
         log.info("Creating token for user `${authentication.name}`.")
 
         return Jwts.builder()
             .issuer(ISSUER)
             .subject(authentication.name)
             .claim(AUTHORITIES_KEY, authorities)
-            .expiration(validity)
+            .expiration(Date(System.currentTimeMillis() + TOKEN_VALIDITY.toMillis()))
             .signWith(KEY)
             .compact()
     }
 
     fun createCookie(
         token: String,
-        maxAge: Duration,
+        maxAge: Duration = TOKEN_VALIDITY,
     ): ResponseCookie {
         return ResponseCookie.from(COOKIE, token)
             .maxAge(maxAge)
