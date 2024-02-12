@@ -15,9 +15,9 @@ class ReactiveUserDetailsService(
         private val log = LoggerFactory.getLogger(this::class.java)
     }
 
-    override fun findByUsername(login: String): Mono<UserDetails> {
-        return userRepository.findByLogin(login)
-            .doOnNext { log.debug("User `${it.login}` loaded from database") }
-            .map { it.toUserDetails() }
+    override fun findByUsername(username: String): Mono<UserDetails> {
+        return userRepository.findByUsername(username)
+            .doOnNext { log.debug("User `${it.username}` loaded from database") }
+            .map { it as UserDetails }
     }
 }

@@ -14,11 +14,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.onErrorResume
 import java.time.Duration
 import opensource.h3nryc0ding.playground.generated.types.Authentication as AuthenticationDTO
 
 @DgsComponent
-class UserDataFetcher(
+class AuthenticationDataFetcher(
     private val tokenProvider: TokenProvider,
     private val authenticationService: AuthenticationService,
 ) {
@@ -50,6 +51,10 @@ class UserDataFetcher(
             .doOnNext {
                 log.info("User: `${input.username}` has been registered.")
                 dfe.response.addCookie(tokenProvider.createCookie(it.token))
+            }
+            .onErrorResume(UserAlreadyExistsException::class) { e ->
+                log.error(e.message)
+                Mono.error(RuntimeException("Registration failed: ${e.message}"))
             }
     }
 

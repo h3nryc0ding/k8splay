@@ -3,8 +3,11 @@ package opensource.h3nryc0ding.playground.util
 import com.netflix.graphql.dgs.DgsDataFetchingEnvironment
 import com.netflix.graphql.dgs.reactive.internal.DgsReactiveRequestData
 
+val DgsDataFetchingEnvironment.exchange
+    get() = (this.getDgsContext().requestData as DgsReactiveRequestData).serverRequest!!.exchange()
+
 val DgsDataFetchingEnvironment.request
-    get() = (this.getDgsContext().requestData as DgsReactiveRequestData).serverRequest!!
+    get() = this.exchange.request
 
 val DgsDataFetchingEnvironment.response
-    get() = this.request.exchange().response
+    get() = this.exchange.response
