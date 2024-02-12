@@ -6,14 +6,14 @@ schema {
 
 type Query {
     messages: [Message!]!
-    currentUser: User
+    currentUser: Authentication
 }
 
 type Mutation {
     messageSend(input: MessageInput!): Message!
 
-    userAuthenticate(input: AuthenticationInput!): User!
-    userRegister(input: AuthenticationInput!): User!
+    userAuthenticate(input: AuthenticationInput!): Authentication!
+    userRegister(input: AuthenticationInput!): Authentication!
     userLogout: Boolean!
 }
 
@@ -22,7 +22,7 @@ type Subscription {
 }
 
 # BEGIN: User
-type User {
+type Authentication {
     token: String!
     username: String!
     authorities: [String!]!
