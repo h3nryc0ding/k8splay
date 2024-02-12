@@ -7,13 +7,11 @@ import com.netflix.graphql.dgs.DgsData
 import com.netflix.graphql.dgs.DgsDataFetchingEnvironment
 import com.netflix.graphql.dgs.InputArgument
 import opensource.h3nryc0ding.playground.generated.types.AuthenticationInput
-import opensource.h3nryc0ding.playground.security.ReactiveAuthenticationManager
 import opensource.h3nryc0ding.playground.security.TokenProvider
 import opensource.h3nryc0ding.playground.util.response
 import opensource.h3nryc0ding.playground.util.toDTO
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import reactor.core.publisher.Mono
 import java.time.Duration
@@ -22,8 +20,7 @@ import opensource.h3nryc0ding.playground.generated.types.Authentication as Authe
 @DgsComponent
 class UserDataFetcher(
     private val tokenProvider: TokenProvider,
-    private val authenticationManager: ReactiveAuthenticationManager,
-    private val userRepository: UserRepository,
+    private val authenticationService: AuthenticationService,
 ) {
     companion object {
         private val COOKIE_CLEAR_DURATION: Duration = Duration.ofDays(-1)
@@ -36,10 +33,11 @@ class UserDataFetcher(
         dfe: DgsDataFetchingEnvironment,
     ): Mono<AuthenticationDTO> {
         log.info("Attempting to authenticate user: `${input.username}`.")
-        val authenticationToken = UsernamePasswordAuthenticationToken(input.username, input.password)
-        return authenticationManager.authenticate(authenticationToken)
-            .map { it.toDTO(tokenProvider) }
-            .doOnNext { dfe.response.addCookie(tokenProvider.createCookie(it.token)) }
+        return authenticationService.authenticate(input)
+            .doOnNext {
+                log.info("User: `${input.username}` has been authenticated.")
+                dfe.response.addCookie(tokenProvider.createCookie(it.token))
+            }
     }
 
     @DgsData(parentType = "Mutation", field = "userRegister")
@@ -48,15 +46,11 @@ class UserDataFetcher(
         dfe: DgsDataFetchingEnvironment,
     ): Mono<AuthenticationDTO> {
         log.info("Attempting to register user: `${input.username}`.")
-        val user = CustomUser(input.username, input.password)
-
-        return userRepository.save(user)
-            .flatMap {
-                val token = UsernamePasswordAuthenticationToken(it.login, it.password)
-                authenticationManager.authenticate(token)
+        return authenticationService.register(input)
+            .doOnNext {
+                log.info("User: `${input.username}` has been registered.")
+                dfe.response.addCookie(tokenProvider.createCookie(it.token))
             }
-            .map { it.toDTO(tokenProvider) }
-            .doOnNext { dfe.response.addCookie(tokenProvider.createCookie(it.token)) }
     }
 
     @DgsData(parentType = "Query", field = "currentUser")
