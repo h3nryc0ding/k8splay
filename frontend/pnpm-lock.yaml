@@ -15,8 +15,8 @@ dependencies:
     specifier: ^5.14.3
     version: 5.14.3(graphql@15.8.0)
   lucide-svelte:
-    specifier: ^0.323.0
-    version: 0.323.0(svelte@4.2.8)
+    specifier: ^0.334.0
+    version: 0.334.0(svelte@4.2.8)
   mode-watcher:
     specifier: ^0.2.0
     version: 0.2.0(svelte@4.2.8)
@@ -2834,8 +2834,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /lucide-svelte@0.323.0(svelte@4.2.8):
-    resolution: {integrity: sha512-3GEFk1vCwB8BtHTHZTocFJfX6AtTLQw9a74JSuihAGx+MzhxqeWk8W1TkM4WUlvE0x9UdONM2rJGRyx9IyjkJg==}
+  /lucide-svelte@0.334.0(svelte@4.2.8):
+    resolution: {integrity: sha512-wY5pI3uhT3PrmMLSL37Pv5xb4jXyZez3TEHFyd/5Rlyw3lZrLcdM4iVVLuwzQg7XmJco/S8LJNVaAuJ0iX7WqA==}
     peerDependencies:
       svelte: ^3 || ^4 || ^5.0.0-next.42
     dependencies:
