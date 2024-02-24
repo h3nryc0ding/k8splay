@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:21-alpine AS builder
 WORKDIR /app
 
 # Install pnpm
@@ -19,7 +19,7 @@ RUN pnpm run build
 RUN pnpm prune --prod
 
 # Production stage
-FROM node:20-alpine
+FROM node:21-alpine
 WORKDIR /app
 
 # Copy built files and production dependencies from the build stage
