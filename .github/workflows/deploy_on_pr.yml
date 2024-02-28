@@ -84,21 +84,13 @@ jobs:
           --ignore-not-found
         shell: bash
 
-      - name: Create Docker Secret
-        run: |
-          kubectl create secret docker-registry ghcr-secret \
-            --docker-server=ghcr.io \
-            --docker-username=${{ github.repository_owner }} \
-            --docker-password=${{ secrets.GITHUB_TOKEN }} \
-            --namespace=$NAMESPACE
-        shell: bash
-
       - name: Install Chart
         run: |
           helm install $NAMESPACE ./.k8s/app \
           --namespace $NAMESPACE \
           --set ingress.domain=${{ env.NAMESPACE }}.test.k8splay.xyz \
           --set app.image.tag=${{ env.NAMESPACE }} \
+          --set keycloak.realm=${{ env.NAMESPACE }} \
           --wait \
           --atomic \
           --timeout 600s

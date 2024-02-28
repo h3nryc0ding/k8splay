@@ -8,4 +8,9 @@ spring:
     compose:
       enabled: true
       file: docker-compose.yml
-PUBLIC_FRONTEND_DOMAIN: localhost:5173
+
+app:
+  frontend:
+    url: http://localhost:5173
+  backend:
+    url: http://localhost:8080

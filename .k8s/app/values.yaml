@@ -4,3 +4,10 @@ app:
     tag:
 ingress:
   domain:
+keycloak:
+  url: "http://keycloak.shared.svc.cluster.local/realms"
+  realm:
+  client:
+    name: "keycloak"
+    id: "backend"
+    secret: "mT6qBUN0KILeQDPu3TiHT4u54dX5Hqfs"

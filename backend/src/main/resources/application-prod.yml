@@ -2,6 +2,18 @@ spring:
   data:
     mongodb:
       uri: mongodb://admin:root@mongodb:27017/backend_prod?authSource=admin
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI}
+        registration:
+          keycloak:
+            client-name: ${KEYCLOAK_CLIENT_NAME}
+            client-id: ${KEYCLOAK_CLIENT_ID}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET}
+            scope: openid
 management:
   health:
     livenessstate:
@@ -10,3 +22,9 @@ management:
       enabled: true
   server:
     port: 8081
+
+app:
+  frontend:
+    url: https://${FRONTEND_URL}
+  backend:
+    url: https://${BACKEND_URL}
