@@ -5,7 +5,7 @@ app:
 ingress:
   domain:
 keycloak:
-  url: "http://keycloak.shared.svc.cluster.local/realms"
+  url: "https://accounts.k8splay.xyz/realms"
   realm:
   client:
     name: "keycloak"
