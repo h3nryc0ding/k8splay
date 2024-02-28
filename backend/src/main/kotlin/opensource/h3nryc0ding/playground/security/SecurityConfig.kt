@@ -1,4 +1,4 @@
-package opensource.h3nryc0ding.playground.config
+package opensource.h3nryc0ding.playground.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
