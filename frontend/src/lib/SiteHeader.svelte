@@ -2,6 +2,7 @@
 	import { KeyRound, Moon, Sun } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { toggleMode } from 'mode-watcher';
+	import { env } from '$env/dynamic/public';
 
 	const navItems: { name: string; href: string }[] = [
 		{
@@ -36,7 +37,7 @@
 					/>
 					<span class="sr-only">Toggle theme</span>
 				</Button>
-				<Button href="http://localhost:8080/oauth2/authorization/keycloak" variant="ghost">
+				<Button href="`https://${env.PUBLIC_BACKEND_DOMAIN}/oauth2/authorization/keycloak`" variant="ghost">
 					<KeyRound class="mr-2 h-5 w-5" />
 					Login
 				</Button>
