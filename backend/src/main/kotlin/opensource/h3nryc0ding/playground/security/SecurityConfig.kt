@@ -8,6 +8,8 @@ import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.config.web.server.invoke
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers
+import org.springframework.web.server.session.CookieWebSessionIdResolver
+import org.springframework.web.server.session.WebSessionIdResolver
 
 @Configuration
 @EnableReactiveMethodSecurity
@@ -40,5 +42,19 @@ class SecurityConfig() {
                 authenticationSuccessHandler = oAuth2AuthenticationSuccessHandler
             }
         }
+    }
+
+    @Bean
+    fun webSessionIdResolver(): WebSessionIdResolver {
+        val resolver = CookieWebSessionIdResolver()
+        resolver.cookieName = "SESSION"
+        resolver.addCookieInitializer {
+            it.path("/")
+            it.httpOnly(true)
+            it.domain("k8splay.xyz")
+            it.secure(true)
+            it.sameSite("Lax")
+        }
+        return resolver
     }
 }
