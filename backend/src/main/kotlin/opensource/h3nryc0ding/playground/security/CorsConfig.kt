@@ -19,7 +19,7 @@ class CorsConfig {
     fun corsFilter(): CorsWebFilter {
         val config =
             CorsConfiguration().apply {
-                allowCredentials = false
+                allowCredentials = true
                 addAllowedOrigin(frontendUrl)
                 addAllowedHeader("*")
                 addAllowedMethod("*")
