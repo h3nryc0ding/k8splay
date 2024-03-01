@@ -12,13 +12,19 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 @Configuration
 @EnableReactiveMethodSecurity
 @EnableWebFluxSecurity
-class SecurityConfig {
+class SecurityConfig() {
     companion object {
         val GRAPHQL_WHITELIST = arrayOf("/graphql/**", "/graphiql/**")
+        const val REDIRECT_COOKIE_NAME = "REDIRECT_URI"
+        const val REDIRECT_PARAM_NAME = "redirect_uri"
     }
 
     @Bean
-    fun securityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
+    fun securityFilterChain(
+        http: ServerHttpSecurity,
+        customServerAuthorizationRequestRepository: CustomServerAuthorizationRequestRepository,
+        oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
+    ): SecurityWebFilterChain {
         return http {
             httpBasic { disable() }
             formLogin { disable() }
@@ -29,7 +35,10 @@ class SecurityConfig {
                 authorize(anyExchange, authenticated)
             }
 
-            oauth2Login { }
+            oauth2Login {
+                authorizationRequestRepository = customServerAuthorizationRequestRepository
+                authenticationSuccessHandler = oAuth2AuthenticationSuccessHandler
+            }
         }
     }
 }

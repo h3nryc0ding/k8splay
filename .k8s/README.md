@@ -34,7 +34,7 @@ cd app
 1. Install the Helm chart:
 
 ```bash
-helm install <release_name> app \
+helm install <release_name> . \
 --namespace <namespace> \
 --set ingress.domain=<your_domain> \
 --set app.image.tag=<image_tag> \

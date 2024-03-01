@@ -289,10 +289,21 @@ type Mutation {
 type Query {
 	_service: _Service!
 	messages: [Message!]!
+	user: User
 }
 
 type Subscription {
 	messageSent: Message!
+}
+
+type User {
+	email: String!
+	emailVerified: Boolean!
+	familyName: String!
+	givenName: String!
+	id: ID!
+	name: String!
+	preferredUsername: String!
 }
 
 """

@@ -36,7 +36,10 @@
 					/>
 					<span class="sr-only">Toggle theme</span>
 				</Button>
-				<Button href="/login" variant="ghost">
+				<Button
+					href="https://api.pr-114.test.k8splay.xyz/oauth2/authorization/keycloak?redirect_uri=https://pr-114.test.k8splay.xyz"
+					variant="ghost"
+				>
 					<KeyRound class="mr-2 h-5 w-5" />
 					Login
 				</Button>

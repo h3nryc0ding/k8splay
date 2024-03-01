@@ -91,6 +91,7 @@ jobs:
           --set ingress.domain=${{ env.NAMESPACE }}.test.k8splay.xyz \
           --set app.image.tag=${{ env.NAMESPACE }} \
           --set keycloak.realm=${{ env.NAMESPACE }} \
+          --set keycloak.client.secret=${{ secrets.KEYCLOAK_BACKEND_SECRET }} \
           --wait \
           --atomic \
           --timeout 600s
