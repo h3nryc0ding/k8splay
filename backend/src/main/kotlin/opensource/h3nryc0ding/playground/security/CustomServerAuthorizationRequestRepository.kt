@@ -22,7 +22,7 @@ class CustomServerAuthorizationRequestRepository : ServerAuthorizationRequestRep
         exchange: ServerWebExchange,
     ): Mono<Void> {
         val redirectUri = exchange.request.queryParams[SecurityConfig.REDIRECT_PARAM_NAME]?.firstOrNull()
-        if (redirectUri != null) {
+        if (!redirectUri.isNullOrBlank()) {
             exchange.response.cookies.add(
                 SecurityConfig.REDIRECT_COOKIE_NAME,
                 ResponseCookie
