@@ -15,6 +15,11 @@ const subscriptionUrl = () => {
 
 export default new HoudiniClient({
 	url: graphqlUrl(),
+	fetchParams() {
+		return {
+			credentials: 'include'
+		}
+	},
 	plugins: [
 		subscription(() =>
 			createClient({
