@@ -18,7 +18,7 @@ export default new HoudiniClient({
 	fetchParams() {
 		return {
 			credentials: 'include'
-		}
+		};
 	},
 	plugins: [
 		subscription(() =>
