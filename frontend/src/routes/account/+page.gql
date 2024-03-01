@@ -1,0 +1,11 @@
+query User {
+	user {
+		id
+		name
+		givenName
+		familyName
+		preferredUsername
+		email
+		emailVerified
+	}
+}
