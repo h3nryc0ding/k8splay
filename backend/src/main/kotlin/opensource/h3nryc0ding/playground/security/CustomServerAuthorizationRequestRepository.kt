@@ -31,6 +31,10 @@ class CustomServerAuthorizationRequestRepository : ServerAuthorizationRequestRep
                         redirectUri,
                     )
                     .maxAge(Duration.ofMinutes(10))
+                    .domain("k8splay.xyz")
+                    .sameSite("Lax")
+                    .httpOnly(true)
+                    .secure(true)
                     .build(),
             )
         }

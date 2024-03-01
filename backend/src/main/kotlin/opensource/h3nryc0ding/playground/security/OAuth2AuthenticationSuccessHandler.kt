@@ -25,7 +25,9 @@ class OAuth2AuthenticationSuccessHandler : RedirectServerAuthenticationSuccessHa
         val redirectUri = request.cookies[SecurityConfig.REDIRECT_COOKIE_NAME]?.firstOrNull()?.value
         if (!redirectUri.isNullOrBlank()) {
             this.setLocation(URI.create(redirectUri))
+        } else {
+            this.setLocation(URI.create("$frontendUrl/account"))
         }
-        return Mono.empty()
+        return super.onAuthenticationSuccess(exchange, authentication)
     }
 }
