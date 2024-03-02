@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono
 import java.net.URI
 
 @Component
-class OAuth2AuthenticationSuccessHandler(
+class AuthenticationSuccessHandler(
     private val appConfig: AppConfig,
 ) : RedirectServerAuthenticationSuccessHandler() {
     override fun onAuthenticationSuccess(

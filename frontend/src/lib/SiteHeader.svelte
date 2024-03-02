@@ -2,7 +2,7 @@
 	import { KeyRound, Moon, Sun } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { toggleMode } from 'mode-watcher';
-	import { backendUrl } from '../client';
+	import { loginUrl } from '../client';
 
 	const navItems: { name: string; href: string }[] = [
 		{
@@ -10,8 +10,6 @@
 			href: '/chat'
 		}
 	];
-
-	const loginUrl = `${backendUrl()}/oauth2/authorization/keycloak`;
 </script>
 
 <header
@@ -39,7 +37,7 @@
 					/>
 					<span class="sr-only">Toggle theme</span>
 				</Button>
-				<Button href={loginUrl} variant="ghost">
+				<Button href={loginUrl()} variant="ghost">
 					<KeyRound class="mr-2 h-5 w-5" />
 					Login
 				</Button>

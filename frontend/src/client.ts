@@ -9,6 +9,10 @@ export const backendUrl = () => {
 	return 'http://backend:80';
 };
 
+export const loginUrl = () => {
+	return `${backendUrl()}/oauth2/authorization/keycloak`;
+};
+
 const graphqlUrl = () => {
 	return `${backendUrl()}/graphql`;
 };

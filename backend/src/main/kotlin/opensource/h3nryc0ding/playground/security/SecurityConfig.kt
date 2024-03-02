@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.config.web.server.invoke
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers
 import org.springframework.web.server.session.CookieWebSessionIdResolver
 import org.springframework.web.server.session.WebSessionIdResolver
@@ -28,7 +29,7 @@ class SecurityConfig(
     fun securityFilterChain(
         http: ServerHttpSecurity,
         customServerAuthorizationRequestRepository: CustomServerAuthorizationRequestRepository,
-        oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
+        authenticationSuccessHandler: AuthenticationSuccessHandler,
     ): SecurityWebFilterChain {
         return http {
             httpBasic { disable() }
@@ -42,7 +43,13 @@ class SecurityConfig(
 
             oauth2Login {
                 authorizationRequestRepository = customServerAuthorizationRequestRepository
-                authenticationSuccessHandler = oAuth2AuthenticationSuccessHandler
+                this.authenticationSuccessHandler = authenticationSuccessHandler
+            }
+
+            logout {
+                logoutSuccessHandler = RedirectServerLogoutSuccessHandler().apply {
+                    setLogoutSuccessUrl(appConfig.frontendUrl.toURI())
+                }
             }
         }
     }
