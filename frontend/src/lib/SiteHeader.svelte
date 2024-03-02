@@ -2,7 +2,7 @@
 	import { KeyRound, Moon, Sun } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { toggleMode } from 'mode-watcher';
-	import { PUBLIC_APP_BACKEND_URL } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 
 	const navItems: { name: string; href: string }[] = [
 		{
@@ -11,7 +11,7 @@
 		}
 	];
 
-	const loginUrl = `${PUBLIC_APP_BACKEND_URL}/oauth2/authorization/keycloak`;
+	const loginUrl = `${env.PUBLIC_APP_BACKEND_URL}/oauth2/authorization/keycloak`;
 </script>
 
 <header
