@@ -10,7 +10,13 @@ export const backendUrl = () => {
 };
 
 export const loginUrl = () => {
-	return `${backendUrl()}/oauth2/authorization/keycloak`;
+	let host: string;
+	if (dev) {
+		host = 'http://localhost:8080';
+	} else {
+		host = `https://${env.PUBLIC_BACKEND_DOMAIN}`;
+	}
+	return `${host}/oauth2/authorization/keycloak`;
 };
 
 const graphqlUrl = () => {
