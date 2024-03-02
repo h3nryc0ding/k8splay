@@ -47,9 +47,10 @@ class SecurityConfig(
             }
 
             logout {
-                logoutSuccessHandler = RedirectServerLogoutSuccessHandler().apply {
-                    setLogoutSuccessUrl(appConfig.frontendUrl.toURI())
-                }
+                logoutSuccessHandler =
+                    RedirectServerLogoutSuccessHandler().apply {
+                        setLogoutSuccessUrl(appConfig.frontendUrl.toURI())
+                    }
             }
         }
     }
