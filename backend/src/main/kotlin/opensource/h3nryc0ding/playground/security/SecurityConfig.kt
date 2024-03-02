@@ -1,5 +1,6 @@
 package opensource.h3nryc0ding.playground.security
 
+import opensource.h3nryc0ding.playground.config.AppConfig
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
@@ -14,7 +15,9 @@ import org.springframework.web.server.session.WebSessionIdResolver
 @Configuration
 @EnableReactiveMethodSecurity
 @EnableWebFluxSecurity
-class SecurityConfig() {
+class SecurityConfig(
+    private val appConfig: AppConfig,
+) {
     companion object {
         val GRAPHQL_WHITELIST = arrayOf("/graphql/**", "/graphiql/**")
         const val REDIRECT_COOKIE_NAME = "REDIRECT_URI"
@@ -51,7 +54,7 @@ class SecurityConfig() {
         resolver.addCookieInitializer {
             it.path("/")
             it.httpOnly(true)
-            it.domain("k8splay.xyz")
+            it.domain(appConfig.frontendUrl.host)
             it.secure(true)
             it.sameSite("Lax")
         }

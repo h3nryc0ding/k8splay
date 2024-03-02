@@ -1,6 +1,6 @@
 package opensource.h3nryc0ding.playground.security
 
-import org.springframework.beans.factory.annotation.Value
+import opensource.h3nryc0ding.playground.config.AppConfig
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.server.WebFilterExchange
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler
@@ -9,13 +9,9 @@ import reactor.core.publisher.Mono
 import java.net.URI
 
 @Component
-class OAuth2AuthenticationSuccessHandler : RedirectServerAuthenticationSuccessHandler() {
-    /**
-     * Frontend URL, including protocol and port
-     */
-    @Value("\${app.frontend.url}")
-    lateinit var frontendUrl: String
-
+class OAuth2AuthenticationSuccessHandler(
+    private val appConfig: AppConfig,
+) : RedirectServerAuthenticationSuccessHandler() {
     override fun onAuthenticationSuccess(
         exchange: WebFilterExchange,
         authentication: Authentication,
@@ -26,7 +22,7 @@ class OAuth2AuthenticationSuccessHandler : RedirectServerAuthenticationSuccessHa
         if (!redirectUri.isNullOrBlank()) {
             this.setLocation(URI.create(redirectUri))
         } else {
-            this.setLocation(URI.create("$frontendUrl/account"))
+            this.setLocation(appConfig.frontendUrl.toURI().resolve("/account"))
         }
         return super.onAuthenticationSuccess(exchange, authentication)
     }
