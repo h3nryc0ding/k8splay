@@ -3,10 +3,14 @@ import { createClient } from 'graphql-ws';
 import { browser, dev } from '$app/environment';
 import { env } from '$env/dynamic/public';
 
+export const backendUrl = () => {
+	if (dev) return 'http://localhost:8080';
+	if (browser) return `https://${env.PUBLIC_BACKEND_DOMAIN}`;
+	return 'http://backend:80';
+};
+
 const graphqlUrl = () => {
-	if (dev) return 'http://localhost:8080/graphql';
-	if (browser) return `https://${env.PUBLIC_BACKEND_DOMAIN}/graphql`;
-	return 'http://backend:80/graphql';
+	return `${backendUrl()}/graphql`;
 };
 const subscriptionUrl = () => {
 	if (dev) return 'ws://localhost:8080/subscriptions';
