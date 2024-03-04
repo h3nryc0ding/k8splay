@@ -2,6 +2,7 @@ import { HoudiniClient, subscription } from '$houdini';
 import { createClient } from 'graphql-ws';
 import { browser, dev } from '$app/environment';
 import { env } from '$env/dynamic/public';
+import { redirect } from '@sveltejs/kit';
 
 export const backendUrl = () => {
 	if (dev) return 'http://localhost:8080';
@@ -33,6 +34,23 @@ export default new HoudiniClient({
 		return {
 			credentials: 'include'
 		};
+	},
+	throwOnError: {
+		operations: ['all'],
+		error: (errors) => {
+			if (
+				errors.some(
+					// TODO: https://houdinigraphql.com/api/client#error-handling
+					(error) =>
+						// @ts-expect-error: typing via `app.d.ts` doesn't seem to work
+						error.extensions.errorType === 'PERMISSION_DENIED' ||
+						// @ts-expect-error: typing via `app.d.ts` doesn't seem to work
+						error.extensions.errorType === 'UNAUTHENTICATED'
+				)
+			) {
+				return redirect(302, loginUrl());
+			}
+		}
 	},
 	plugins: [
 		subscription(() =>

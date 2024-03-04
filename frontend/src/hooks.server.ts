@@ -9,7 +9,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const { cookies, locals } = event;
 	locals.isAuthenticated = !!cookies.get(COOKIE_NAME);
 	if (protectedPaths.includes(event.url.pathname) && !locals.isAuthenticated) {
-		throw redirect(307, loginUrl());
+		throw redirect(302, loginUrl());
 	}
 	return resolve(event);
 };
