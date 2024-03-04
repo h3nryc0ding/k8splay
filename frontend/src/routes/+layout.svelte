@@ -1,8 +1,12 @@
-<script>
+<script lang="ts">
 	import '../app.pcss';
+	import type { LayoutData } from './$types';
+
 	import SiteHeader from '$lib/SiteHeader.svelte';
 	import SiteFooter from '$lib/SiteFooter.svelte';
 	import { ModeWatcher } from 'mode-watcher';
+
+	export let data: LayoutData;
 </script>
 
 <svelte:head>
@@ -16,7 +20,7 @@
 
 <ModeWatcher />
 <div class="relative flex min-h-screen flex-col" id="page">
-	<SiteHeader />
+	<SiteHeader isAuthenticated={data.isAuthenticated} />
 	<div class="flex-1">
 		<slot />
 	</div>

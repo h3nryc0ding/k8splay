@@ -9,6 +9,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.config.web.server.invoke
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler
+import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers
 import org.springframework.web.server.session.CookieWebSessionIdResolver
 import org.springframework.web.server.session.WebSessionIdResolver
@@ -21,14 +22,11 @@ class SecurityConfig(
 ) {
     companion object {
         val GRAPHQL_WHITELIST = arrayOf("/graphql/**", "/graphiql/**")
-        const val REDIRECT_COOKIE_NAME = "REDIRECT_URI"
-        const val REDIRECT_PARAM_NAME = "redirect_uri"
     }
 
     @Bean
     fun securityFilterChain(
         http: ServerHttpSecurity,
-        customServerAuthorizationRequestRepository: CustomServerAuthorizationRequestRepository,
         authenticationSuccessHandler: AuthenticationSuccessHandler,
     ): SecurityWebFilterChain {
         return http {
@@ -42,11 +40,11 @@ class SecurityConfig(
             }
 
             oauth2Login {
-                authorizationRequestRepository = customServerAuthorizationRequestRepository
                 this.authenticationSuccessHandler = authenticationSuccessHandler
             }
 
             logout {
+                logoutHandler = WebSessionServerLogoutHandler()
                 logoutSuccessHandler =
                     RedirectServerLogoutSuccessHandler().apply {
                         setLogoutSuccessUrl(appConfig.frontendUrl.toURI())

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { KeyRound, Moon, Sun } from 'lucide-svelte';
+	import { KeyRound, Moon, Sun, UserRound, Github } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { toggleMode } from 'mode-watcher';
 	import { loginUrl } from '../client';
@@ -10,6 +10,8 @@
 			href: '/chat'
 		}
 	];
+
+	export let isAuthenticated: boolean;
 </script>
 
 <header
@@ -28,6 +30,9 @@
 		</nav>
 		<div class="flex flex-1 items-center justify-end space-x-2 sm:space-x-4">
 			<nav class="flex items-center space-x-1">
+				<Button href="https://github.com/h3nryc0ding/k8splay" variant="outline" size="icon">
+					<Github />
+				</Button>
 				<Button on:click={toggleMode} variant="outline" size="icon">
 					<Sun
 						class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
@@ -37,10 +42,17 @@
 					/>
 					<span class="sr-only">Toggle theme</span>
 				</Button>
-				<Button href={loginUrl()} variant="ghost">
-					<KeyRound class="mr-2 h-5 w-5" />
-					Login
-				</Button>
+				{#if isAuthenticated}
+					<Button href="/account" variant="ghost">
+						<UserRound class="mr-2 h-5 w-5" />
+						Profile
+					</Button>
+				{:else}
+					<Button href={loginUrl()} variant="ghost">
+						<KeyRound class="mr-2 h-5 w-5" />
+						Login
+					</Button>
+				{/if}
 			</nav>
 		</div>
 	</div>
