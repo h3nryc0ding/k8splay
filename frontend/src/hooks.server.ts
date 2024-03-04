@@ -15,8 +15,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 };
 
 export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
-	const { cookies } = event;
-	const session = cookies.get(COOKIE_NAME);
-	if (session) request.headers.set('cookie', session);
+	// TODO: validate URL before adding cookie
+	const cookie = event.request.headers.get('cookie');
+	if (cookie) request.headers.set('cookie', cookie);
 	return await fetch(request);
 };
