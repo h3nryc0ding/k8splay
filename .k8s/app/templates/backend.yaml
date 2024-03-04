@@ -42,8 +42,6 @@ spec:
               port: 8081
             initialDelaySeconds: 5
             timeoutSeconds: 1
-      imagePullSecrets:
-        - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service
