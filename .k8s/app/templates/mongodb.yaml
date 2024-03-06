@@ -1,19 +1,9 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mongodb-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mongodb
 spec:
+  serviceName: mongodb
   replicas: 1
   selector:
     matchLabels:
@@ -29,9 +19,6 @@ spec:
           image: mongo:6.0-jammy
           ports:
             - containerPort: 27017
-          volumeMounts:
-            - name: mongodb-data
-              mountPath: /data/db
           env:
             - name: 'MONGO_INITDB_ROOT_USERNAME'
               value: 'admin'
@@ -39,10 +26,17 @@ spec:
               value: 'root'
             - name: 'MONGO_INITDB_DATABASE'
               value: 'backend_prod'
-      volumes:
-        - name: mongodb-data
-          persistentVolumeClaim:
-            claimName: mongodb-pvc
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: mongodb-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
