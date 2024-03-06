@@ -53,7 +53,10 @@ uses [Keywind](https://github.com/lukin/keywind) as a theme.
 
 ### Deployment
 
-To inject the theme into the Keycloak instance, a ConfigMap is created. Follow these steps to deploy it:
+To deploy the Keycloak instance, follow these steps:
+
+*It's also possible to deploy the default Keycloak image without the custom theme and database. In that case, adjust the
+deployment file accordingly.*
 
 1. Navigate to the `keycloak` directory:
 
@@ -67,14 +70,18 @@ cd keycloak
 ./create-theme.sh
 ```
 
-1. Apply the Keycloak theme configuration:
+1. Build the Dockerfile for the Keycloak instance:
 
 ```bash
-kubectl apply -f keycloak-theme.yaml
+docker build -t <image_name>:<image_tag> .
 ```
 
 1. Finally, apply the Keycloak configuration:
 
+*Make sure to have the built image available within your Kubernetes cluster. Either push it to a registry or use the
+local registry provided by your cluster.*
+
 ```bash
+kubectl apply -f keycloak-database.yaml
 kubectl apply -f keycloak.yaml
 ```
