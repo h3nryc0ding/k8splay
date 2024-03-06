@@ -12,6 +12,8 @@ import org.springframework.security.web.server.authentication.RedirectServerAuth
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler
 import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers
+import org.springframework.web.server.session.CookieWebSessionIdResolver
+import org.springframework.web.server.session.WebSessionIdResolver
 
 @Configuration
 @EnableReactiveMethodSecurity
@@ -50,5 +52,18 @@ class SecurityConfig(
                     }
             }
         }
+    }
+
+    @Bean
+    fun webSessionIdResolver(): WebSessionIdResolver {
+        val resolver = CookieWebSessionIdResolver()
+        resolver.addCookieInitializer {
+            it.path("/")
+            it.httpOnly(true)
+            it.domain(appConfig.frontendUrl.host)
+            it.secure(true)
+            it.sameSite("Lax")
+        }
+        return resolver
     }
 }
