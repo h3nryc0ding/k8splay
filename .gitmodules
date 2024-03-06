@@ -1,0 +1,3 @@
+[submodule ".k8s/keycloak/keywind"]
+	path = .k8s/keycloak/keywind
+	url = https://github.com/lukin/keywind.git

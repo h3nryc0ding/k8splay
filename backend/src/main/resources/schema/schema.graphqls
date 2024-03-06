@@ -6,6 +6,7 @@ schema {
 
 type Query {
     messages: [Message!]!
+    user: User
 }
 
 type Mutation {
@@ -14,6 +15,16 @@ type Mutation {
 
 type Subscription {
     messageSent: Message!
+}
+
+type User {
+    id: ID!
+    name: String!
+    givenName: String!
+    familyName: String!
+    preferredUsername: String!
+    email: String!
+    emailVerified: Boolean!
 }
 
 type Message {

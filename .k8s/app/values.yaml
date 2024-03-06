@@ -4,3 +4,10 @@ app:
     tag:
 ingress:
   domain:
+keycloak:
+  url: "https://accounts.k8splay.xyz/realms"
+  realm:
+  client:
+    name: "keycloak"
+    id: "backend"
+    secret:

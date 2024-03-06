@@ -8,4 +8,22 @@ spring:
     compose:
       enabled: true
       file: docker-compose.yml
-PUBLIC_FRONTEND_DOMAIN: localhost:5173
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: https://accounts.k8splay.xyz/realms/development
+        registration:
+          keycloak:
+            # credentials are development only
+            # feel free to use docker for local development
+            client-name: keycloak
+            client-id: spring-boot-dev
+            client-secret: wWW6jffUZt7BMRyG4LbrHTEgqoxIX6it
+            scope: openid
+app:
+  frontend:
+    url: 'http://localhost:5173'
+  backend:
+    url: 'http://localhost:8080'

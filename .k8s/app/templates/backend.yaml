@@ -21,8 +21,18 @@ spec:
             - name: http
               containerPort: 8080
           env:
-            - name: PUBLIC_FRONTEND_DOMAIN
+            - name: FRONTEND_URL
               value: {{ .Values.ingress.domain }}
+            - name: BACKEND_URL
+              value: "api.{{ .Values.ingress.domain }}"
+            - name: KEYCLOAK_CLIENT_NAME
+              value: {{ .Values.keycloak.client.name }}
+            - name: KEYCLOAK_CLIENT_ID
+              value: {{ .Values.keycloak.client.id }}
+            - name: KEYCLOAK_CLIENT_SECRET
+              value: {{ .Values.keycloak.client.secret }}
+            - name: KEYCLOAK_ISSUER_URI
+              value: "{{ .Values.keycloak.url }}/{{ .Values.keycloak.realm }}"
           resources:
             requests:
               cpu: "500m"
