@@ -8,11 +8,10 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.config.web.server.invoke
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler
 import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers
-import org.springframework.web.server.session.CookieWebSessionIdResolver
-import org.springframework.web.server.session.WebSessionIdResolver
 
 @Configuration
 @EnableReactiveMethodSecurity
@@ -25,10 +24,7 @@ class SecurityConfig(
     }
 
     @Bean
-    fun securityFilterChain(
-        http: ServerHttpSecurity,
-        authenticationSuccessHandler: AuthenticationSuccessHandler,
-    ): SecurityWebFilterChain {
+    fun securityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http {
             httpBasic { disable() }
             formLogin { disable() }
@@ -40,7 +36,10 @@ class SecurityConfig(
             }
 
             oauth2Login {
-                this.authenticationSuccessHandler = authenticationSuccessHandler
+                authenticationSuccessHandler =
+                    RedirectServerAuthenticationSuccessHandler().apply {
+                        setLocation(appConfig.frontendUrl.toURI().resolve("/account"))
+                    }
             }
 
             logout {
@@ -51,19 +50,5 @@ class SecurityConfig(
                     }
             }
         }
-    }
-
-    @Bean
-    fun webSessionIdResolver(): WebSessionIdResolver {
-        val resolver = CookieWebSessionIdResolver()
-        resolver.cookieName = "SESSION"
-        resolver.addCookieInitializer {
-            it.path("/")
-            it.httpOnly(true)
-            it.domain(appConfig.frontendUrl.host)
-            it.secure(true)
-            it.sameSite("Lax")
-        }
-        return resolver
     }
 }
