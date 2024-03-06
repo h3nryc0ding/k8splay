@@ -14,7 +14,7 @@ with a Spring Boot backend, a SvelteKit frontend, and a Keycloak server for auth
 
 ### Backend
 
-Deployed at [api.k8splay.xyz](https://api.k8splay.xyz)
+Deployed at [api.k8splay.xyz](https://api.k8splay.xyz/graphiql)
 
 - [x] Reactive Spring Boot with WebFlux and Kotlin
 - [x] Persistence with R2DBC and MongoDB
