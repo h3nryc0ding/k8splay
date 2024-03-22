@@ -85,7 +85,7 @@ jobs:
           DRY_RUN: false
 
       - name: Kubectl tool installer
-        uses: Azure/setup-kubectl@v3
+        uses: Azure/setup-kubectl@v4
 
       - name: Configure Kubectl
         env:
