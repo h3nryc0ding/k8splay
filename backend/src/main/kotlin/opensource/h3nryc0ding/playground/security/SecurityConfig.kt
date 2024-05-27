@@ -22,7 +22,7 @@ class SecurityConfig(
     private val appConfig: AppConfig,
 ) {
     companion object {
-        val GRAPHQL_WHITELIST = arrayOf("/graphql/**", "/graphiql/**")
+        val GRAPHQL_WHITELIST = arrayOf("/graphql/**", "/graphiql/**", "/subscriptions/**")
     }
 
     @Bean
