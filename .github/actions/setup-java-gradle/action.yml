@@ -14,3 +14,7 @@ runs:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
         restore-keys: ${{ runner.os }}-gradle
+    - name: Setup Gradle
+      run: ./gradlew --version
+      shell: bash
+      working-directory: ${{ env.WORKING_DIRECTORY }}
