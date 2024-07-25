@@ -37,15 +37,13 @@ export default new HoudiniClient({
 	},
 	throwOnError: {
 		operations: ['all'],
-		error: (errors) => {
+		error: (errors: { message: string; extensions?: { errorType?: string } }[]) => {
 			if (
+				errors &&
 				errors.some(
-					// TODO: https://houdinigraphql.com/api/client#error-handling
 					(error) =>
-						// @ts-expect-error: typing via `app.d.ts` doesn't seem to work
-						error.extensions.errorType === 'PERMISSION_DENIED' ||
-						// @ts-expect-error: typing via `app.d.ts` doesn't seem to work
-						error.extensions.errorType === 'UNAUTHENTICATED'
+						error?.extensions?.errorType &&
+						error?.extensions?.errorType in new Set(['PERMISSION_DENIED', 'UNAUTHENTICATED'])
 				)
 			) {
 				return redirect(302, loginUrl());
