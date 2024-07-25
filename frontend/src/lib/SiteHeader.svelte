@@ -47,7 +47,7 @@
 						Profile
 					</Button>
 				{:else}
-					<Button href="/auth/login" variant="ghost">
+					<Button href="/auth/login" target="_self" variant="ghost">
 						<KeyRound class="mr-2 h-5 w-5" />
 						Login
 					</Button>

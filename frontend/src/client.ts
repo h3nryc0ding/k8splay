@@ -35,8 +35,12 @@ function isErrorType(value: string): value is ErrorType$options {
 
 function handleError(errorType: ErrorType$options) {
 	switch (errorType) {
-		case ErrorType.UNAUTHENTICATED || ErrorType.PERMISSION_DENIED:
+		case ErrorType.UNAUTHENTICATED:
 			return redirect(302, 'auth/login');
-		// TODO: Handle other error types
+		case ErrorType.PERMISSION_DENIED:
+			return redirect(302, 'auth/login');
+		default:
+			// TODO: Handle other error types
+			console.warn('Unhandled error type:', errorType);
 	}
 }
