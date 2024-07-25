@@ -44,7 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>Chat</title>
+	<title>chat</title>
 </svelte:head>
 
 <Dialog.Root bind:open={showDialog}>

@@ -16,6 +16,7 @@
 			viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
 		}
 	</script>
+	<title>k8splay</title>
 </svelte:head>
 
 <ModeWatcher />

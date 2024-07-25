@@ -1,14 +1,14 @@
 import type { HandleFetch, Handle } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
-import { loginUrl } from './client';
+import { loginUrl } from '$lib/urls';
 
 const COOKIE_NAME = 'SESSION';
-const protectedPaths = ['/account'];
+const protectedPaths = new Set(['/account']);
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const { cookies, locals } = event;
 	locals.isAuthenticated = !!cookies.get(COOKIE_NAME);
-	if (protectedPaths.includes(event.url.pathname) && !locals.isAuthenticated) {
+	if (event.url.pathname in protectedPaths && !locals.isAuthenticated) {
 		throw redirect(302, loginUrl());
 	}
 	return resolve(event);

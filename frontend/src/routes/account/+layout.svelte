@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
-	import { backendUrl } from '../../client';
+	import { logout } from '$lib/auth';
 </script>
 
 <Card.Root class="m-auto max-w-3xl">
@@ -13,6 +13,6 @@
 		<slot />
 	</Card.Content>
 	<Card.Footer>
-		<Button class="ml-auto" href={`${backendUrl()}/logout`} variant="outline">Logout</Button>
+		<Button class="ml-auto" href="auth/logout" data-sveltekit-preload-data="off" variant="outline">Logout</Button>
 	</Card.Footer>
 </Card.Root>
