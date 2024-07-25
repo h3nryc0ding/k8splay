@@ -4,13 +4,14 @@ on:
   workflow_call:
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: frontend
-
 env:
   NODE_VERSION: 18
   PNPM_VERSION: 8
+  WORKING_DIRECTORY: frontend
+
+defaults:
+  run:
+    working-directory: ${{ env.WORKING_DIRECTORY }}
 
 jobs:
   lint:
