@@ -14,7 +14,6 @@ env:
 
 jobs:
   lint:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,7 +22,6 @@ jobs:
         run: ./gradlew ktlintCheck
 
   build:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +30,7 @@ jobs:
         run: ./gradlew assemble
 
   test:
-    needs: [ setup, build ]
+    needs: [ build ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
