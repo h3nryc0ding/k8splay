@@ -3,8 +3,6 @@ description: 'Sets up Java and caches Gradle packages'
 runs:
   using: "composite"
   steps:
-    - run: cd ${{ github.action_path }}
-      shell: bash
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:

@@ -3,8 +3,6 @@ description: 'Sets up pnpm and Node.js with caching'
 runs:
   using: "composite"
   steps:
-    - run: cd ${{ github.action_path }}
-      shell: bash
     - uses: pnpm/action-setup@v4
       with:
         version: ${{ env.PNPM_VERSION }}
@@ -15,4 +13,5 @@ runs:
         cache: 'pnpm'
     - name: Install Dependencies
       run: pnpm install
+      working-directory: ${{ env.WORKING_DIRECTORY }}
       shell: bash
