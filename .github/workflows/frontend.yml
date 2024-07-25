@@ -44,6 +44,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm-node
+      - name: Store Playwright version
+        shell: bash
+        run: echo "PLAYWRIGHT_VERSION=$(pnpm exec playwright --version | awk '{ print $2 }')" >> $GITHUB_ENV
       - uses: ./.github/actions/setup-playwright
       - name: Test Frontend
         run: pnpm test
