@@ -22,7 +22,7 @@
 
 	onMount(() => {
 		updates.listen();
-		return () => updates.listen();
+		return () => updates.unlisten();
 	});
 
 	const sendMessage = graphql(`
@@ -63,7 +63,7 @@
 					showDialog = false;
 					username = '';
 				}}
-				>Dismiss
+			>Dismiss
 			</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
