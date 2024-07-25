@@ -6,10 +6,12 @@ runs:
     - uses: pnpm/action-setup@v4
       with:
         version: ${{ env.PNPM_VERSION }}
+      working-directory: ${{ env.WORKING_DIRECTORY }}
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'pnpm'
+      working-directory: ${{ env.WORKING_DIRECTORY }}
     - name: Install Dependencies
       working-directory: ${{ env.WORKING_DIRECTORY }}
       run: pnpm install
