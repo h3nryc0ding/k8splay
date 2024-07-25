@@ -1,7 +1,7 @@
 import { ErrorType, HoudiniClient, subscription } from '$houdini';
 import { createClient } from 'graphql-ws';
 import { redirect } from '@sveltejs/kit';
-import { graphqlUrl, loginUrl, subscriptionUrl } from '$lib/urls';
+import { graphqlUrl, subscriptionUrl } from '$lib/urls';
 
 export default new HoudiniClient({
 	url: graphqlUrl(),
@@ -39,7 +39,7 @@ function handleError(errorType: ErrorType) {
 	switch (errorType) {
 		// TODO: Handle other error types
 		case 'UNAUTHENTICATED':
-			return redirect(302, "auth/login");
+			return redirect(302, 'auth/login');
 		case 'PERMISSION_DENIED':
 			return redirect(302, 'auth/login');
 	}
