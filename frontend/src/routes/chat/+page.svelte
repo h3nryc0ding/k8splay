@@ -63,7 +63,7 @@
 					showDialog = false;
 					username = '';
 				}}
-			>Dismiss
+				>Dismiss
 			</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
