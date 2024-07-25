@@ -11,6 +11,11 @@ runs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'pnpm'
+    - name: Debug working directory
+      run: |
+        pwd
+        ls
+      shell: bash
     - name: Install Dependencies
       run: pnpm install
       working-directory: ${{ env.WORKING_DIRECTORY }}
