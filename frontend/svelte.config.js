@@ -1,5 +1,6 @@
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import * as path from 'path';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -8,9 +9,9 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter({ out: 'build', precompress: false, envPrefix: '', polyfill: true }),
+		adapter: adapter({ out: 'build', precompress: false, envPrefix: '' }),
 		alias: {
-			$houdini: './$houdini'
+			$houdini: path.resolve('.', '$houdini')
 		}
 	}
 };

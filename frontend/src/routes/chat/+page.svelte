@@ -4,6 +4,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
 	$: ({ AllMessage } = data);
@@ -18,7 +19,12 @@
 			}
 		}
 	`);
-	$: updates.listen();
+
+	onMount(() => {
+		updates.listen();
+		return () => updates.unlisten();
+	});
+
 	const sendMessage = graphql(`
 		mutation MessageSend($input: MessageInput!) {
 			messageSend(input: $input) {
@@ -38,7 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>Chat</title>
+	<title>chat</title>
 </svelte:head>
 
 <Dialog.Root bind:open={showDialog}>

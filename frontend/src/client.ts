@@ -1,32 +1,7 @@
-import { HoudiniClient, subscription } from '$houdini';
+import { ErrorType, HoudiniClient, subscription, type ErrorType$options } from '$houdini';
 import { createClient } from 'graphql-ws';
-import { browser, dev } from '$app/environment';
-import { env } from '$env/dynamic/public';
 import { redirect } from '@sveltejs/kit';
-
-export const backendUrl = () => {
-	if (dev) return 'http://localhost:8080';
-	if (browser) return `https://${env.PUBLIC_BACKEND_DOMAIN}`;
-	return 'http://backend:80';
-};
-
-export const loginUrl = () => {
-	let host: string;
-	if (dev) {
-		host = 'http://localhost:8080';
-	} else {
-		host = `https://${env.PUBLIC_BACKEND_DOMAIN}`;
-	}
-	return `${host}/oauth2/authorization/keycloak`;
-};
-
-const graphqlUrl = () => {
-	return `${backendUrl()}/graphql`;
-};
-const subscriptionUrl = () => {
-	if (dev) return 'ws://localhost:8080/subscriptions';
-	return `wss://${env.PUBLIC_BACKEND_DOMAIN}/subscriptions`;
-};
+import { graphqlUrl, subscriptionUrl } from '$lib/urls';
 
 export default new HoudiniClient({
 	url: graphqlUrl(),
@@ -37,18 +12,11 @@ export default new HoudiniClient({
 	},
 	throwOnError: {
 		operations: ['all'],
-		error: (errors) => {
-			if (
-				errors.some(
-					// TODO: https://houdinigraphql.com/api/client#error-handling
-					(error) =>
-						// @ts-expect-error: typing via `app.d.ts` doesn't seem to work
-						error.extensions.errorType === 'PERMISSION_DENIED' ||
-						// @ts-expect-error: typing via `app.d.ts` doesn't seem to work
-						error.extensions.errorType === 'UNAUTHENTICATED'
-				)
-			) {
-				return redirect(302, loginUrl());
+		error: async (errors: { message: string; extensions?: { errorType?: string } }[]) => {
+			for (const error of errors) {
+				if (error.extensions?.errorType && isErrorType(error.extensions.errorType)) {
+					return handleError(error.extensions.errorType);
+				}
 			}
 		}
 	},
@@ -60,3 +28,15 @@ export default new HoudiniClient({
 		)
 	]
 });
+
+function isErrorType(value: string): value is ErrorType$options {
+	return value in ErrorType;
+}
+
+function handleError(errorType: ErrorType$options) {
+	switch (errorType) {
+		case ErrorType.UNAUTHENTICATED || ErrorType.PERMISSION_DENIED:
+			return redirect(302, 'auth/login');
+		// TODO: Handle other error types
+	}
+}

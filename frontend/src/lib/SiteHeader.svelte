@@ -2,7 +2,6 @@
 	import { KeyRound, Moon, Sun, UserRound, Github } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { toggleMode } from 'mode-watcher';
-	import { loginUrl } from '../client';
 
 	const navItems: { name: string; href: string }[] = [
 		{
@@ -48,7 +47,7 @@
 						Profile
 					</Button>
 				{:else}
-					<Button href={loginUrl()} variant="ghost">
+					<Button href="/auth/login" variant="ghost">
 						<KeyRound class="mr-2 h-5 w-5" />
 						Login
 					</Button>
