@@ -7,12 +7,12 @@ on:
 env:
   JAVA_VERSION: 17
   JAVA_DISTRIBUTION: 'adopt'
-  WORKING_DIRECTORY: frontend
+  WORKING_DIRECTORY: backend
 
 defaults:
   run:
     # TODO: reuse environment variable
-    working-directory: frontend
+    working-directory: backend
 
 jobs:
   lint:
