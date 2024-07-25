@@ -11,6 +11,7 @@ env:
 
 defaults:
   run:
+    # TODO: reuse environment variable
     working-directory: frontend
 
 jobs:
@@ -22,6 +23,14 @@ jobs:
       - name: Run prettier and eslint
         run: pnpm lint
 
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - name: Check Frontend
+        run: pnpm check
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -31,13 +40,10 @@ jobs:
         run: pnpm build
 
   test:
-    needs: [ build ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm-node
       - uses: ./.github/actions/setup-playwright
-      - name: Check Frontend
-        run: pnpm check
       - name: Test Frontend
         run: pnpm test

@@ -4,13 +4,15 @@ on:
   workflow_call:
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: backend
-
 env:
   JAVA_VERSION: 17
   JAVA_DISTRIBUTION: 'adopt'
+  WORKING_DIRECTORY: frontend
+
+defaults:
+  run:
+    # TODO: reuse environment variable
+    working-directory: frontend
 
 jobs:
   lint:

@@ -16,5 +16,5 @@ runs:
     - name: Install Playwright
       if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
       run: pnpm exec playwright install --with-deps
-      working-directory: ${{ env.WORKING_DIRECTORY }}
       shell: bash
+      working-directory: ${{ env.WORKING_DIRECTORY }}
