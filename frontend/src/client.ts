@@ -1,4 +1,4 @@
-import { ErrorType, HoudiniClient, subscription } from '$houdini';
+import { ErrorType, HoudiniClient, subscription, type ErrorType$options } from '$houdini';
 import { createClient } from 'graphql-ws';
 import { redirect } from '@sveltejs/kit';
 import { graphqlUrl, subscriptionUrl } from '$lib/urls';
@@ -29,18 +29,14 @@ export default new HoudiniClient({
 	]
 });
 
-type ErrorType = 'UNAUTHENTICATED' | 'PERMISSION_DENIED';
-
-function isErrorType(value: string): value is ErrorType {
-	return value === 'UNAUTHENTICATED' || value === 'PERMISSION_DENIED';
+function isErrorType(value: string): value is ErrorType$options {
+	return value in ErrorType;
 }
 
-function handleError(errorType: ErrorType) {
+function handleError(errorType: ErrorType$options) {
 	switch (errorType) {
+		case ErrorType.UNAUTHENTICATED || ErrorType.PERMISSION_DENIED:
+			return redirect(302, 'auth/login');
 		// TODO: Handle other error types
-		case 'UNAUTHENTICATED':
-			return redirect(302, 'auth/login');
-		case 'PERMISSION_DENIED':
-			return redirect(302, 'auth/login');
 	}
 }
