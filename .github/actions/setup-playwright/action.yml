@@ -17,3 +17,4 @@ runs:
       if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
       run: pnpm exec playwright install --with-deps
       shell: bash
+      working-directory: frontend
