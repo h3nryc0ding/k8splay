@@ -4,13 +4,15 @@ on:
   workflow_call:
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: frontend
-
 env:
   NODE_VERSION: 18
   PNPM_VERSION: 8
+  WORKING_DIRECTORY: frontend
+
+defaults:
+  run:
+    # TODO: reuse environment variable
+    working-directory: frontend
 
 jobs:
   lint:
@@ -21,6 +23,14 @@ jobs:
       - name: Run prettier and eslint
         run: pnpm lint
 
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm-node
+      - name: Check Frontend
+        run: pnpm check
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -30,13 +40,13 @@ jobs:
         run: pnpm build
 
   test:
-    needs: [ build ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm-node
+      - name: Store Playwright version
+        shell: bash
+        run: echo "PLAYWRIGHT_VERSION=$(pnpm exec playwright --version | awk '{ print $2 }')" >> $GITHUB_ENV
       - uses: ./.github/actions/setup-playwright
-      - name: Check Frontend
-        run: pnpm check
       - name: Test Frontend
         run: pnpm test
