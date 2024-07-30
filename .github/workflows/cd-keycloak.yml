@@ -1,4 +1,4 @@
-name: Keycloak CI
+name: CD Keycloak Deploy
 
 on: workflow_dispatch
 
@@ -32,3 +32,29 @@ jobs:
           tags: ghcr.io/${{ github.repository }}/keycloak:latest
           cache-from: type=gha,scope=buildkit-keycloak
           cache-to: type=gha,mode=max,scope=buildkit-keycloak
+
+  Deploy:
+    needs: [ Build ]
+    runs-on: ubuntu-latest
+    environment:
+      name: accounts
+      url: https://accounts.k8splay.xyz
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Kubectl
+        uses: Azure/setup-kubectl@v4
+
+      - name: Configure Kubectl
+        env:
+          K8S_CONFIG: ${{ secrets.K8S_CONFIG }}
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${K8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+        shell: bash
+
+      - name: Deploy Keycloak
+        run: |
+          kubectl apply -f keycloak.yaml
+        shell: bash

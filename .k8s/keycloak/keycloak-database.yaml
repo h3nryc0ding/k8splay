@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: keycloak-db
+  labels:
+    app: keycloak
   namespace: shared
 spec:
   serviceName: keycloak-db
@@ -23,7 +25,10 @@ spec:
             - name: POSTGRES_USER
               value: "keycloak"
             - name: POSTGRES_PASSWORD
-              value: "xJV&xQgZZyVpQ8ntoLxW3sg8"
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-secrets
+                  key: KEYCLOAK_POSTGRES_PASSWORD
           ports:
             - containerPort: 5432
               name: postgres
