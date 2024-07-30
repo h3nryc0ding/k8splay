@@ -13,7 +13,6 @@ on:
 
 concurrency:
   group: ${{ github.repository }}-deployment
-  cancel-in-progress: true
 
 jobs:
   FrontendCI:
