@@ -1,27 +1,27 @@
----
 version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    target-branch: "dependencies"
+  
   - package-ecosystem: npm
     directory: "/frontend"
     schedule:
       interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types:
-          - version-update:semver-patch
+    target-branch: "dependencies"
+  
   - package-ecosystem: gradle
     directory: "/backend"
     schedule:
       interval: "weekly"
+    target-branch: "dependencies"
+  
   - package-ecosystem: docker
-    directory: "/backend"
+    directories:
+      - "/backend"
+      - "/frontend"
     schedule:
       interval: "weekly"
-  - package-ecosystem: docker
-    directory: "/frontend"
-    schedule:
-      interval: "weekly"
+    target-branch: "dependencies"
