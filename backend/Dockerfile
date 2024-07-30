@@ -23,7 +23,7 @@ RUN ./gradlew bootJar
 RUN cp /app/build/libs/playground-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # Start with a base image containing Java runtime
-FROM openjdk:17
+FROM openjdk:18
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
