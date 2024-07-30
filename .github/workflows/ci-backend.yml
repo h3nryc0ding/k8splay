@@ -1,4 +1,4 @@
-name: Backend CI
+name: CI Backend
 
 on:
   workflow_call:
@@ -9,14 +9,12 @@ env:
   JAVA_DISTRIBUTION: 'adopt'
   WORKING_DIRECTORY: backend
 
-defaults:
-  run:
-    # TODO: reuse environment variable
-    working-directory: backend
-
 jobs:
   lint:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-java-gradle
@@ -25,6 +23,9 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-java-gradle
@@ -33,6 +34,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-java-gradle

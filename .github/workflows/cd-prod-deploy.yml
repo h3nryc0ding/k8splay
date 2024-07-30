@@ -1,4 +1,4 @@
-name: Fullstack CD
+name: CD Prod Deploy
 
 on:
   push:
@@ -8,13 +8,14 @@ on:
 
 concurrency:
   group: ${{ github.repository }}-deployment
+  cancel-in-progress: true
 
 jobs:
   FrontendCI:
-    uses: ./.github/workflows/frontend.yml
+    uses: ./.github/workflows/ci/ci-frontend.yml
 
   BackendCI:
-    uses: ./.github/workflows/backend.yml
+    uses: ./.github/workflows/ci/ci-backend.yml
 
   CreateVersion:
     if: github.event_name == 'workflow_dispatch'
@@ -32,6 +33,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: false
           DRY_RUN: true
+
   Dockerize:
     strategy:
       matrix:
@@ -58,7 +60,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./${{ matrix.app }}
-          platforms: linux/arm64
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:${{ needs.CreateVersion.outputs.new_tag }}
           cache-from: type=gha,scope=buildkit-${{ matrix.app }}
@@ -84,7 +86,7 @@ jobs:
           WITH_V: false
           DRY_RUN: false
 
-      - name: Kubectl tool installer
+      - name: Install Kubectl
         uses: Azure/setup-kubectl@v4
 
       - name: Configure Kubectl

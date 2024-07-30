@@ -1,4 +1,4 @@
-name: Frontend CI
+name: CI Frontend
 
 on:
   workflow_call:
@@ -9,14 +9,12 @@ env:
   PNPM_VERSION: 8
   WORKING_DIRECTORY: frontend
 
-defaults:
-  run:
-    # TODO: reuse environment variable
-    working-directory: frontend
-
 jobs:
   lint:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm-node
@@ -25,6 +23,9 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm-node
@@ -33,6 +34,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm-node
@@ -45,6 +49,9 @@ jobs:
 
   check:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm-node

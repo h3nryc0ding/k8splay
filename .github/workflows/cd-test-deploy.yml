@@ -1,4 +1,4 @@
-name: Deployment on PR
+name: CD Test Deploy
 
 on:
   pull_request:
@@ -9,10 +9,10 @@ env:
 
 jobs:
   FrontendCI:
-    uses: ./.github/workflows/frontend.yml
+    uses: ./.github/workflows/ci-frontend.yml
 
   BackendCI:
-    uses: ./.github/workflows/backend.yml
+    uses: ./.github/workflows/ci-backend.yml
 
   Containerize:
     needs: [ FrontendCI, BackendCI ]

@@ -22,11 +22,11 @@ and Continuous Deployment (CD) workflows.
 
 ### Continuous Integration (CI)
 
-- [ci/backend.yml](workflows/ci/backend.yml): CI workflow for backend code.
+- [ci-backend.yml](workflows/ci-backend.yml): CI workflow for backend code.
     - Running unit and integration tests
     - Linting and static code analysis
 
-- [ci/frontend.yml](workflows/ci/frontend.yml): CI workflow for frontend code.
+- [ci-frontend.yml](workflows/ci-frontend.yml): CI workflow for frontend code.
     - Running unit and end-to-end tests
     - Linting and static code analysis
 
@@ -34,19 +34,19 @@ and Continuous Deployment (CD) workflows.
 
 #### Production
 
-- [cd/prod/deploy.yml](workflows/cd/prod/deploy.yml): Deployment workflow for the production environment.
+- [cd-prod-deploy.yml](workflows/cd-prod-deploy.yml): Deployment workflow for the production environment.
     - Running final pre-deployment checks
     - Creating a release or tagging the code
     - Deploying to the production environment
 
 #### Test
 
-- [cd/test/deploy.yml](workflows/cd/test/deploy.yml): Deployment workflow for the test environment.
+- [cd-test-deploy.yml](workflows/cd-test-deploy.yml): Deployment workflow for the test environment.
     - Spinning up a new environment
     - Deploying the latest code from the PR
     - Providing a URL for reviewers to test the changes
 
-- [cd/test/cleanup.yml](workflows/cd/test/cleanup.yml): Cleanup workflow for the test environment after a PR is closed.
+- [cd-test-cleanup.yml](workflows/cd-test-cleanup.yml): Cleanup workflow for the test environment after a PR is closed.
     - Identifying resources associated with the closed PR
     - Destroying the temporary environment
     - Removing related cloud resources
