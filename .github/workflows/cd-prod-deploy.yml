@@ -110,7 +110,7 @@ jobs:
           --set ingress.domain=k8splay.xyz \
           --set app.image.tag=${{ steps.tag.outputs.new_tag }} \
           --set keycloak.realm=production \
-          --set keycloak.client.secret=${{ secrets.KEYCLOAK_BACKEND_SECRET }} \
+          --set keycloak.client.secret=${{ secrets.KEYCLOAK_PROD_SECRET }} \
           --wait \
           --atomic \
           --timeout 180s
