@@ -1,23 +1,27 @@
-name: Fullstack CD
+name: CD Prod Deploy
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      semver:
+        description: 'Semantic Version'
+        options:
+          - "patch"
+          - "minor"
+          - "major"
+        required: true
 
 concurrency:
   group: ${{ github.repository }}-deployment
 
 jobs:
   FrontendCI:
-    uses: ./.github/workflows/frontend.yml
+    uses: ./.github/workflows/ci-frontend.yml
 
   BackendCI:
-    uses: ./.github/workflows/backend.yml
+    uses: ./.github/workflows/ci-backend.yml
 
   CreateVersion:
-    if: github.event_name == 'workflow_dispatch'
     needs: [ BackendCI, FrontendCI ]
     runs-on: ubuntu-latest
     outputs:
@@ -30,8 +34,10 @@ jobs:
         id: tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: ${{ github.event.inputs.semver }}
           WITH_V: false
           DRY_RUN: true
+
   Dockerize:
     strategy:
       matrix:
@@ -81,10 +87,11 @@ jobs:
         id: tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: ${{ github.event.inputs.semver }}
           WITH_V: false
           DRY_RUN: false
 
-      - name: Kubectl tool installer
+      - name: Install Kubectl
         uses: Azure/setup-kubectl@v4
 
       - name: Configure Kubectl
@@ -102,7 +109,7 @@ jobs:
           --set ingress.domain=k8splay.xyz \
           --set app.image.tag=${{ steps.tag.outputs.new_tag }} \
           --set keycloak.realm=production \
-          --set keycloak.client.secret=${{ secrets.KEYCLOAK_BACKEND_SECRET }} \
+          --set keycloak.client.secret=${{ secrets.KEYCLOAK_PROD_SECRET }} \
           --wait \
           --atomic \
           --timeout 180s

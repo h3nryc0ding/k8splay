@@ -1,4 +1,4 @@
-name: Deployment on PR
+name: CD Test Deploy
 
 on:
   pull_request:
@@ -9,10 +9,10 @@ env:
 
 jobs:
   FrontendCI:
-    uses: ./.github/workflows/frontend.yml
+    uses: ./.github/workflows/ci-frontend.yml
 
   BackendCI:
-    uses: ./.github/workflows/backend.yml
+    uses: ./.github/workflows/ci-backend.yml
 
   Containerize:
     needs: [ FrontendCI, BackendCI ]
@@ -39,13 +39,11 @@ jobs:
         with:
           context: ./${{ matrix.app }}
           platforms: linux/arm64
-          push: ${{ github.actor != 'dependabot[bot]' }}
           tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:${{ env.NAMESPACE }}
           cache-from: type=gha,scope=buildkit-${{ matrix.app }}-${{ env.NAMESPACE }}
           cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}-${{ env.NAMESPACE }}
 
   Deploy:
-    if: github.actor != 'dependabot[bot]'
     needs: [ Containerize ]
     runs-on: ubuntu-latest
     steps:
@@ -90,8 +88,8 @@ jobs:
           --namespace $NAMESPACE \
           --set ingress.domain=${{ env.NAMESPACE }}.test.k8splay.xyz \
           --set app.image.tag=${{ env.NAMESPACE }} \
-          --set keycloak.realm=${{ env.NAMESPACE }} \
-          --set keycloak.client.secret=${{ secrets.KEYCLOAK_BACKEND_SECRET }} \
+          --set keycloak.realm=test \
+          --set keycloak.client.secret=${{ secrets.KEYCLOAK_TEST_SECRET }} \
           --wait \
           --atomic \
           --timeout 600s

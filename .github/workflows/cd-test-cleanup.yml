@@ -1,4 +1,4 @@
-name: Cleanup on PR close/merge
+name: CD Test Cleanup
 
 on:
   # use target because non-target wouldn't run on conflicts
