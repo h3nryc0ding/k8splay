@@ -1,6 +1,7 @@
 name: CI Frontend
 
 on:
+  push:
   workflow_call:
   workflow_dispatch:
 
