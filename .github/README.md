@@ -50,3 +50,8 @@ and Continuous Deployment (CD) workflows.
     - Identifying resources associated with the closed PR
     - Destroying the temporary environment
     - Removing related cloud resources
+
+#### Keycloak
+
+- [cd-keycloak-deploy.yml](workflows/cd-keycloak-deploy.yml): Deployment workflow for the Keycloak environment.
+    - Building and deploying the Keycloak configuration
