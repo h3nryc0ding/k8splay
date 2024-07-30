@@ -4,19 +4,19 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    target-branch: "develop"
+    target-branch: "dependencies"
   
   - package-ecosystem: npm
     directory: "/frontend"
     schedule:
       interval: "weekly"
-    target-branch: "develop"
+    target-branch: "dependencies"
   
   - package-ecosystem: gradle
     directory: "/backend"
     schedule:
       interval: "weekly"
-    target-branch: "develop"
+    target-branch: "dependencies"
   
   - package-ecosystem: docker
     directories:
@@ -24,4 +24,4 @@ updates:
       - "/frontend"
     schedule:
       interval: "weekly"
-    target-branch: "develop"
+    target-branch: "dependencies"
