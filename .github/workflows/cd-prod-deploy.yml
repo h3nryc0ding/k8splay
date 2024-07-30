@@ -12,10 +12,10 @@ concurrency:
 
 jobs:
   FrontendCI:
-    uses: ./.github/workflows/ci/ci-frontend.yml
+    uses: ./.github/workflows/ci-frontend.yml
 
   BackendCI:
-    uses: ./.github/workflows/ci/ci-backend.yml
+    uses: ./.github/workflows/ci-backend.yml
 
   CreateVersion:
     if: github.event_name == 'workflow_dispatch'
