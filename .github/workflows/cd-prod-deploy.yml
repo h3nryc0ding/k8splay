@@ -5,6 +5,7 @@ on:
     inputs:
       semver:
         description: 'Semantic Version'
+        type: choice
         options:
           - "patch"
           - "minor"
