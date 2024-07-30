@@ -1,10 +1,15 @@
 name: CD Prod Deploy
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      semver:
+        description: 'Semantic Version'
+        options:
+          - "patch"
+          - "minor"
+          - "major"
+        required: true
 
 concurrency:
   group: ${{ github.repository }}-deployment
@@ -18,7 +23,6 @@ jobs:
     uses: ./.github/workflows/ci-backend.yml
 
   CreateVersion:
-    if: github.event_name == 'workflow_dispatch'
     needs: [ BackendCI, FrontendCI ]
     runs-on: ubuntu-latest
     outputs:
@@ -31,6 +35,7 @@ jobs:
         id: tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: ${{ github.event.inputs.semver }}
           WITH_V: false
           DRY_RUN: true
 
@@ -83,6 +88,7 @@ jobs:
         id: tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: ${{ github.event.inputs.semver }}
           WITH_V: false
           DRY_RUN: false
 
