@@ -1,29 +1,22 @@
-FROM node:20-alpine AS keywind
-
+FROM node:20-alpine AS keywind-builder
 RUN apk add --no-cache git \
     && npm install -g pnpm
-
-RUN git clone https://github.com/lukin/keywind.git \
-    && cd keywind \
+WORKDIR /build
+RUN git clone --depth 1 https://github.com/lukin/keywind.git . \
     && pnpm install \
     && pnpm build \
     && pnpm build:jar
 
-FROM quay.io/keycloak/keycloak:latest AS builder
-
-ENV KC_HEALTH_ENABLED=true
-ENV KC_METRICS_ENABLED=true
-ENV KC_DB=postgres
-
-COPY --from=keywind keywind/out/keywind.jar /opt/keycloak/providers/keywind.jar
-
+FROM quay.io/keycloak/keycloak:latest AS keycloak-builder
+ENV KC_HEALTH_ENABLED=true \
+    KC_METRICS_ENABLED=true \
+    KC_DB=postgres
+COPY --from=keywind-builder /build/out/keywind.jar /opt/keycloak/providers/keywind.jar
 RUN /opt/keycloak/bin/kc.sh build
 
 FROM quay.io/keycloak/keycloak:latest
-COPY --from=builder /opt/keycloak/ /opt/keycloak/
-
-ENV KC_PROXY="edge"
-ENV KC_DB="postgres"
-ENV KC_HOSTNAME_STRICT=false
-
+COPY --from=keycloak-builder /opt/keycloak/ /opt/keycloak/
+ENV KC_PROXY=edge \
+    KC_DB=postgres \
+    KC_HOSTNAME_STRICT=false
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
