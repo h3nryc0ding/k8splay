@@ -41,6 +41,7 @@ jobs:
         with:
           context: ./${{ matrix.app }}
           platforms: linux/arm64
+          push: true
           tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:${{ env.NAMESPACE }}
           cache-from: type=gha,scope=buildkit-${{ matrix.app }}-${{ env.NAMESPACE }}
           cache-to: type=gha,mode=max,scope=buildkit-${{ matrix.app }}-${{ env.NAMESPACE }}
