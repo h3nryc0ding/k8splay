@@ -1,7 +1,6 @@
-/// <references types="houdini-svelte">
+import type { ConfigFile } from 'houdini';
 
-/** @type {import('houdini').ConfigFile} */
-const config = {
+const config: ConfigFile = {
 	watchSchema: {
 		url: 'http://localhost:8080/graphql'
 	},
