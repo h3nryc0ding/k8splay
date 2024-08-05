@@ -19,4 +19,4 @@ COPY --from=keycloak-builder /opt/keycloak/ /opt/keycloak/
 ENV KC_PROXY=edge \
     KC_DB=postgres \
     KC_HOSTNAME_STRICT=false
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start"]
