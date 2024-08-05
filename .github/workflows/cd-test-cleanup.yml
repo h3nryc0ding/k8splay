@@ -1,9 +1,10 @@
 name: CD Test Cleanup
 
 on:
-  # use target because non-target wouldn't run on conflicts
+  # use target so secrets are not exposed
   pull_request_target:
     types: [ closed ]
+    branches: [ dependencies ]
 
 env:
   NAMESPACE: pr-${{ github.event.pull_request.number }}
