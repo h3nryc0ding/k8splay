@@ -7,16 +7,16 @@ RUN git clone --depth 1 https://github.com/lukin/keywind.git . \
     && pnpm build \
     && pnpm build:jar
 
-FROM quay.io/keycloak/keycloak:latest AS keycloak-builder
+FROM quay.io/keycloak/keycloak:25.0 AS keycloak-builder
 ENV KC_HEALTH_ENABLED=true \
     KC_METRICS_ENABLED=true \
     KC_DB=postgres
 COPY --from=keywind-builder /build/out/keywind.jar /opt/keycloak/providers/keywind.jar
 RUN /opt/keycloak/bin/kc.sh build
 
-FROM quay.io/keycloak/keycloak:latest
+FROM quay.io/keycloak/keycloak:25.0
 COPY --from=keycloak-builder /opt/keycloak/ /opt/keycloak/
-ENV KC_PROXY=edge \
-    KC_DB=postgres \
-    KC_HOSTNAME_STRICT=false
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "show-config"]
+ENV KC_PROXY_HEADERS=xforwarded \
+    KC_HOSTNAME=https://accounts.k8splay.xyz \
+    KC_HTTP_ENABLED=true
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
