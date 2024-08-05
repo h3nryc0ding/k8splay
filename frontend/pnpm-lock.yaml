@@ -64,8 +64,8 @@ importers:
         specifier: ^2.43.0
         version: 2.43.0(eslint@8.57.0)(svelte@4.2.12)
       houdini:
-        specifier: ^1.2.51
-        version: 1.2.51
+        specifier: ^1.2.54
+        version: 1.2.54
       houdini-svelte:
         specifier: ^1.2.34
         version: 1.2.42(@types/node@20.11.24)
@@ -1501,8 +1501,8 @@ packages:
   houdini-svelte@1.2.42:
     resolution: {integrity: sha512-RKTMGLEDUOpaHTS+dEZWMRey5Ht6/AlUIt1O1YveL3OSk0qARDiESC+4JirvcIamdKNcHpvs0d5D+7lOPtw8NA==}
 
-  houdini@1.2.51:
-    resolution: {integrity: sha512-g8hAEf3QzqcHHf68KOyGDW1Mx5wuLTK2W+pEpLSdWtz62zdNLXRlBtsNPUaqvr+PUUZgAR/kxrDkxMfjlViLUg==}
+  houdini@1.2.54:
+    resolution: {integrity: sha512-4162GdFb/nNpzQBQnpEP/Zn+4I2wUyXsjwPM0qamFKkkD656YU6kXM1MjqGY4d+USiOqLCXW+CXEVts7Rk+hYA==}
     hasBin: true
 
   human-signals@3.0.1:
@@ -3946,7 +3946,7 @@ snapshots:
       ast-types: 0.16.1
       estree-walker: 3.0.3
       graphql: 15.8.0
-      houdini: 1.2.51
+      houdini: 1.2.54
       recast: 0.23.5
       rollup: 3.29.4
       svelte: 3.59.2
@@ -3961,7 +3961,7 @@ snapshots:
       - supports-color
       - terser
 
-  houdini@1.2.51:
+  houdini@1.2.54:
     dependencies:
       '@babel/parser': 7.24.0
       '@clack/prompts': 0.6.3
