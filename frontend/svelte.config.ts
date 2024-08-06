@@ -1,15 +1,16 @@
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import * as path from 'path';
+import type { Config } from '@sveltejs/kit';
 
-/** @type {import('@sveltejs/kit').Config} */
-const config = {
-	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
-	// for more information about preprocessors
+const config: Config = {
 	preprocess: vitePreprocess(),
-
 	kit: {
-		adapter: adapter({ out: 'build', precompress: false, envPrefix: '' }),
+		adapter: adapter({
+			out: 'build',
+			precompress: true,
+			envPrefix: ''
+		}),
 		alias: {
 			$houdini: path.resolve('.', '$houdini')
 		}
