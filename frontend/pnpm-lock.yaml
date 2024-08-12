@@ -67,8 +67,8 @@ importers:
         specifier: ^1.2.54
         version: 1.2.54
       houdini-svelte:
-        specifier: ^1.2.34
-        version: 1.2.42(@types/node@20.11.24)
+        specifier: ^1.2.54
+        version: 1.2.54(@types/node@20.11.24)
       postcss:
         specifier: ^8.4.32
         version: 8.4.40
@@ -1498,8 +1498,8 @@ packages:
     resolution: {integrity: sha512-1/th4MHjnwncwXsIW6QMzlvYL9kG5e/CpVvLRZe4XPa8TOUNbCELqmvhDmnkNsAjwaG4+I8gJJL0JBvTTLO9qA==}
     engines: {node: '>= 0.4'}
 
-  houdini-svelte@1.2.42:
-    resolution: {integrity: sha512-RKTMGLEDUOpaHTS+dEZWMRey5Ht6/AlUIt1O1YveL3OSk0qARDiESC+4JirvcIamdKNcHpvs0d5D+7lOPtw8NA==}
+  houdini-svelte@1.2.54:
+    resolution: {integrity: sha512-+kMCXlaWz2NSkE2z1HzE3byNI1VGRKCKJSn+0JTOpoQBU95kdp30ZH1QGZap+tkplRkld/7OS6EqC+jBCAiWBg==}
 
   houdini@1.2.54:
     resolution: {integrity: sha512-4162GdFb/nNpzQBQnpEP/Zn+4I2wUyXsjwPM0qamFKkkD656YU6kXM1MjqGY4d+USiOqLCXW+CXEVts7Rk+hYA==}
@@ -3942,7 +3942,7 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  houdini-svelte@1.2.42(@types/node@20.11.24):
+  houdini-svelte@1.2.54(@types/node@20.11.24):
     dependencies:
       '@kitql/helpers': 0.8.8
       '@sveltejs/kit': 1.30.4(svelte@3.59.2)(vite@4.5.2(@types/node@20.11.24))
