@@ -1,5 +1,5 @@
 # Start with a base image containing Java runtime
-FROM gradle:8.9.0-jdk17 as build
+FROM gradle:8.10.0-jdk17 as build
 
 # Set the current working directory inside the image
 WORKDIR /app
