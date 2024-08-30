@@ -28,7 +28,7 @@ importers:
         version: 2.2.1
       tailwind-variants:
         specifier: ^0.2.1
-        version: 0.2.1(tailwindcss@3.4.1)
+        version: 0.2.1(tailwindcss@3.4.10)
     devDependencies:
       '@playwright/test':
         specifier: ^1.42.1
@@ -44,7 +44,7 @@ importers:
         version: 3.0.2(svelte@4.2.12)(vite@5.4.0(@types/node@20.11.24))
       '@tailwindcss/typography':
         specifier: ^0.5.10
-        version: 0.5.10(tailwindcss@3.4.1)
+        version: 0.5.10(tailwindcss@3.4.10)
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.18.0
         version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
@@ -91,8 +91,8 @@ importers:
         specifier: ^3.8.5
         version: 3.8.5(postcss-load-config@5.0.3(jiti@1.21.0)(postcss@8.4.41))(postcss@8.4.41)(svelte@4.2.12)
       tailwindcss:
-        specifier: ^3.3.6
-        version: 3.4.1
+        specifier: ^3.4.10
+        version: 3.4.10
       tslib:
         specifier: ^2.4.1
         version: 2.6.2
@@ -2274,8 +2274,8 @@ packages:
     peerDependencies:
       tailwindcss: '*'
 
-  tailwindcss@3.4.1:
-    resolution: {integrity: sha512-qAYmXRfk3ENzuPBakNK0SRrUDipP8NQnEY6772uDhflcQz5EhRdD7JNZxyrFHVQNCwULPBn6FNPp9brpO7ctcA==}
+  tailwindcss@3.4.10:
+    resolution: {integrity: sha512-KWZkVPm7yJRhdu4SRSl9d4AK2wM3a50UsvgHZO7xY77NQr2V+fIrEuoDGQcbvswWvFGbS2f6e+jC/6WJm1Dl0w==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -3119,13 +3119,13 @@ snapshots:
     dependencies:
       tslib: 2.6.2
 
-  '@tailwindcss/typography@0.5.10(tailwindcss@3.4.1)':
+  '@tailwindcss/typography@0.5.10(tailwindcss@3.4.10)':
     dependencies:
       lodash.castarray: 4.4.0
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
-      tailwindcss: 3.4.1
+      tailwindcss: 3.4.10
 
   '@types/braces@3.0.4': {}
 
@@ -4602,12 +4602,12 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.24.0
 
-  tailwind-variants@0.2.1(tailwindcss@3.4.1):
+  tailwind-variants@0.2.1(tailwindcss@3.4.10):
     dependencies:
       tailwind-merge: 2.2.1
-      tailwindcss: 3.4.1
+      tailwindcss: 3.4.10
 
-  tailwindcss@3.4.1:
+  tailwindcss@3.4.10:
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
