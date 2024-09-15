@@ -47,7 +47,7 @@
 		"graphql-ws": "^5.16.0",
 		"lucide-svelte": "^0.363.0",
 		"mode-watcher": "^0.4.1",
-		"tailwind-merge": "^2.2.0",
+		"tailwind-merge": "^2.5.2",
 		"tailwind-variants": "^0.2.1"
 	}
 }
