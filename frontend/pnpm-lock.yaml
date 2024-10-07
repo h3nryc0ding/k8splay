@@ -67,8 +67,8 @@ importers:
         specifier: ^1.2.54
         version: 1.2.54
       houdini-svelte:
-        specifier: ^1.2.56
-        version: 1.2.56(@types/node@20.11.24)
+        specifier: ^1.2.64
+        version: 1.2.64(@types/node@20.11.24)
       postcss:
         specifier: ^8.4.45
         version: 8.4.45
@@ -1276,6 +1276,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   esm-env@1.0.0:
@@ -1479,15 +1480,15 @@ packages:
     resolution: {integrity: sha512-1/th4MHjnwncwXsIW6QMzlvYL9kG5e/CpVvLRZe4XPa8TOUNbCELqmvhDmnkNsAjwaG4+I8gJJL0JBvTTLO9qA==}
     engines: {node: '>= 0.4'}
 
-  houdini-svelte@1.2.56:
-    resolution: {integrity: sha512-t2eDPcMXstdTMv694KukZgmhJHy5WrB2dFZyVFMXaWHNT3ETtMFG99Mg0HXdxzSFzaiWXJnZIHneKdJ/bSZPaA==}
+  houdini-svelte@1.2.64:
+    resolution: {integrity: sha512-raFrFclAJYjT1eOhp4PvGT7bQQKIYHDYfloQShM4WjHwlAq4SviI0cpjeUFluYWm+HY9azg3QG4LeOsQMcoFLw==}
 
   houdini@1.2.54:
     resolution: {integrity: sha512-4162GdFb/nNpzQBQnpEP/Zn+4I2wUyXsjwPM0qamFKkkD656YU6kXM1MjqGY4d+USiOqLCXW+CXEVts7Rk+hYA==}
     hasBin: true
 
-  houdini@1.2.56:
-    resolution: {integrity: sha512-AqYuXuuCQMrkpePhNjZHnmUeIi8iOPBHOq7WmmNR1fmUhPhSFQAXOzI8EFCwwDB4h8W393pVSzH7bOZsx8h0Iw==}
+  houdini@1.2.64:
+    resolution: {integrity: sha512-oqJkrXTYB6Og1RgGI7aS/E8XnAh2moVszms4G61lNBp9oGIkzTRl3Prr/D7dSKmXpWGKbIXkliOeAZ2/wQSFmA==}
     hasBin: true
 
   human-signals@3.0.1:
@@ -3890,14 +3891,14 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  houdini-svelte@1.2.56(@types/node@20.11.24):
+  houdini-svelte@1.2.64(@types/node@20.11.24):
     dependencies:
       '@kitql/helpers': 0.8.8
       '@sveltejs/kit': 1.30.4(svelte@3.59.2)(vite@4.5.2(@types/node@20.11.24))
       ast-types: 0.16.1
       estree-walker: 3.0.3
       graphql: 15.8.0
-      houdini: 1.2.56
+      houdini: 1.2.64
       recast: 0.23.5
       rollup: 3.29.4
       svelte: 3.59.2
@@ -3940,7 +3941,7 @@ snapshots:
       recast: 0.23.5
       vite-plugin-watch-and-run: 1.6.0
 
-  houdini@1.2.56:
+  houdini@1.2.64:
     dependencies:
       '@babel/parser': 7.24.0
       '@clack/prompts': 0.6.3
