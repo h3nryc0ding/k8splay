@@ -1,4 +1,8 @@
-# MicroK8s Playground
+# ⚠️ Under Construction ⚠️
+
+This Kubernetes playground is currently undergoing significant upgrades and **will not be available for a few weeks** as I rewrite the deployment pipeline using **FluxCD**.
+
+Please check back later for updates! Thank you for your understanding! 🙏
 
 ## Motivation
 
