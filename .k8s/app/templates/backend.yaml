@@ -34,9 +34,6 @@ spec:
             - name: KEYCLOAK_ISSUER_URI
               value: "{{ .Values.keycloak.url }}/{{ .Values.keycloak.realm }}"
           resources:
-            requests:
-              cpu: "500m"
-              memory: "512Mi"
             limits:
               cpu: "1"
               memory: "4Gi"
