@@ -27,7 +27,7 @@
 		"eslint-plugin-svelte": "^2.43.0",
 		"houdini": "^1.2.54",
 		"houdini-svelte": "^1.2.56",
-		"postcss": "^8.4.45",
+		"postcss": "^8.4.49",
 		"postcss-load-config": "^5.0.2",
 		"prettier": "^3.2.4",
 		"prettier-plugin-svelte": "^3.2.6",
