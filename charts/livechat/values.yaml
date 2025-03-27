@@ -1,0 +1,39 @@
+backend:
+  enabled: true
+  
+  image:
+    name: h3nryc0ding/k8splay
+    tag: 1.114.0-debian-12-r0
+
+  ingress:
+    enabled: true
+    hostname: "api.codehenry.de"
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-production"
+    tls: true
+  
+  oauth2:
+    issuer: ""
+    clientId: ""
+    clientName: ""
+    clientSecret: ""
+
+  mongodb:
+    uri: "mongodb://livechat:livechat@mongodb-livechat:27017/livechat"
+
+mongodb:
+  # -- enable the Bitnami MongoDB chart. Refer to https://github.com/bitnami/charts/blob/main/bitnami/mongodb/ for possible values.
+  enabled: false
+  
+  architecture: standalone
+  
+  auth:
+    databases:
+      - livechat
+    username:
+      - livechat
+    passwords:
+
+keycloak:
+  # -- enable the Bitnami Keycloak chart. Refer to https://github.com/bitnami/charts/blob/main/bitnami/keycloak/ for possible values.
+  enabled: false
