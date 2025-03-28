@@ -1,0 +1,34 @@
+{{- if .Values.frontend.enabled }}
+{{- if .Values.frontend.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Chart.Name }}-frontend
+  annotations: {{- toYaml .Values.frontend.ingress.annotations | nindent 4 }}
+  labels:
+    app: {{ .Chart.Name }}
+    component: frontend
+    tier: frontend
+spec:
+  ingressClassName: nginx
+  rules:
+    {{- if .Values.frontend.ingress.hostname }}
+    - host: {{ .Values.frontend.ingress.hostname }}
+      http:
+        paths:
+          - path: "/(.*)"
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Chart.Name }}-frontend
+                port:
+                  number: 3000
+    {{- end }}
+  {{- if .Values.frontend.ingress.tls }}
+  tls:
+    - hosts:
+        - {{ .Values.frontend.ingress.hostname }}
+      secretName: {{ printf "%s-tls" .Values.frontend.ingress.hostname }}
+  {{- end }}
+{{- end }}
+{{- end }}

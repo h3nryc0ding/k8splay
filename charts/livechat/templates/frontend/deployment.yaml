@@ -1,46 +1,33 @@
-{{- if .Values.backend.enabled }}
+{{- if .Values.frontend.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-backend
+  name: {{ .Chart.Name }}-frontend
   labels:
     app: {{ .Chart.Name }}
-    component: backend
-    tier: backend
+    component: frontend
+    tier: frontend
 spec:
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
-      component: backend
+      component: frontend
   template:
     metadata:
       labels:
         app: {{ .Chart.Name }}
-        component: backend
+        component: frontend
     spec:
       containers:
-        - name: {{ .Chart.Name }}-backend
-          image: {{ .Values.backend.image.name }}:{{ .Values.backend.image.tag }}
+        - name: {{ .Chart.Name }}-frontend
+          image: {{ .Values.frontend.image.name }}:{{ .Values.frontend.image.tag }}
           imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8080
           env:
-            - name: FRONTEND_DOMAIN
-              value: {{ .Values.frontend.ingress.hostname | quote }}
             - name: BACKEND_DOMAIN
               value: {{ .Values.backend.ingress.hostname | quote }}
-            - name: OAUTH2_ISSUER_URI
-              value: # TODO
-            - name: OAUTH2_CLIENT_ID
-              value: # TODO
-            - name: OAUTH2_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: OAuth2_CLIENT_SECRET
-                  name: {{ .Chart.Name }}-secrets
-            - name: MONGODB_URI
-              value: {{ .Values.backend.mongodb.uri | quote }}
           livenessProbe:
             httpGet:
               path: "/actuator/health/liveness"

@@ -1,6 +1,20 @@
+frontend:
+  enabled: true
+
+  image:
+    name: h3nryc0ding/k8splay
+    tag: 1.114.0-debian-12-r0
+
+  ingress:
+    enabled: true
+    hostname: "codehenry.de"
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-production"
+    tls: true
+
 backend:
   enabled: true
-  
+
   image:
     name: h3nryc0ding/k8splay
     tag: 1.114.0-debian-12-r0

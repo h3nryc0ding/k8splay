@@ -1,16 +1,16 @@
-{{- if .Values.backend.enabled }}
+{{- if .Values.frontend.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Chart.Name }}-backend
+  name: {{ .Chart.Name }}-frontend
   labels:
     app: {{ .Chart.Name }}
-    component: backend
+    component: frontend
 spec:
   type: ClusterIP
   selector:
     app: {{ .Chart.Name }}
-    component: backend
+    component: frontend
   ports:
     - name: http
       port: 80
