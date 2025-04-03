@@ -1,4 +1,4 @@
-name: CI Backend
+name: CI Frontend
 
 on:
   push:
@@ -9,43 +9,41 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend
+        working-directory: frontend
     strategy:
       fail-fast: false
       matrix:
         action:
-          - ktlintcheck
-          - assemble
+          - lint
+          - check
+          - build
           - test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - name: Set up PNPM
+        uses: pnpm/action-setup@v4
         with:
-          distribution: 'temurin'
-          java-version: '21.0.6'
-        
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
+          version: 10
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          node-version: 20
+          cache: 'pnpm'
 
       - name: Build
         run: |
-          ./gradlew ${{ matrix.action }} --stacktrace --no-daemon --info
+          pnpm install --frozen-lockfile
+          pnpm ${{ matrix.action }}
 
   docker:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend
+        working-directory: frontend
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,10 +54,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: backend
-          file: backend/Dockerfile
+          context: frontend
+          file: frontend/Dockerfile
           platforms: linux/amd64 #,linux/arm64
           push: false
-          tags: backend:TODO
+          tags: frontend:TODO
           cache-from: type=gha
           cache-to: type=gha,mode=max
