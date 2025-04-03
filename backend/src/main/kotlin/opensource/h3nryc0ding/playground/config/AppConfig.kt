@@ -1,14 +1,14 @@
-package opensource.h3nryc0ding.playground.config
+package opensource.h3nryc0ding.livechat.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
-import java.net.URL
+import java.net.URI
 
 @Configuration
 class AppConfig {
-    @Value("\${app.frontend.url}")
-    lateinit var frontendUrl: URL
+    @Value("\${FRONTEND_URI}")
+    lateinit var FRONTEND_URL: URI
 
-    @Value("\${app.backend.url}")
-    lateinit var backendUrl: URL
+    @Value("\${BACKEND_URI}")
+    lateinit var BACKEND_URL: URI
 }

@@ -1,27 +1,21 @@
-import { browser, dev } from '$app/environment';
 import { env } from '$env/dynamic/public';
 
-export const backendUrl = () => {
-	if (dev) return 'http://localhost:8080';
-	if (browser) return `https://${env.PUBLIC_BACKEND_DOMAIN}`;
-	return 'http://backend:80';
-};
+export const BACKEND_URI = new URL(env.BACKEND_URI);
 
 export const loginUrl = () => {
-	let host: string;
-	if (dev) {
-		host = 'http://localhost:8080';
-	} else {
-		host = `https://${env.PUBLIC_BACKEND_DOMAIN}`;
-	}
-	return `${host}/oauth2/authorization/keycloak`;
+	return new URL('/oauth2/authorization/default', BACKEND_URI);
+};
+
+export const logoutUrl = () => {
+	return new URL('/oauth2/revocation/default', BACKEND_URI);
 };
 
 export const graphqlUrl = () => {
-	return `${backendUrl()}/graphql`;
+	return new URL('/graphql', BACKEND_URI);
 };
 
 export const subscriptionUrl = () => {
-	if (dev) return 'ws://localhost:8080/subscriptions';
-	return `wss://${env.PUBLIC_BACKEND_DOMAIN}/subscriptions`;
+	const subscriptionUri = new URL(BACKEND_URI);
+	subscriptionUri.protocol = subscriptionUri.protocol === 'https:' ? 'wss:' : 'ws:';
+	return new URL('/subscriptions', subscriptionUri);
 };

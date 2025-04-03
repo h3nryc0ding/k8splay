@@ -12,6 +12,10 @@ const config = {
 		adapter: adapter({ out: 'build', precompress: false, envPrefix: '' }),
 		alias: {
 			$houdini: path.resolve('.', '$houdini')
+		},
+		env: {
+			publicPrefix: '',
+			privatePrefix: ''
 		}
 	}
 };

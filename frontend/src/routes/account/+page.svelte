@@ -14,8 +14,4 @@
 	<Input id="email" disabled value={$User.data?.user?.email} />
 	<Label for="username">Username</Label>
 	<Input id="username" disabled value={$User.data?.user?.preferredUsername} />
-	<Label for="givenName">Given Name</Label>
-	<Input id="givenName" disabled value={$User.data?.user?.givenName} />
-	<Label for="familyName">Family Name</Label>
-	<Input id="familyName" disabled value={$User.data?.user?.familyName} />
 </form>

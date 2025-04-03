@@ -65,7 +65,7 @@ tasks.withType<com.netflix.graphql.dgs.codegen.gradle.GenerateJavaTask> {
     generateClient = true
     generateKotlinClosureProjections = true
     generateKotlinNullableClasses = true
-    packageName = "opensource.h3nryc0ding.playground.generated"
+    packageName = "opensource.h3nryc0ding.livechat.generated"
     language = "kotlin"
 }
 

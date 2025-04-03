@@ -1,7 +1,6 @@
-import { logout } from '$lib/auth';
 import { redirect } from '@sveltejs/kit';
+import { logoutUrl } from '$lib/urls';
 
 export function load() {
-	logout();
-	throw redirect(302, '/');
+	throw redirect(302, logoutUrl());
 }

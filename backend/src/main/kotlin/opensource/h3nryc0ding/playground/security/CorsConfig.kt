@@ -1,6 +1,6 @@
-package opensource.h3nryc0ding.playground.security
+package opensource.h3nryc0ding.livechat.security
 
-import opensource.h3nryc0ding.playground.config.AppConfig
+import opensource.h3nryc0ding.livechat.config.AppConfig
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.cors.CorsConfiguration
@@ -16,7 +16,7 @@ class CorsConfig(
         val config =
             CorsConfiguration().apply {
                 allowCredentials = true
-                addAllowedOrigin(appConfig.frontendUrl.toString())
+                addAllowedOrigin(appConfig.FRONTEND_URL.toString())
                 addAllowedHeader("*")
                 addAllowedMethod("*")
             }
