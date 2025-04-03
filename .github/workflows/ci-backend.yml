@@ -4,12 +4,15 @@ on:
   push:
   workflow_dispatch:
 
+env:
+  WORKING_DIR: backend
+
 jobs:
   ci:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend
+        working-directory: ${{ env.WORKING_DIR }}
     strategy:
       fail-fast: false
       matrix:
@@ -45,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend
+        working-directory: ${{ env.WORKING_DIR }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,10 +59,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: backend
-          file: backend/Dockerfile
+          context: ${{ env.WORKING_DIR }}
+          file: ${{ env.WORKING_DIR }}/Dockerfile
           platforms: linux/amd64 #,linux/arm64
           push: false
-          tags: backend:TODO
+          tags: ${{ env.WORKING_DIR }}:TODO
           cache-from: type=gha
           cache-to: type=gha,mode=max
