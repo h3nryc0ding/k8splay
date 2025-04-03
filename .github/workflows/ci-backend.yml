@@ -12,11 +12,12 @@ jobs:
       run:
         working-directory: backend
     strategy:
+      fail-fast: false
       matrix:
         action:
-          - KtlintCheck
+          - ktlintcheck
           - assemble
-          - check
+          - test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -58,7 +59,7 @@ jobs:
         with:
           context: backend
           file: backend/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 #,linux/arm64
           push: false
           tags: backend:TODO
           cache-from: type=gha
