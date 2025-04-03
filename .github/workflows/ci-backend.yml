@@ -5,41 +5,61 @@ on:
   workflow_call:
   workflow_dispatch:
 
-env:
-  JAVA_VERSION: 17
-  JAVA_DISTRIBUTION: 'adopt'
-  WORKING_DIRECTORY: backend
-
 jobs:
-  lint:
+  ci:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: backend
+    strategy:
+      matrix:
+        action:
+          - KtlintCheck
+          - assemble
+          - check
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-java-gradle
-      - name: Lint with Ktlint
-        run: ./gradlew ktlintCheck
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  build:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-java-gradle
-      - name: Assemble with Gradle
-        run: ./gradlew assemble
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21.0.6'
+        
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
-  test:
+      - name: Build
+        run: |
+          ./gradlew ${{ matrix.action }} --stacktrace --no-daemon --info
+
+  docker:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: backend
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-java-gradle
-      - name: Run tests with Gradle
-        run: ./gradlew check
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          file: backend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: false
+          tags: backend:TODO
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
