@@ -4,7 +4,7 @@ import { redirect } from '@sveltejs/kit';
 import { graphqlUrl, subscriptionUrl } from '$lib/urls';
 
 export default new HoudiniClient({
-	url: graphqlUrl(),
+	url: graphqlUrl().toString(),
 	fetchParams() {
 		return {
 			credentials: 'include'
@@ -23,7 +23,7 @@ export default new HoudiniClient({
 	plugins: [
 		subscription(() =>
 			createClient({
-				url: subscriptionUrl()
+				url: subscriptionUrl().toString()
 			})
 		)
 	]
