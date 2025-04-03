@@ -11,7 +11,7 @@
 		"check:watch": "npm run prepare && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"test:integration": "playwright test",
+		"test:integration": "npx playwright install --with-deps && playwright test",
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
