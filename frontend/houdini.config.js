@@ -1,9 +1,9 @@
-/// <references types="houdini-svelte">
+import { BACKEND_URI } from './src/lib/urls';
 
 /** @type {import('houdini').ConfigFile} */
 const config = {
 	watchSchema: {
-		url: 'http://localhost:8080/graphql'
+		url: `${BACKEND_URI}/graphql`
 	},
 	plugins: {
 		'houdini-svelte': {}

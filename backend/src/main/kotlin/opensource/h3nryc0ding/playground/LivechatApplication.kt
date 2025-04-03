@@ -1,11 +1,11 @@
-package opensource.h3nryc0ding.playground
+package opensource.h3nryc0ding.livechat
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class BackendApplication
+class LivechatApplication
 
 fun main(args: Array<String>) {
-    runApplication<BackendApplication>(*args)
+    runApplication<LivechatApplication>(*args)
 }

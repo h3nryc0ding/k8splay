@@ -20,7 +20,7 @@ COPY src src
 
 # Build a jar
 RUN ./gradlew bootJar
-RUN cp /app/build/libs/playground-0.0.1-SNAPSHOT.jar /app/app.jar
+RUN cp /app/build/libs/livechat-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # Start with a base image containing Java runtime
 FROM openjdk:17
