@@ -16,7 +16,7 @@ class CorsConfig(
         val config =
             CorsConfiguration().apply {
                 allowCredentials = true
-                addAllowedOrigin(appConfig.FRONTEND_URL.toString())
+                addAllowedOrigin(appConfig.FRONTEND_URI.toString())
                 addAllowedHeader("*")
                 addAllowedMethod("*")
             }
