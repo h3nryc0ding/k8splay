@@ -1,6 +1,13 @@
 import { env } from '$env/dynamic/public';
 
-export const BACKEND_URI = new URL(env.BACKEND_URI);
+export const BACKEND_URI = new URL(
+	env.npm_lifecycle_event != 'build'
+		? env.BACKEND_URI ||
+			(() => {
+				throw new Error(`Environment variable 'BACKEND_URI' is not set`);
+			})()
+		: 'http://localhost:8080' // Fails during `pnpm run build` if empty
+);
 
 export const loginUrl = () => {
 	return new URL('/oauth2/authorization/default', BACKEND_URI);

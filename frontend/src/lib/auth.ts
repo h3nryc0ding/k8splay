@@ -1,8 +1,7 @@
-import { goto } from '$app/navigation';
 import { loginUrl, logoutUrl } from './urls';
 
 export function login() {
-	window.location.replace(loginUrl())
+	window.location.replace(loginUrl());
 }
 
 export function logout() {

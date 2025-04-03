@@ -14,5 +14,6 @@ dev: install ## Start the development environment
 
 clean: ## Clean the project
 	rm -rf node_modules
+	rm -rf build
 	rm -rf .svelte-kit
 	rm -rf \$$houdini
