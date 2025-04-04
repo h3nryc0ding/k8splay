@@ -3,25 +3,21 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-    target-branch: "dependencies"
+      interval: "monthly"
   
   - package-ecosystem: npm
     directory: "/frontend"
     schedule:
-      interval: "weekly"
-    target-branch: "dependencies"
+      interval: "monthly"
   
   - package-ecosystem: gradle
     directory: "/backend"
     schedule:
-      interval: "weekly"
-    target-branch: "dependencies"
+      interval: "monthly"
   
   - package-ecosystem: docker
     directories:
       - "/backend"
       - "/frontend"
     schedule:
-      interval: "weekly"
-    target-branch: "dependencies"
+      interval: "monthly"
