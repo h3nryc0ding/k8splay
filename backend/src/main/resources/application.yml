@@ -1,11 +1,21 @@
-server:
-  error:
-    whitelabel:
-      enabled: false
+server.error.whitelabel.enabled: false
 
 spring:
-  profiles:
-    active: dev
-  docker:
-    compose:
-      enabled: false
+  data.mongodb.uri: ${MONGODB_URI}
+  security:
+    oauth2:
+      client:
+        provider:
+          default:
+            issuer-uri: ${OAUTH2_ISSUER_URI}
+        registration:
+          default:
+            client-id: ${OAUTH2_CLIENT_ID}
+            client-secret: ${OAUTH2_CLIENT_SECRET}
+            scope: openid
+
+management:
+  health:
+    livenessstate.enabled: true
+    readinessstate.enabled: true
+  server.port: 8081

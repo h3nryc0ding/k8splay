@@ -1,39 +1,19 @@
-# Build stage
-FROM node:20-alpine AS builder
-WORKDIR /app
+FROM node:22-alpine@sha256:9bef0ef1e268f60627da9ba7d7605e8831d5b56ad07487d24d1aa386336d1944 AS build
 
-# Install pnpm
-RUN npm install -g pnpm
-
-# Copy package files and install dependencies
-COPY package.json ./
-RUN pnpm install
-
-# Copy source files
+RUN corepack enable
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 COPY . .
+RUN pnpm run build && \
+    pnpm prune --prod
 
-# Build the application
-RUN pnpm run build
+FROM node:22-alpine@sha256:9bef0ef1e268f60627da9ba7d7605e8831d5b56ad07487d24d1aa386336d1944
+COPY --from=build node_modules/ node_modules
+COPY --from=build build/ build
 
-# Remove development dependencies
-RUN pnpm prune --prod
-
-# Production stage
-FROM node:20-alpine
-WORKDIR /app
-
-# Copy built files and production dependencies from the build stage
-COPY --from=builder /app/build ./build/
-COPY --from=builder /app/node_modules ./node_modules/
-
-# Copy package.json
-COPY package.json .
-
-# Expose the port the app runs in
 EXPOSE 3000
-
-# Set NODE_ENV environment variable to "production"
 ENV NODE_ENV=production
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD wget -q --spider http://localhost:3000 || exit 1
 
-# Serve the app
-CMD [ "node", "build" ]
+ENTRYPOINT [ "node", "build" ]

@@ -1,18 +1,26 @@
-version: '3.8'
-
 services:
   mongo:
-    image: mongo
-    container_name: mongo
-    restart: always
+    image: mongo:8.0.6-noble@sha256:1697f35db2404e7ca87650fee7e5aab4188d2c2f3f0adbe211d060ec9b5799e8
     ports:
-      - "27017:27017"
+      - "${MONGO_PORT}:27017"
     volumes:
       - mongo_data:/data/db
+  keycloak:
+    image: keycloak/keycloak:26.1.4@sha256:044a457e04987e1fff756be3d2fa325a4ef420fa356b7034ecc9f1b693c32761
+    ports:
+      - "${KEYCLOAK_PORT}:8080"
+    command:
+      - start-dev
+      - --verbose
+      - --import-realm
+    volumes:
+      - source: realm-export.json
+        target: /opt/keycloak/data/import/realm.json
+        type: bind
+        read_only: true
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: root
-      MONGO_INITDB_DATABASE: dev-database
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
 
 volumes:
   mongo_data:

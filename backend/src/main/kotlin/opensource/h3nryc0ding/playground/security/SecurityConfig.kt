@@ -1,8 +1,9 @@
-package opensource.h3nryc0ding.playground.security
+package opensource.h3nryc0ding.livechat.security
 
-import opensource.h3nryc0ding.playground.config.AppConfig
+import opensource.h3nryc0ding.livechat.config.AppConfig
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity
@@ -11,6 +12,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler
 import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler
+import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers
 import org.springframework.web.server.session.CookieWebSessionIdResolver
 import org.springframework.web.server.session.WebSessionIdResolver
@@ -40,15 +42,16 @@ class SecurityConfig(
             oauth2Login {
                 authenticationSuccessHandler =
                     RedirectServerAuthenticationSuccessHandler().apply {
-                        setLocation(appConfig.frontendUrl.toURI().resolve("/account"))
+                        setLocation(appConfig.FRONTEND_URI)
                     }
             }
 
             logout {
+                requiresLogout = PathPatternParserServerWebExchangeMatcher("/oauth2/revocation/default", HttpMethod.GET)
                 logoutHandler = WebSessionServerLogoutHandler()
                 logoutSuccessHandler =
                     RedirectServerLogoutSuccessHandler().apply {
-                        setLogoutSuccessUrl(appConfig.frontendUrl.toURI())
+                        setLogoutSuccessUrl(appConfig.FRONTEND_URI)
                     }
             }
         }
@@ -60,7 +63,7 @@ class SecurityConfig(
         resolver.addCookieInitializer {
             it.path("/")
             it.httpOnly(true)
-            it.domain(appConfig.frontendUrl.host)
+            it.domain(appConfig.FRONTEND_URI.host)
             it.secure(true)
             it.sameSite("Lax")
         }

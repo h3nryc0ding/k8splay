@@ -1,6 +1,6 @@
 @file:Suppress("DgsFieldSimplifyingInspector", "DgsDataSimplifyingInspector")
 
-package opensource.h3nryc0ding.playground.user
+package opensource.h3nryc0ding.livechat.user
 
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsData
@@ -8,7 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser
 import reactor.core.publisher.Mono
-import opensource.h3nryc0ding.playground.generated.types.User as UserDTO
+import opensource.h3nryc0ding.livechat.generated.types.User as UserDTO
 
 @DgsComponent
 class UserDataFetcher {
@@ -23,8 +23,6 @@ class UserDataFetcher {
                 UserDTO(
                     id = { it.subject },
                     name = { it.name },
-                    givenName = { it.givenName },
-                    familyName = { it.familyName },
                     preferredUsername = { it.preferredUsername },
                     email = { it.email },
                     emailVerified = { it.emailVerified },

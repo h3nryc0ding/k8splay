@@ -1,41 +1,17 @@
-# Start with a base image containing Java runtime
-FROM gradle:8.6.0-jdk17 as build
+FROM eclipse-temurin:21.0.6_7-jre-alpine-3.21@sha256:4e9ab608d97796571b1d5bbcd1c9f430a89a5f03fe5aa6c093888ceb6756c502 AS build
 
-# Set the current working directory inside the image
-WORKDIR /app
-
-# Copy gradle executable to the image
-COPY gradlew .
 COPY gradle gradle
-
-# Copy the build and settings files
-COPY build.gradle.kts .
-COPY settings.gradle.kts .
-
-# downloads all dependencies
-RUN ./gradlew dependencies
-
-# Copy your source code
+COPY gradlew build.gradle.kts settings.gradle.kts ./
+RUN ./gradlew dependencies --no-daemon
 COPY src src
+RUN ./gradlew bootJar --no-daemon
 
-# Build a jar
-RUN ./gradlew bootJar
-RUN cp /app/build/libs/playground-0.0.1-SNAPSHOT.jar /app/app.jar
+FROM eclipse-temurin:21.0.6_7-jre-alpine-3.21@sha256:4e9ab608d97796571b1d5bbcd1c9f430a89a5f03fe5aa6c093888ceb6756c502
+COPY --from=build /build/libs/*.jar livechat.jar
 
-# Start with a base image containing Java runtime
-FROM openjdk:17
-
-# Make port 8080 available to the world outside this container
 EXPOSE 8080
+ENV SPRING_PROFILES_ACTIVE=production
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD wget -q --spider http://localhost:8081/actuator/health || exit 1
 
-# Set application's JAR file
-ARG JAR_FILE=app.jar
-
-# Add the application's JAR file to the container
-COPY --from=build /app/app.jar app.jar
-
-# Set Spring profile
-ENV SPRING_PROFILES_ACTIVE=prod
-
-# Run the jar file
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT [ "java", "-jar", "livechat.jar" ]
