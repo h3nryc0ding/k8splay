@@ -1,0 +1,15 @@
+apiVersion: v2
+name: livechat
+version: 1.0.0
+type: application
+description: Livechat application
+
+dependencies:
+  - name: mongodb
+    version: "16.4.8"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: mongodb.enabled
+  - name: keycloak
+    version: "24.4.13"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: keycloak.enabled
