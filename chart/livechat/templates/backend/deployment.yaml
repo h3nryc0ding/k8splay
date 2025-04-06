@@ -1,43 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "livechat.fullname" . }}
-  labels:
-    {{- include "livechat.labels" . | nindent 4 }}
+  name: {{ printf "%s-backend" (include "livechat.fullname" .) }}
 spec:
-  {{- if not .Values.backend.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "livechat.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: {{ include "livechat.fullname" . }}
   template:
     metadata:
-      {{- with .Values.backend.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "livechat.labels" . | nindent 8 }}
-        {{- with .Values.backend.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        app.kubernetes.io/name: {{ include "livechat.fullname" . }}
     spec:
-      {{- with .Values.backend.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "livechat.serviceAccountName" . }}
-      {{- with .Values.backend.podSecurityContext }}
-      securityContext:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          {{- with .Values.backend.securityContext }}
-          securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           ports:
@@ -54,36 +29,12 @@ spec:
               path: "/actuator/health/readiness"
               port: 8081
             initialDelaySeconds: 5
-          {{- with .Values.backend.resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.backend.volumeMounts }}
           envFrom:
             - configMapRef:
-                name: {{ printf "%s-env-vars" (include "app.fullname" .) }}
+                name: {{ include "livechat.fullname" . }}
           env:
             - name: MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ include "mongodb.fullname" .Subcharts.mongodb }}
                   key: mongodb-passwords
-          volumeMounts:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-      {{- with .Values.backend.volumes }}
-      volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.backend.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.backend.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.backend.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}

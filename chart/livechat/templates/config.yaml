@@ -5,6 +5,9 @@ metadata:
   labels:
     {{- include "livechat.labels" . | nindent 4 }}
 data:
+  BACKEND_URI: {{ printf "%s://%s" (ternary "https" "http" .Values.ingress.tls.enabled) .Values.backend.ingress.host | quote }}
+  FRONTEND_URI: {{ printf "%s://%s" (ternary "https" "http" .Values.ingress.tls.enabled) .Values.frontend.ingress.host | quote }}
+
   MONGODB_HOST: {{ include "mongodb.service.nameOverride" .Subcharts.mongodb | quote }}
   MONGODB_PORT: {{ .Values.mongodb.service.ports.mongodb | quote }}
   MONGODB_USERNAME: {{ .Values.mongodb.auth.username | quote }}

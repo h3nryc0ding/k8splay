@@ -2,28 +2,19 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "livechat.fullname" . }}
-  labels:
-    {{- include "livechat.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
 spec:
   {{- with .Values.ingress.className }}
   ingressClassName: {{ . }}
   {{- end }}
-  {{- if .Values.ingress.tls }}
+  {{- if .Values.ingress.tls.enabled }}
   tls:
-    {{- range .Values.ingress.tls }}
     - hosts:
-        {{- range .hosts }}
-        - {{ . | quote }}
-        {{- end }}
-      secretName: {{ .secretName }}
-    {{- end }}
+        - {{ .Values.backend.ingress.host | quote }}
+        - {{ .Values.frontend.ingress.host | quote }}
+      secretName: {{ default (printf "%s-tls" (include "livechat.fullname" .)) .Values.ingress.tls.secretName | quote }}
   {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
+    {{- with .Values.backend.ingress }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -34,8 +25,24 @@ spec:
             {{- end }}
             backend:
               service:
-                name: {{ include "livechat.fullname" $ }}
+                name: {{ printf "%s-backend" (include "livechat.fullname" $) }}
                 port:
-                  number: {{ $.Values.service.port }}
+                  number: {{ $.Values.backend.service.port }}
+          {{- end }}
+    {{- end }}
+    {{- with .Values.frontend.ingress }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- with .pathType }}
+            pathType: {{ . }}
+            {{- end }}
+            backend:
+              service:
+                name: {{ printf "%s-frontend" (include "livechat.fullname" $) }}
+                port:
+                  number: {{ $.Values.frontend.service.port }}
           {{- end }}
     {{- end }}

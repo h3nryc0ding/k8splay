@@ -1,9 +1,6 @@
 include ../env.mk
 
-export MONGO_PORT 		= 27017
 export KEYCLOAK_PORT 	= 9090
-
-export MONGO_URI 		= mongodb://localhost:$(MONGO_PORT)
 export OAUTH2_CLIENT_ID	= default
 export OAUTH2_ISSUER_URI= http://localhost:$(KEYCLOAK_PORT)/realms/$(OAUTH2_CLIENT_ID)
 

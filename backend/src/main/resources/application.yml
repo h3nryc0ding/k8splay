@@ -1,7 +1,4 @@
-server.error.whitelabel.enabled: false
-
 spring:
-  data.mongodb.uri: ${MONGODB_URI}
   security:
     oauth2:
       client:
@@ -13,9 +10,3 @@ spring:
             client-id: ${OAUTH2_CLIENT_ID}
             client-secret: ${OAUTH2_CLIENT_SECRET}
             scope: openid
-
-management:
-  health:
-    livenessstate.enabled: true
-    readinessstate.enabled: true
-  server.port: 8081

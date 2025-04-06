@@ -1,78 +1,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "livechat.fullname" . }}
-  labels:
-    {{- include "livechat.labels" . | nindent 4 }}
+  name: {{ printf "%s-frontend" (include "livechat.fullname" .) }}
 spec:
-  {{- if not .Values.frontend.autoscaling.enabled }}
-  replicas: {{ .Values.frontend.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "livechat.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: {{ include "livechat.fullname" . }}
   template:
     metadata:
-      {{- with .Values.frontend.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "livechat.labels" . | nindent 8 }}
-        {{- with .Values.frontend.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        app.kubernetes.io/name: {{ include "livechat.fullname" . }}
     spec:
-      {{- with .Values.frontend.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "livechat.serviceAccountName" . }}
-      {{- with .Values.frontend.podSecurityContext }}
-      securityContext:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          {{- with .Values.frontend.securityContext }}
-          securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.frontend.service.port }}
               protocol: TCP
-          {{- with .Values.frontend.livenessProbe }}
           livenessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.frontend.readinessProbe }}
+            httpGet:
+              path: "/healthz"
+              port: {{ .Values.frontend.service.port }}
+            initialDelaySeconds: 15
           readinessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.frontend.resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.frontend.volumeMounts }}
-          volumeMounts:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-      {{- with .Values.frontend.volumes }}
-      volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.frontend.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.frontend.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.frontend.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+            httpGet:
+              path: "/readyz"
+              port: {{ .Values.frontend.service.port }}
+            initialDelaySeconds: 5
+          envFrom:
+            - configMapRef:
+                name: {{ include "livechat.fullname" . }}
