@@ -1,8 +1,9 @@
 apiVersion: v2
 name: livechat
-version: 1.0.0
+description: A live chat application.
+
 type: application
-description: Livechat application
+version: 1.0.0
 
 dependencies:
   - name: mongodb
