@@ -1,6 +1,6 @@
-package opensource.h3nryc0ding.playground.chat
+package opensource.h3nryc0ding.livechat.chat
 
-import opensource.h3nryc0ding.playground.generated.types.MessageInput
+import opensource.h3nryc0ding.livechat.generated.types.MessageInput
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks

@@ -1,11 +1,11 @@
-package opensource.h3nryc0ding.playground.chat
+package opensource.h3nryc0ding.livechat.chat
 
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.DgsSubscription
 import com.netflix.graphql.dgs.InputArgument
-import opensource.h3nryc0ding.playground.generated.types.MessageInput
+import opensource.h3nryc0ding.livechat.generated.types.MessageInput
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono
 import reactor.core.publisher.Sinks
 import java.time.LocalDateTime
 import java.util.UUID
-import opensource.h3nryc0ding.playground.generated.types.Message as MessageDTO
+import opensource.h3nryc0ding.livechat.generated.types.Message as MessageDTO
 
 @Document
 data class Message(

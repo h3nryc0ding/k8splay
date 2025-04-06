@@ -1,11 +1,12 @@
-server:
-  error:
-    whitelabel:
-      enabled: false
-
 spring:
-  profiles:
-    active: dev
-  docker:
-    compose:
-      enabled: false
+  security:
+    oauth2:
+      client:
+        provider:
+          default:
+            issuer-uri: ${OAUTH2_ISSUER_URI}
+        registration:
+          default:
+            client-id: ${OAUTH2_CLIENT_ID}
+            client-secret: ${OAUTH2_CLIENT_SECRET}
+            scope: openid

@@ -2,61 +2,66 @@ name: CI Frontend
 
 on:
   push:
-  workflow_call:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: 18
-  PNPM_VERSION: 8
-  WORKING_DIRECTORY: frontend
+  WORKING_DIR: frontend
 
 jobs:
-  lint:
+  ci:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: ${{ env.WORKING_DIR }}
+    strategy:
+      fail-fast: false
+      matrix:
+        action:
+          - lint
+          - check
+          - build
+          - test
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-pnpm-node
-      - name: Run prettier and eslint
-        run: pnpm lint
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  build:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-pnpm-node
-      - name: Build Frontend
-        run: pnpm build
+      - name: Set up PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
 
-  test:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-pnpm-node
-      - name: Store Playwright version
-        shell: bash
-        run: echo "PLAYWRIGHT_VERSION=$(pnpm exec playwright --version | awk '{ print $2 }')" >> $GITHUB_ENV
-      - uses: ./.github/actions/setup-playwright
-      - name: Test Frontend
-        run: pnpm test
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: ${{ env.WORKING_DIR }}/pnpm-lock.yaml
 
-  check:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-pnpm-node
-      - name: Check Frontend
+      - name: Build
         run: |
-          pnpm build
-          pnpm check
+          pnpm install --frozen-lockfile
+          pnpm ${{ matrix.action }}
+
+  docker:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ env.WORKING_DIR }}
+          file: ${{ env.WORKING_DIR }}/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: false
+          tags: ${{ env.WORKING_DIR }}:TODO
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

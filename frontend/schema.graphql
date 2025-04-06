@@ -299,8 +299,6 @@ type Subscription {
 type User {
 	email: String!
 	emailVerified: Boolean!
-	familyName: String!
-	givenName: String!
 	id: ID!
 	name: String!
 	preferredUsername: String!
