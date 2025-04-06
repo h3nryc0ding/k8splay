@@ -1,0 +1,16 @@
+{
+    "name": "livechat",
+    "image": "mcr.microsoft.com/devcontainers/base:debian",
+    "features": {
+      "ghcr.io/devcontainers/features/java:1": {
+        "version": "21",
+        "jdkDistro": "tem"
+      },
+      "ghcr.io/devcontainers/features/node:1": {
+        "version": "22"
+      },
+      "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+      "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {}
+    },
+    "remoteUser": "vscode"
+}
