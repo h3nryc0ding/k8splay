@@ -1,8 +1,11 @@
-# ⚠️ Under Construction ⚠️
+# ⚠️ Archived ⚠️
 
-This Kubernetes playground is currently undergoing significant upgrades and **will not be available for a few weeks** as I rewrite the deployment pipeline using **FluxCD**.
+This repository is archived and no longer maintained. It was a playground for me to experiment with Kubernetes and its
+ecosystem.
 
-Please check back later for updates! Thank you for your understanding! 🙏
+The project will be rewritten to use [fluxcd](https://github.com/fluxcd/flux2) and [bitnami helm charts](https://github.com/bitnami/charts) as dependencies. The new repository will be
+
+[github.com/h3nryc0ding/livechat](https://github.com/h3nryc0ding/livechat)
 
 ## Motivation
 
